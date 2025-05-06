@@ -1,0 +1,30 @@
+BEGIN
+    INSERT INTO Empleado (
+        PriNombre_Emp,
+        SegNombre_Emp,
+        PriApellido_Emp,
+        SegApellido_Emp,
+        DPI_Emp,
+        FechaNacimiento_Emp,
+        Direccion_Emp,
+        Telefono_Emp,
+        Email_Emp,
+        FechaIngreso_Emp,
+        FechaBaja_Emp,
+        Estado_Emp
+    )
+    VALUES (
+        p_PriNombre_Emp,
+        p_SegNombre_Emp,
+        p_PriApellido_Emp,
+        p_SegApellido_Emp,
+        p_DPI_Emp,
+        p_FechaNacimiento_Emp,
+        p_Direccion_Emp,
+        p_Telefono_Emp,
+        p_Email_Emp,
+        p_FechaIngreso_Emp,
+        p_FechaBaja_Emp,
+        p_Estado_Emp
+    );
+END
