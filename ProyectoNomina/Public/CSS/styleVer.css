@@ -1,0 +1,61 @@
+/* Estilos generales */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary: #4361ee;
+    --primary-light: #4895ef;
+    --dark: #2b2d42;
+    --light: #f8f9fa;
+    --gray: #6c757d;
+    --success: #4cc9f0;
+    --warning: #ff9e00;
+    --danger: #ef476f;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #f5f7fa, #e4e7ec);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--dark);
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--primary);
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+table {
+	display: table;
+    border-spacing: 2px;
+    border-collapse: separate;
+    box-sizing: border-box;
+    text-indent: 0;
+	text-align: left;
+}
+
+/* This won’t work yet */
+tr {
+	border-bottom: 1px solid;
+}
+
+
+
+
+
