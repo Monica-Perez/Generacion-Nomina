@@ -1,7 +1,7 @@
 <?php
 require_once 'config/db.php';
 
-class Empleado {
+class Bonificacion {
     private $conn;
 
     // Constructor que inyecta la conexión a la base de datos
@@ -9,28 +9,17 @@ class Empleado {
         $this->conn = $db;
     }
 
-    // Método para crear un empleado
+    // Método para crear un bonificacion
     public function crear($datos) {
         try {
-            $stmt = $this->conn->prepare("CALL InsertarEmpleado(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $this->conn->prepare("CALL InsertarBonificacion(?, ?)");
             
             // Depurar parámetros
             error_log("Parámetros enviados al SP: " . json_encode($datos));
             
             $params = [
-                $datos['pri_nombre'],
-                $datos['seg_nombre'],
-                $datos['pri_apellido'],
-                $datos['seg_apellido'],
-                $datos['dpi'],
-                $datos['fecha_nacimiento'],
-                $datos['direccion'],
-                $datos['telefono'],
-                $datos['email'],
-                $datos['fecha_ingreso'],
-                $datos['fecha_baja'],
-                $datos['estado'],
-                $datos['id_puesto']
+                $datos['nombre'],
+                $datos['monto']
             ];
             
             $stmt->execute($params);
@@ -41,18 +30,18 @@ class Empleado {
             return $rowCount > 0;
         } catch (PDOException $e) {
             // Loggear el error en producción
-            error_log("Error PDO al crear empleado: " . $e->getMessage());
+            error_log("Error PDO al crear bonificacion: " . $e->getMessage());
             // También registra la consulta SQL
-            error_log("SQL: CALL InsertarEmpleado(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            error_log("SQL: CALL InsertarBonificacion(?, ?)");
             error_log("Parámetros: " . json_encode($params));
             return false;
         }
     }
 
-    // Método para obtener todos los empleados
-    public function obtenerEmpleados() {
+    // Método para obtener todos los bonificaciones
+    public function obtenerBonificaciones() {
         try {
-            $query = "CALL spObtenerEmpleados();";
+            $query = "CALL spObtenerBonificaciones();";
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
     
@@ -65,7 +54,7 @@ class Empleado {
     
             return $resultados;
         } catch (PDOException $e) {
-            error_log("Error al obtener empleados: " . $e->getMessage());
+            error_log("Error al obtener bonificaciones: " . $e->getMessage());
             return [];
         }
     }

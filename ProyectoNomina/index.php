@@ -33,8 +33,8 @@ if (!isset($_GET['controller']) && !isset($_GET['action'])) {
 require_once 'Controllers/EmpleadoController.php';
 require_once 'Models/EmpleadoModelo.php';
 require_once 'Config/db.php';
-// require_once 'Controllers/BonificacionController.php';
-// require_once 'Models/BonificacionModelo.php';
+require_once 'Controllers/BonificacionController.php';
+require_once 'Models/BonificacionModelo.php';
 
 
 $controller = $_GET['controller'] ?? 'empleado';
@@ -62,14 +62,14 @@ switch ($controller) {
             echo "Acción no encontrada.";
         }
         break;
-    // case 'crearbon':
-    //     $controlador = new BonificacionController(); 
-    //     if (method_exists($controlador, $action)) {
-    //         $controlador->$action(); 
-    //     } else {
-    //         echo "Acción no encontrada.";
-    //     }
-    //     break;
+    case 'crearbon':
+        $controlador = new BonificacionController(); 
+        if (method_exists($controlador, $action)) {
+            $controlador->$action(); 
+        } else {
+            echo "Acción no encontrada.";
+        }
+        break;
 
     default:
         echo "Controlador no válido.";

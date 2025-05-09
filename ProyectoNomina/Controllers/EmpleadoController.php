@@ -10,6 +10,7 @@ class EmpleadoController {
         $db = db::conectar();
         $this->empleado = new Empleado($db);
     }
+
     public function crear() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fechaIngreso = $_POST['fecha_ingreso'];
@@ -27,27 +28,35 @@ class EmpleadoController {
                 'email'            => $_POST['email'] ?? '',
                 'fecha_ingreso'    => $fechaIngreso,
                 'fecha_baja'       => $fechaBaja,
-                'estado'           => $_POST['estado'] ?? 'Activo'
+                'estado'           => $_POST['estado'] ?? 'Activo',
+                'id_puesto'        => $_POST['id_puesto']
             ];
     
             $resultado = $this->empleado->crear($datos);
-    
+            //var_dump($_POST); exit;
+
             if ($resultado) {
                 header('Location: index.php?controller=empleado&action=ver');
+                exit;
             } else {
                 echo "❌ No se insertó ningún empleado. Revisa los campos.";
             }
         } else {
+            $conn = db::conectar();
+            $puestos = [];
+
+            $stmt = $conn->prepare("CALL spObtenerPuestos()");
+            $stmt->execute();
+            $puestos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
             include 'Views/empleados/crear.php';
         }
-    }    
-    
+    }
+
     public function ver() {
         $empleados = $this->empleado->obtenerEmpleados();
         extract(['empleados' => $empleados]);
         include 'Views/Empleados/Ver.php';
     }
-    
-    
 }
 ?>

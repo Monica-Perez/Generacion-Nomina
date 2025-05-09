@@ -11,6 +11,13 @@
 <body>
     <div class="form-container">
     <h1>Agregar Empleado</h1>
+
+    <?php if (isset($error)): ?>
+        <div class="error-message">
+            <?php echo $error; ?>
+        </div>
+    <?php endif; ?>
+
         <form method="POST" action="index.php?controller=empleado&action=crear">
 
             <label for="">Primer Nombre: </label>
@@ -50,9 +57,27 @@
             <select name="estado" required>
                 <option value="Activo">Activo</option>
                 <option value="Inactivo">Inactivo</option>
+            </select><br>
+
+            <label for="">Puesto: </label>
+            <select name="id_puesto" required>
+                <option value="">Seleccione un puesto</option>
+                <?php foreach ($puestos as $puesto): ?>
+                <option value="<?php echo $puesto['ID_Puesto']; ?>"><?php echo $puesto['Nombre_Puesto']; ?></option>
+                <?php endforeach; ?>
             </select><br><br>
+            
             <button>Guardar</button>
         </form>
     </div>
+    <style>
+        .error-message {
+            background-color: #ffdddd;
+            border-left: 6px solid #f44336;
+            margin-bottom: 15px;
+            padding: 10px;
+            color: #333;
+        }
+    </style>
 </body>
 </html>

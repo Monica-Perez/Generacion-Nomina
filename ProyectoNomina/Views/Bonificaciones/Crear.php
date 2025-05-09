@@ -11,46 +11,14 @@
 <body>
     <div class="form-container">
     <h1>Agregar Bonificacion</h1>
-        <form method="POST" action="index.php?controller=empleado&action=crear">
+        <form method="POST" action="index.php?controller=bonificacion&action=crear">
 
             <label for="">Nombre Bonificacion: </label>
             <input type="text" name="nombre" required><br>
 
-            <label for="">Segundo Nombre: </label>
-            <input type="text" name="seg_nombre"><br>
+            <label for="">Monto: </label>
+            <input type="text" name="monto"><br>
 
-            <label for="">Primer Apellido: </label>
-            <input type="text" name="pri_apellido" required><br>
-
-            <label for="">Segundo Apellido: </label>
-            <input type="text" name="seg_apellido"><br>
-
-            <label for="">DPI: </label>
-            <input type="text" name="dpi" required><br>
-            
-            <label for="">Fecha Nacimiento: </label>
-            <input type="date" name="fecha_nacimiento" required><br>
-            
-            <label for="">Dirección: </label>
-            <input type="text" name="direccion" required><br>
-            
-            <label for="">Teléfono: </label>
-            <input type="text" name="telefono" required><br>
-            
-            <label for="">Email: </label>
-            <input type="email" name="email" required><br>
-            
-            <label for="">Fecha Ingreso: </label>
-            <input type="date" name="fecha_ingreso" required><br>
-            
-            <label for="">Fecha Baja: </label>
-            <input type="date" name="fecha_baja"><br>
-            
-            <label for="">Estado: </label> 
-            <select name="estado" required>
-                <option value="Activo">Activo</option>
-                <option value="Inactivo">Inactivo</option>
-            </select><br><br>
             <button>Guardar</button>
         </form>
     </div>

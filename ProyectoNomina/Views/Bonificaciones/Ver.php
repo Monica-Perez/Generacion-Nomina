@@ -10,49 +10,27 @@
 </head>
 <body>
 <!-- <pre>
-    <?php var_dump($empleados); ?>
+    <?php var_dump($bonificaciones); ?>
 </pre> -->
 
-    <h1>Lista de Empleados</h1>
+    <h1>Lista de Bonificaciones</h1>
     <table class="table table-striped table table-hover">
     <thead>
         <tr>
-            <th>Primer Nombre</th>
-            <th>Segundo Nombre</th>
-            <th>Primer Apellido</th>
-            <th>Segundo Apellido</th>
-            <th>DPI</th>
-            <th>Fecha de Nacimiento</th>
-            <th>Dirección</th>
-            <th>Telefono</th>
-            <th>Email</th>
-            <th>Fecha de Ingreso</th>
-            <th>Fecha de Baja</th>
-            <th>Estado</th>
-            <th>Puesto</th>
+            <th>Nombre</th>
+            <th>Monto</th>
         </tr>
     </thead>
     <tbody>
-        <?php if (!empty($empleados)): ?>
-            <?php foreach ($empleados as $empleado): ?>
+        <?php if (!empty($bonificaciones)): ?>
+            <?php foreach ($bonificaciones as $empleado): ?>
                 <tr>
-                    <td><?php echo $empleado['PriNombre_Emp']; ?></td>
-                    <td><?php echo $empleado['SegNombre_Emp']; ?></td>
-                    <td><?php echo $empleado['PriApellido_Emp']; ?></td>
-                    <td><?php echo $empleado['SegApellido_Emp']; ?></td>
-                    <td><?php echo $empleado['DPI_Emp']; ?></td>
-                    <td><?php echo $empleado['FechaNacimiento_Emp']; ?></td>
-                    <td><?php echo $empleado['Direccion_Emp']; ?></td>
-                    <td><?php echo $empleado['Telefono_Emp']; ?></td>
-                    <td><?php echo $empleado['Email_Emp']; ?></td>
-                    <td><?php echo $empleado['FechaIngreso_Emp']; ?></td>
-                    <td><?php echo $empleado['FechaBaja_Emp']; ?></td>
-                    <td><?php echo $empleado['Estado_Emp']; ?></td>
-                    <td><?php echo $empleado['Nombre_Puesto']; ?></td>
+                    <td><?php echo $empleado['Nombre']; ?></td>
+                    <td><?php echo $empleado['Monto']; ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>
-            <tr><td colspan="14">No se encontraron empleados.</td></tr>
+            <tr><td colspan="14">No se encontraron bonificaciones.</td></tr>
         <?php endif; ?>
     </tbody>
 </table>
