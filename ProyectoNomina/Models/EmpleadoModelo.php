@@ -1,62 +1,50 @@
 <?php
 require_once 'config/db.php';
 
-class Empleado {
+class EmpleadoModelo {
     private $conn;
 
-    // Constructor que inyecta la conexión a la base de datos
     public function __construct($db) {
         $this->conn = $db;
     }
 
-    // Método para crear un empleado
     public function crear($datos) {
         try {
-            $stmt = $this->conn->prepare("CALL InsertarEmpleado(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            
+            $sql = "INSERT INTO Empleado (
+                        Nombre_Emp, Apellido_Emp, DPI_Emp, FechaNacimiento_Emp, 
+                        Direccion_Emp, Telefono_Emp, Email_Emp, FechaIngreso_Emp, 
+                        FechaBaja_Emp, Estado_Emp, ID_Puesto, ID_Dep
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $this->conn->prepare($sql);
             $stmt->execute([
-                $datos['pri_nombre'],
-                $datos['seg_nombre'],
-                $datos['pri_apellido'],
-                $datos['seg_apellido'],
-                $datos['dpi'],
-                $datos['fecha_nacimiento'],
-                $datos['direccion'],
-                $datos['telefono'],
-                $datos['email'],
-                $datos['fecha_ingreso'],
-                $datos['fecha_baja'],
-                $datos['estado']
+                $datos['Nombre_Emp'],
+                $datos['Apellido_Emp'],
+                $datos['DPI_Emp'],
+                $datos['FechaNacimiento_Emp'],
+                $datos['Direccion_Emp'],
+                $datos['Telefono_Emp'],
+                $datos['Email_Emp'],
+                $datos['FechaIngreso_Emp'],
+                $datos['FechaBaja_Emp'] ?? null,
+                $datos['Estado_Emp'] ?? 'Activo',
+                $datos['ID_Puesto'] ?? null,
+                $datos['ID_Dep'] ?? null
             ]);
-    
-            return $stmt->rowCount() > 0;
+            return true;
         } catch (PDOException $e) {
-            // Loggear el error en producción
             error_log("Error al crear empleado: " . $e->getMessage());
             return false;
         }
     }
 
-    // Método para obtener todos los empleados
     public function obtenerEmpleados() {
         try {
-            $query = "CALL spObtenerEmpleados();";
-            $stmt = $this->conn->prepare($query);
+            $stmt = $this->conn->prepare("CALL spObtenerEmpleados()");
             $stmt->execute();
-    
-            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-            // Para depuración
-            // echo '<pre>';
-            // print_r($resultados);
-            // echo '</pre>';
-    
-            return $resultados;
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Error al obtener empleados: " . $e->getMessage());
             return [];
         }
     }
-    
-
 }

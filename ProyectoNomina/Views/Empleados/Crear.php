@@ -6,24 +6,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Empleado</title>
-    <link rel="stylesheet" href="/ingenieriaSW/ProyectoNomina/Public/CSS/Empleados.css">
+    <link rel="stylesheet" href="/ProyectoNomina/Public/CSS/Empleados.css">
 </head>
 <body>
     <div class="form-container">
     <h1>Agregar Empleado</h1>
         <form method="POST" action="index.php?controller=empleado&action=crear">
 
-            <label for="">Primer Nombre: </label>
-            <input type="text" name="pri_nombre" required><br>
+            <label for="">Nombre: </label>
+            <input type="text" name="nombre" required><br>
 
-            <label for="">Segundo Nombre: </label>
-            <input type="text" name="seg_nombre"><br>
-
-            <label for="">Primer Apellido: </label>
-            <input type="text" name="pri_apellido" required><br>
-
-            <label for="">Segundo Apellido: </label>
-            <input type="text" name="seg_apellido"><br>
+            <label for="">Apellido: </label>
+            <input type="text" name="apellido" required><br>
 
             <label for="">DPI: </label>
             <input type="text" name="dpi" required><br>
@@ -51,6 +45,10 @@
                 <option value="Activo">Activo</option>
                 <option value="Inactivo">Inactivo</option>
             </select><br><br>
+
+            <label>ID Puesto:</label><input type="number" name="id_puesto"><br>
+            <label>ID Departamento:</label><input type="number" name="id_dep"><br><br>
+            
             <button>Guardar</button>
         </form>
     </div>

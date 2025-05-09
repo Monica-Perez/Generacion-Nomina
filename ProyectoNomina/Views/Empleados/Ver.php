@@ -17,36 +17,37 @@
     <table class="table table-striped table table-hover">
     <thead>
         <tr>
-            <th>Primer Nombre</th>
-            <th>Segundo Nombre</th>
-            <th>Primer Apellido</th>
-            <th>Segundo Apellido</th>
-            <th>DPI</th>
-            <th>Fecha de Nacimiento</th>
-            <th>Dirección</th>
-            <th>Telefono</th>
-            <th>Email</th>
-            <th>Fecha de Ingreso</th>
-            <th>Fecha de Baja</th>
-            <th>Estado</th>
-        </tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>DPI</th>
+                <th>Fecha Nacimiento</th>
+                <th>Dirección</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Fecha Ingreso</th>
+                <th>Fecha Baja</th>
+                <th>Estado</th>
+                <th>ID Puesto</th>
+                <th>ID Departamento</th>
     </thead>
     <tbody>
         <?php if (!empty($empleados)): ?>
             <?php foreach ($empleados as $empleado): ?>
                 <tr>
-                    <td><?php echo $empleado['PriNombre_Emp']; ?></td>
-                    <td><?php echo $empleado['SegNombre_Emp']; ?></td>
-                    <td><?php echo $empleado['PriApellido_Emp']; ?></td>
-                    <td><?php echo $empleado['SegApellido_Emp']; ?></td>
-                    <td><?php echo $empleado['DPI_Emp']; ?></td>
-                    <td><?php echo $empleado['FechaNacimiento_Emp']; ?></td>
-                    <td><?php echo $empleado['Direccion_Emp']; ?></td>
-                    <td><?php echo $empleado['Telefono_Emp']; ?></td>
-                    <td><?php echo $empleado['Email_Emp']; ?></td>
-                    <td><?php echo $empleado['FechaIngreso_Emp']; ?></td>
-                    <td><?php echo $empleado['FechaBaja_Emp']; ?></td>
-                    <td><?php echo $empleado['Estado_Emp']; ?></td>
+                    <td><?= $empleado['ID_Emp'] ?></td>
+                    <td><?= htmlspecialchars($empleado['Nombre_Emp']) ?></td>
+                    <td><?= htmlspecialchars($empleado['Apellido_Emp']) ?></td>
+                    <td><?= htmlspecialchars($empleado['DPI_Emp']) ?></td>
+                    <td><?= $empleado['FechaNacimiento_Emp'] ?></td>
+                    <td><?= htmlspecialchars($empleado['Direccion_Emp']) ?></td>
+                    <td><?= htmlspecialchars($empleado['Telefono_Emp']) ?></td>
+                    <td><?= htmlspecialchars($empleado['Email_Emp']) ?></td>
+                    <td><?= $empleado['FechaIngreso_Emp'] ?></td>
+                    <td><?= $empleado['FechaBaja_Emp'] ?? '-' ?></td>
+                    <td><?= $empleado['Estado_Emp'] ?></td>
+                    <td><?= $empleado['ID_Puesto'] ?></td>
+                    <td><?= $empleado['ID_Dep'] ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>
@@ -92,7 +93,7 @@ h1 {
     font-weight: 600;
     color: var(--primary);
     text-align: center;
-    margin-bottom: 10%:
+    margin-bottom: 10%;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
     justify-content: center;
     align-items: center;

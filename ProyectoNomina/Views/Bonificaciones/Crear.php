@@ -6,53 +6,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bonificaciones</title>
-    <link rel="stylesheet" href="/ingenieriaSW/ProyectoNomina/Public/CSS/Empleados.css">
+    <link rel="stylesheet" href="/ProyectoNomina/Public/CSS/Empleados.css">
 </head>
 <body>
-    <div class="form-container">
-    <h1>Agregar Bonificacion</h1>
-        <form method="POST" action="index.php?controller=empleado&action=crear">
+    <h1>Crear Bonificación</h1>
+    <form action="index.php?controller=bonificacion&action=crearBonificacion" method="POST">
+        <label for="TipoBonificacion_Bonif">Tipo de Bonificación:</label>
+        <input type="text" name="TipoBonificacion_Bonif" id="TipoBonificacion_Bonif" required><br><br>
+        
+        <label for="Monto_Bonif">Monto:</label>
+        <input type="number" step="0.01" name="Monto_Bonif" id="Monto_Bonif" required><br><br>
+        
+        <label for="Motivo_Bonif">Motivo:</label>
+        <textarea name="Motivo_Bonif" id="Motivo_Bonif" required></textarea><br><br>
+        
+        <button type="submit">Crear Bonificación</button>
+    </form>
 
-            <label for="">Nombre Bonificacion: </label>
-            <input type="text" name="nombre" required><br>
-
-            <label for="">Segundo Nombre: </label>
-            <input type="text" name="seg_nombre"><br>
-
-            <label for="">Primer Apellido: </label>
-            <input type="text" name="pri_apellido" required><br>
-
-            <label for="">Segundo Apellido: </label>
-            <input type="text" name="seg_apellido"><br>
-
-            <label for="">DPI: </label>
-            <input type="text" name="dpi" required><br>
-            
-            <label for="">Fecha Nacimiento: </label>
-            <input type="date" name="fecha_nacimiento" required><br>
-            
-            <label for="">Dirección: </label>
-            <input type="text" name="direccion" required><br>
-            
-            <label for="">Teléfono: </label>
-            <input type="text" name="telefono" required><br>
-            
-            <label for="">Email: </label>
-            <input type="email" name="email" required><br>
-            
-            <label for="">Fecha Ingreso: </label>
-            <input type="date" name="fecha_ingreso" required><br>
-            
-            <label for="">Fecha Baja: </label>
-            <input type="date" name="fecha_baja"><br>
-            
-            <label for="">Estado: </label> 
-            <select name="estado" required>
-                <option value="Activo">Activo</option>
-                <option value="Inactivo">Inactivo</option>
-            </select><br><br>
-            <button>Guardar</button>
-        </form>
-    </div>
+    <br>
+    <a href="index.php?controller=bonificacion&action=verBonificaciones">Volver a Ver Bonificaciones</a>
 </body>
 </html>

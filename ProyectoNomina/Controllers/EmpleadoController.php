@@ -1,5 +1,6 @@
 <?php
 require('Config/db.php');
+require_once __DIR__ . '/../Models/EmpleadoModelo.php';
 
 class EmpleadoController {
 
@@ -8,44 +9,42 @@ class EmpleadoController {
     // Inyectamos la dependencia en el constructor del controlador
     public function __construct() {
         $db = db::conectar();
-        $this->empleado = new Empleado($db);
+        $this->empleado = new EmpleadoModelo($db);
     }
     public function crear() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $fechaIngreso = $_POST['fecha_ingreso'];
-            $fechaBaja = !empty($_POST['fecha_baja']) ? $_POST['fecha_baja'] : $fechaIngreso;
-    
+            $db = db::conectar();
+            $empleadoModel = new EmpleadoModelo($db);
+
             $datos = [
-                'pri_nombre'       => $_POST['pri_nombre'],
-                'seg_nombre'       => $_POST['seg_nombre'] ?? '',
-                'pri_apellido'     => $_POST['pri_apellido'],
-                'seg_apellido'     => $_POST['seg_apellido'] ?? '',
-                'dpi'              => $_POST['dpi'],
-                'fecha_nacimiento' => $_POST['fecha_nacimiento'] ?? null,
-                'direccion'        => $_POST['direccion'] ?? '',
-                'telefono'         => $_POST['telefono'] ?? '',
-                'email'            => $_POST['email'] ?? '',
-                'fecha_ingreso'    => $fechaIngreso,
-                'fecha_baja'       => $fechaBaja,
-                'estado'           => $_POST['estado'] ?? 'Activo'
+                'Nombre_Emp' => $_POST['nombre'] ?? '',
+                'Apellido_Emp' => $_POST['apellido'] ?? '',
+                'DPI_Emp' => $_POST['dpi'] ?? '',
+                'FechaNacimiento_Emp' => $_POST['fecha_nacimiento'] ?? '',
+                'Direccion_Emp' => $_POST['direccion'] ?? '',
+                'Telefono_Emp' => $_POST['telefono'] ?? '',
+                'Email_Emp' => $_POST['email'] ?? '',
+                'FechaIngreso_Emp' => $_POST['fecha_ingreso'] ?? '',
+                'FechaBaja_Emp' => $_POST['fecha_baja'] ?? null,
+                'Estado_Emp' => $_POST['estado'] ?? 'Activo',
+                'ID_Puesto' => $_POST['id_puesto'] ?? null,
+                'ID_Dep' => $_POST['id_dep'] ?? null
             ];
-    
-            $resultado = $this->empleado->crear($datos);
-    
-            if ($resultado) {
-                header('Location: index.php?controller=empleado&action=ver');
+
+            if ($empleadoModel->crear($datos)) {
+                header("Location: index.php?controller=empleado&action=ver");
+                exit;
             } else {
-                echo "❌ No se insertó ningún empleado. Revisa los campos.";
+                echo "<script>alert('Error al crear el empleado');</script>";
             }
-        } else {
-            include 'Views/empleados/crear.php';
         }
-    }    
-    
+
+        require_once 'views/Empleados/Crear.php';
+    }
+
     public function ver() {
         $empleados = $this->empleado->obtenerEmpleados();
-        extract(['empleados' => $empleados]);
-        include 'Views/Empleados/Ver.php';
+        require 'Views/Empleados/ver.php';
     }
     
     
