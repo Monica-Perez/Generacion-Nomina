@@ -1,21 +1,19 @@
  /* Variables CSS para facilitar la personalización de colores y tamaños */
  :root {
-     /* Color principal */
      --primary: #4361ee;
-     /* Color secundario (menú lateral) */
+     /* menú lateral */
      --secondary: #3f3d56;
-     /* Color para estados activos */
+     /* activos */
      --success: #23a359;
-     /* Color para estados inactivos */
+     /* inactivos */
      --danger: #e74c3c;
-     /* Color claro para fondos */
      --light: #f8f9fa;
-     /* Color oscuro para texto */
+     /* texto */
      --dark: #343a40;
-     /* Color gris para texto secundario */
+     /* texto secundario */
      --gray: #6c757d;
      /* Ancho del menú lateral */
-     --sidebar-width: 250px;
+     --sidebar-width: 13%;
  }
 
  /* Estilos generales del cuerpo de la página */

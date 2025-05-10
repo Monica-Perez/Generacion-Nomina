@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Empleados | Sistema de Nómina</title>
-    <!-- Hojas de estilo de Bootstrap y Font Awesome para iconos y estilos básicos -->
+    <title>Lista de Empleados</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="/ingenieriaSW/ProyectoNomina/Public/CSS/styleVerEmp.css">
-    <!-- jQuery para funcionalidades como la búsqueda -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
@@ -22,9 +20,8 @@
         <ul class="sidebar-menu">
             <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
             <li><a href="index.php?controller=empleado&action=ver" class="active"><i class="fas fa-users"></i> Empleados</a></li>
-            <li><a href="index.php?controller=bonificacion&action=crearbon"><i class="fas fa-gift"></i> Bonificaciones</a></li>
-            <li><a href="index.php?controller=deduccion&action=index"><i class="fas fa-hand-holding-usd"></i> Deducciones</a></li>
-            <li><a href="index.php?controller=nomina&action=index"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
+            <li><a href="index.php?controller=prestaciones&action=verpres"><i class="fas fa-gift"></i> Prestaciones</a></li>
+            <li><a href="index.php?controller=nomina&action=vernomina"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
         </ul>
     </div>
 

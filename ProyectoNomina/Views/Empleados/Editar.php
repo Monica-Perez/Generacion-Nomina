@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Empleado | Sistema de Nómina</title>
-    <!-- Recursos CSS -->
+    <title>Editar Empleado</title>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
@@ -17,13 +17,11 @@
         <ul class="sidebar-menu">
             <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
             <li><a href="index.php?controller=empleado&action=ver" class="active"><i class="fas fa-users"></i> Empleados</a></li>
-            <li><a href="index.php?controller=bonificacion&action=crearbon"><i class="fas fa-gift"></i> Bonificaciones</a></li>
-            <li><a href="index.php?controller=deduccion&action=index"><i class="fas fa-hand-holding-usd"></i> Deducciones</a></li>
-            <li><a href="index.php?controller=nomina&action=index"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
+            <li><a href="index.php?controller=prestaciones&action=verpres"><i class="fas fa-gift"></i> Prestaciones</a></li>
+            <li><a href="index.php?controller=nomina&action=vernomina"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
         </ul>
     </div>
 
-    <!-- Contenido principal -->
     <div class="main-content">
         <div class="container-fluid">
             <!-- Encabezado -->
@@ -34,7 +32,7 @@
                 </div>
                 <div class="header-actions">
                     <a href="index.php?controller=empleado&action=ver" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left"></i> Volver a la Lista
+                        <i class="fas fa-arrow-left"></i> Ver Empleados
                     </a>
                 </div>
             </div>
@@ -54,7 +52,6 @@
                         <!-- Campo oculto para el ID del empleado -->
                         <input type="hidden" name="id_emp" value="<?php echo $empleado['ID_Emp']; ?>">
                         
-                        <!-- Datos personales -->
                         <div class="form-section">
                             <h5 class="section-title"><i class="fas fa-user"></i> Datos Personales</h5>
                             <div class="row">
@@ -212,7 +209,7 @@
             --light: #f8f9fa;
             --dark: #343a40;
             --gray: #6c757d;
-            --sidebar-width: 250px;
+            --sidebar-width: 13%; /*Barra Lateral*/
         }
 
         /* Estilos generales */
@@ -426,46 +423,6 @@
             color: #155724;
         }
 
-        /* Estilos responsivos */
-        @media (max-width: 991.98px) {
-            .sidebar {
-                width: 70px;
-            }
-
-            .sidebar-header h3 {
-                display: none;
-            }
-
-            .sidebar-menu a span {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 70px;
-            }
-        }
-
-        @media (max-width: 767.98px) {
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .header-actions {
-                margin-top: 15px;
-                align-self: flex-end;
-            }
-
-            .row {
-                margin-right: -10px;
-                margin-left: -10px;
-            }
-
-            .col-md-6 {
-                padding-right: 10px;
-                padding-left: 10px;
-            }
-        }
     </style>
 </body>
 </html>
