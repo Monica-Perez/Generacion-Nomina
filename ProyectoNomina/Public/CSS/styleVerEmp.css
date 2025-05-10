@@ -1,0 +1,334 @@
+ /* Variables CSS para facilitar la personalización de colores y tamaños */
+ :root {
+     /* Color principal */
+     --primary: #4361ee;
+     /* Color secundario (menú lateral) */
+     --secondary: #3f3d56;
+     /* Color para estados activos */
+     --success: #23a359;
+     /* Color para estados inactivos */
+     --danger: #e74c3c;
+     /* Color claro para fondos */
+     --light: #f8f9fa;
+     /* Color oscuro para texto */
+     --dark: #343a40;
+     /* Color gris para texto secundario */
+     --gray: #6c757d;
+     /* Ancho del menú lateral */
+     --sidebar-width: 250px;
+ }
+
+ /* Estilos generales del cuerpo de la página */
+ body {
+     margin: 0;
+     padding: 0;
+     font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+     background-color: #f0f2f5;
+     display: flex;
+     min-height: 100vh;
+     overflow: hidden;
+     /* Evita el desplazamiento de toda la página */
+ }
+
+ /* Estilos del menú lateral */
+ .sidebar {
+     width: var(--sidebar-width);
+     background-color: var(--secondary);
+     color: white;
+     position: fixed;
+     height: 100vh;
+     overflow-y: auto;
+     /* Permite desplazamiento si el menú es largo */
+     z-index: 100;
+ }
+
+ /* Cabecera del menú lateral */
+ .sidebar-header {
+     padding: 20px;
+     background-color: rgba(0, 0, 0, 0.2);
+     /* Fondo más oscuro para la cabecera */
+     text-align: center;
+ }
+
+ .sidebar-header h3 {
+     margin: 0;
+     font-size: 1.5rem;
+     font-weight: 600;
+ }
+
+ /* Lista de opciones del menú */
+ .sidebar-menu {
+     list-style: none;
+     padding: 0;
+     margin: 20px 0;
+ }
+
+ .sidebar-menu li {
+     margin-bottom: 2px;
+ }
+
+ /* Estilo de los enlaces del menú */
+ .sidebar-menu a {
+     display: flex;
+     align-items: center;
+     padding: 12px 20px;
+     color: rgba(255, 255, 255, 0.7);
+     text-decoration: none;
+     transition: all 0.3s;
+     border-left: 4px solid transparent;
+ }
+
+ /* Estados de hover y activo del menú */
+ .sidebar-menu a:hover,
+ .sidebar-menu a.active {
+     background-color: rgba(255, 255, 255, 0.1);
+     color: white;
+     border-left-color: var(--primary);
+ }
+
+ /* Iconos del menú */
+ .sidebar-menu i {
+     margin-right: 12px;
+ }
+
+ /* Contenido principal */
+ .main-content {
+     flex: 1;
+     margin-left: var(--sidebar-width);
+     height: 100vh;
+     overflow-y: auto;
+     /* Permite desplazamiento del contenido principal */
+ }
+
+ /* Contenedor para centrar y limitar el ancho del contenido */
+ .content-container {
+     padding: 30px;
+     max-width: 1500px;
+     /* Limita el ancho en pantallas muy grandes */
+     margin: 0 auto;
+ }
+
+ /* Estilos del encabezado */
+ .header {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     margin-bottom: 30px;
+ }
+
+ /* Título con icono */
+ .header-title h1 {
+     margin: 0;
+     font-size: 1.8rem;
+     color: var(--secondary);
+     display: flex;
+     align-items: center;
+ }
+
+ .header-title h1 i {
+     margin-right: 10px;
+ }
+
+ .header-title p {
+     margin: 5px 0 0;
+     font-size: 0.9rem;
+ }
+
+ /* Contenedor de la tabla */
+ .card {
+     border: none;
+     border-radius: 10px;
+     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+     margin-bottom: 30px;
+     background-color: white;
+ }
+
+ .card-header {
+     padding: 15px 20px;
+     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+ }
+
+ .card-header h5 {
+     font-weight: 600;
+     color: var(--secondary);
+ }
+
+ /* Contenedor con desplazamiento para la tabla */
+ .table-container {
+     max-height: calc(100vh - 250px);
+     /* Altura máxima para la tabla */
+     overflow-y: auto;
+     /* Scroll vertical solo para la tabla */
+     overflow-x: auto;
+     /* Scroll horizontal si es necesario */
+ }
+
+ /* Estilos de la tabla */
+ .table {
+     margin-bottom: 0;
+     width: 100%;
+ }
+
+ /* Encabezados de la tabla */
+ .table thead th {
+     position: sticky;
+     top: 0;
+     /* Mantiene los encabezados visibles al desplazarse */
+     background-color: #f8f9fa;
+     z-index: 10;
+     font-weight: 600;
+     border-top: none;
+     border-bottom: 2px solid #dee2e6;
+     padding: 12px 15px;
+     white-space: nowrap;
+     /* Evita que los encabezados se rompan en varias líneas */
+ }
+
+ /* Celdas de la tabla */
+ .table td {
+     padding: 12px 15px;
+     vertical-align: middle;
+ }
+
+ /* Alternancia de colores en las filas */
+ .table-striped tbody tr:nth-of-type(odd) {
+     background-color: rgba(0, 0, 0, 0.02);
+ }
+
+ /* Efecto al pasar sobre las filas */
+ .table-hover tbody tr:hover {
+     background-color: rgba(0, 0, 0, 0.05);
+ }
+
+ /* Indicadores de estado */
+ .badge {
+     padding: 5px 10px;
+     border-radius: 30px;
+     font-weight: 500;
+     font-size: 0.75rem;
+ }
+
+ .badge-success {
+     background-color: rgba(46, 204, 113, 0.15);
+     color: var(--success);
+ }
+
+ .badge-danger {
+     background-color: rgba(231, 76, 60, 0.15);
+     color: var(--danger);
+ }
+
+ /* Pie de la tarjeta */
+ .card-footer {
+     background-color: white;
+     border-top: 1px solid rgba(0, 0, 0, 0.05);
+     padding: 15px 20px;
+ }
+
+ /* Buscador de empleados */
+ .search-box {
+     max-width: 300px;
+     margin-left: auto;
+ }
+
+ .search-box .form-control {
+     border-top-right-radius: 0;
+     border-bottom-right-radius: 0;
+ }
+
+ .search-box .input-group-text {
+     background-color: white;
+     border-left: none;
+ }
+
+ /* Estilos responsivos */
+ @media (max-width: 991.98px) {
+
+     /* Reduce el tamaño del menú en tablets */
+     .sidebar {
+         width: 70px;
+     }
+
+     .sidebar-header h3 {
+         display: none;
+     }
+
+     .sidebar-menu a span {
+         display: none;
+     }
+
+     .main-content {
+         margin-left: 70px;
+     }
+ }
+
+ @media (max-width: 767.98px) {
+
+     /* Ajustes para móviles */
+     .header {
+         flex-direction: column;
+         align-items: flex-start;
+     }
+
+     .header-actions {
+         margin-top: 15px;
+         align-self: flex-end;
+     }
+
+     /* Ajuste del buscador en móviles */
+     .card-header .row {
+         flex-direction: column;
+     }
+
+     .card-header .col-md-6:last-child {
+         margin-top: 15px;
+     }
+
+     .search-box {
+         max-width: 100%;
+     }
+
+     /* Altura más pequeña para la tabla en móviles */
+     .table-container {
+         max-height: calc(100vh - 300px);
+     }
+ }
+
+ /* Estilos para impresión */
+ @media print {
+
+     /* Oculta elementos no necesarios al imprimir */
+     .sidebar,
+     .header-actions,
+     .card-header,
+     .card-footer,
+     .search-box {
+         display: none !important;
+     }
+
+     /* Ajustes para la impresión */
+     .main-content {
+         margin-left: 0;
+         overflow: visible;
+         height: auto;
+     }
+
+     /* Muestra toda la tabla sin scroll */
+     .table-container {
+         max-height: none;
+         overflow: visible;
+     }
+
+     /* Mejora la presentación de la tabla */
+     .table th {
+         background-color: #f8f9fa !important;
+         color: #333 !important;
+         -webkit-print-color-adjust: exact;
+         print-color-adjust: exact;
+     }
+
+     /* Asegura que todas las filas se impriman */
+     .table tr {
+         page-break-inside: avoid;
+     }
+ }

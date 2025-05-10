@@ -70,5 +70,35 @@ class Empleado {
         }
     }
     
+     // Método para ACTUALIZAR un empleado
+    public function actualizar($id, $datos) {
+        try {
+            // Llamar al procedimiento almacenado
+            $stmt = $this->conn->prepare("CALL spActualizarEmpleado(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            
+            $stmt->execute([
+                $id,
+                $datos['pri_nombre'],
+                $datos['seg_nombre'],
+                $datos['pri_apellido'],
+                $datos['seg_apellido'],
+                $datos['dpi'],
+                $datos['fecha_nacimiento'],
+                $datos['direccion'],
+                $datos['telefono'],
+                $datos['email'],
+                $datos['fecha_ingreso'],
+                $datos['fecha_baja'],
+                $datos['estado'],
+                $datos['id_puesto']
+            ]);
+            
+            // Verificar si se actualizó correctamente
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log("Error al actualizar empleado: " . $e->getMessage());
+            return false;
+        }
+    }
 
 }
