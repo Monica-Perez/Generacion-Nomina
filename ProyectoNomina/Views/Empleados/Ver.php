@@ -36,20 +36,11 @@
                 <div class="header-title">
                     <!-- Título con icono de usuarios -->
                     <h1><i class="fas fa-users text-primary"></i> Lista de Empleados</h1>
-                    <!-- <p class="text-muted">Administración del personal</p> -->
                 </div>
                 <div class="header-actions">
                     <!-- Botón para agregar nuevo empleado -->
                     <a href="index.php?controller=empleado&action=crear" class="btn btn-primary ">
                         <i class="fas fa-plus"></i> Nuevo Empleado
-                    </a>
-                    <!-- Botón para ir a la página de selección para editar -->
-                    <a href="index.php?controller=empleado&action=editar" class="btn btn-primary">
-                        <i class="fas fa-edit"></i> Editar Empleado
-                    </a>
-                    <!-- Botón para dar de BAJA -->
-                    <a href="index.php?controller=empleado&action=seleccionar" class="btn btn-danger">
-                        <i class="fas fa-ban"></i> Baja de Empleado
                     </a>
                 </div>
             </div>
@@ -98,7 +89,7 @@
                                         <th>Fecha Baja</th>
                                         <th>Estado</th>
                                         <th>Puesto</th>
-                                        <th>Acciones</th>
+                                        <th>Editar</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -131,11 +122,13 @@
                                             </td>
                                             <td><?php echo $empleado['Nombre_Puesto']; ?></td>
                                             <td>
-                                                <a href="index.php?controller=empleado&action=editar&id=<?php echo $empleado['ID_Emp']; ?>" class="btn btn-primary btn-sm">Editar Empleado</a>
-                                                <br><br>
-                                                <a href="index.php?controller=empleado&action=editar&id=<?= $empleado['ID_Emp']; ?>"><img src="/ingenieriaSW/ProyectoNomina/Public/IMG/Icons/edit.png" alt="Editar" width="30" height="30"></a>
-                                                <br><br>
-                                                <a href="index.php?controller=empleado&action=editar&id=1" class="fas fa-user-edit"> (ID 1)</a> 
+                                                <a href="index.php?controller=empleado&action=editar&id=<?= $empleado['ID_Emp']; ?>" class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-edit"></i></a>
+                                                <br> 
+                                                <!-- Botón para dar de BAJA -->
+                                                <!-- <a href="index.php?controller=empleado&action=baja&id" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-ban"></i>
+                                                </a> -->
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

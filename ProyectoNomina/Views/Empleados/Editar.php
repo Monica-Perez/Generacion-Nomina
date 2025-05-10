@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Empleado | Sistema de Nómina</title>
-    <!-- Hojas de estilo -->
+    <!-- Recursos CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <!-- jQuery para la funcionalidad dinámica -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <!-- Menú lateral -->
@@ -27,12 +25,12 @@
 
     <!-- Contenido principal -->
     <div class="main-content">
-        <div class="content-container">
+        <div class="container-fluid">
             <!-- Encabezado -->
             <div class="header">
                 <div class="header-title">
                     <h1><i class="fas fa-user-edit text-primary"></i> Editar Empleado</h1>
-                    <p class="text-muted">Actualiza la información del empleado</p>
+                    <p class="text-muted">Actualizar información del empleado</p>
                 </div>
                 <div class="header-actions">
                     <a href="index.php?controller=empleado&action=ver" class="btn btn-outline-secondary">
@@ -43,7 +41,7 @@
 
             <!-- Tarjeta principal -->
             <div class="card">
-                <!-- Si hay mensaje de éxito o error, mostrarlo -->
+                <!-- Mostrar mensaje si existe -->
                 <?php if (isset($mensaje)): ?>
                     <div class="alert <?php echo strpos($mensaje, '❌') === 0 ? 'alert-danger' : 'alert-success'; ?> m-3">
                         <?php echo $mensaje; ?>
@@ -51,39 +49,158 @@
                 <?php endif; ?>
 
                 <div class="card-body">
-                    <!-- Selector de empleado -->
-                    <div class="form-group">
-                        <label for="empleado_selector" class="font-weight-bold">Seleccionar Empleado:</label>
-                        <select id="empleado_selector" class="form-control form-control-lg" onchange="cargarEmpleado()">
-                            <option value="">-- Seleccione un empleado --</option>
-                            <?php foreach ($empleados as $emp): ?>
-                                <option value="<?php echo $emp['ID_Emp']; ?>" 
-                                        <?php echo (isset($empleado) && $empleado['ID_Emp'] == $emp['ID_Emp']) ? 'selected' : ''; ?>>
-                                    <?php echo $emp['PriNombre_Emp'] . ' ' . $emp['PriApellido_Emp'] . ' - ' . $emp['DPI_Emp']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                        <small class="form-text text-muted">Seleccione un empleado para editar sus datos</small>
-                    </div>
+                    <!-- Formulario de edición -->
+                    <form method="POST" action="index.php?controller=empleado&action=actualizar">
+                        <!-- Campo oculto para el ID del empleado -->
+                        <input type="hidden" name="id_emp" value="<?php echo $empleado['ID_Emp']; ?>">
+                        
+                        <!-- Datos personales -->
+                        <div class="form-section">
+                            <h5 class="section-title"><i class="fas fa-user"></i> Datos Personales</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="pri_nombre">Primer Nombre <span class="text-danger">*</span></label>
+                                        <input type="text" name="pri_nombre" id="pri_nombre" class="form-control" 
+                                               value="<?php echo htmlspecialchars($empleado['PriNombre_Emp']); ?>" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="seg_nombre">Segundo Nombre</label>
+                                        <input type="text" name="seg_nombre" id="seg_nombre" class="form-control" 
+                                               value="<?php echo htmlspecialchars($empleado['SegNombre_Emp'] ?? ''); ?>">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="pri_apellido">Primer Apellido <span class="text-danger">*</span></label>
+                                        <input type="text" name="pri_apellido" id="pri_apellido" class="form-control" 
+                                               value="<?php echo htmlspecialchars($empleado['PriApellido_Emp']); ?>" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="seg_apellido">Segundo Apellido</label>
+                                        <input type="text" name="seg_apellido" id="seg_apellido" class="form-control" 
+                                               value="<?php echo htmlspecialchars($empleado['SegApellido_Emp'] ?? ''); ?>">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="dpi">DPI <span class="text-danger">*</span></label>
+                                        <input type="text" name="dpi" id="dpi" class="form-control" 
+                                               value="<?php echo htmlspecialchars($empleado['DPI_Emp']); ?>" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="fecha_nacimiento">Fecha de Nacimiento <span class="text-danger">*</span></label>
+                                        <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" class="form-control" 
+                                               value="<?php echo $empleado['FechaNacimiento_Emp']; ?>" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Información de contacto -->
+                        <div class="form-section">
+                            <h5 class="section-title"><i class="fas fa-address-card"></i> Información de Contacto</h5>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="direccion">Dirección <span class="text-danger">*</span></label>
+                                        <input type="text" name="direccion" id="direccion" class="form-control" 
+                                               value="<?php echo htmlspecialchars($empleado['Direccion_Emp']); ?>" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="telefono">Teléfono <span class="text-danger">*</span></label>
+                                        <input type="text" name="telefono" id="telefono" class="form-control" 
+                                               value="<?php echo htmlspecialchars($empleado['Telefono_Emp']); ?>" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="email">Email <span class="text-danger">*</span></label>
+                                        <input type="email" name="email" id="email" class="form-control" 
+                                               value="<?php echo htmlspecialchars($empleado['Email_Emp']); ?>" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Información laboral -->
+                        <div class="form-section">
+                            <h5 class="section-title"><i class="fas fa-briefcase"></i> Información Laboral</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="id_puesto">Puesto <span class="text-danger">*</span></label>
+                                        <select name="id_puesto" id="id_puesto" class="form-control" required>
+                                            <option value="">Seleccione un puesto</option>
+                                            <?php foreach ($puestos as $puesto): ?>
+                                                <?php 
+                                                // Comparar por nombre de puesto en lugar de ID
+                                                $seleccionado = ($puesto['Nombre_Puesto'] == $empleado['Nombre_Puesto']) ? 'selected="selected"' : '';
+                                                ?>
+                                                <option value="<?php echo $puesto['ID_Puesto']; ?>" <?php echo $seleccionado; ?>>
+                                                    <?php echo htmlspecialchars($puesto['Nombre_Puesto']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="fecha_ingreso">Fecha de Ingreso <span class="text-danger">*</span></label>
+                                        <input type="date" name="fecha_ingreso" id="fecha_ingreso" class="form-control" 
+                                               value="<?php echo $empleado['FechaIngreso_Emp']; ?>" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="fecha_baja">Fecha de Baja</label>
+                                        <input type="date" name="fecha_baja" id="fecha_baja" class="form-control" 
+                                               value="<?php echo $empleado['FechaBaja_Emp'] ?: ''; ?>" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="estado">Estado <span class="text-danger">*</span></label>
+                                        <select name="estado" id="estado" class="form-control" required>
+                                            <option value="Activo" <?php echo ($empleado['Estado_Emp'] == 'Activo') ? 'selected' : ''; ?>>Activo</option>
+                                            <option value="Baja" <?php echo ($empleado['Estado_Emp'] == 'Baja') ? 'selected' : ''; ?>>Baja</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Guardar Cambios
+                            </button>
+                            <a href="index.php?controller=empleado&action=ver" class="btn btn-outline-secondary ml-2">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- JavaScript para cargar datos del empleado seleccionado -->
-    <script>
-        function cargarEmpleado() {
-            var empleadoId = document.getElementById('empleado_selector').value;
-            
-            if (empleadoId) {
-                // Redirigir a la página de edición con el ID seleccionado
-                window.location.href = 'index.php?controller=empleado&action=editar&id=' + empleadoId;
-            } else {
-                // Ocultar el formulario si no hay empleado seleccionado
-                document.getElementById('formulario_edicion').style.display = 'none';
-            }
-        }
-    </script>
 
     <style>
         /* Variables CSS */
@@ -108,7 +225,7 @@
             min-height: 100vh;
         }
 
-        /* Sidebar */
+        /* Menú lateral */
         .sidebar {
             width: var(--sidebar-width);
             background-color: var(--secondary);
@@ -170,11 +287,6 @@
             overflow-y: auto;
         }
 
-        .content-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
         /* Encabezado */
         .header {
             display: flex;
@@ -200,7 +312,7 @@
             font-size: 0.9rem;
         }
 
-        /* Card */
+        /* Tarjeta */
         .card {
             border: none;
             border-radius: 10px;
@@ -243,34 +355,78 @@
             margin-bottom: 5px;
         }
 
-        /* Selector de empleado destacado */
-        #empleado_selector {
-            border: 2px solid var(--primary);
-            padding: 12px;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-            background-color: #f8f9fa;
+        .form-control {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 8px 12px;
+            height: auto;
+            transition: border-color 0.3s;
         }
 
-        #empleado_selector:focus {
+        .form-control:focus {
+            border-color: var(--primary);
             box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
         }
 
-        /* Mensajes */
+        /* Mensajes de error y ayuda */
+        .text-danger {
+            color: var(--danger) !important;
+        }
+
+        .form-text {
+            font-size: 0.8rem;
+        }
+
+        /* Botones de acción */
+        .form-actions {
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: #3651d3;
+            border-color: #3651d3;
+        }
+
+        .btn-outline-secondary {
+            color: var(--gray);
+            border-color: var(--gray);
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        /* Alertas */
         .alert {
             border-radius: 5px;
             padding: 15px;
         }
 
-        /* Botones de acción */
-        .form-actions {
-            display: flex;
-            justify-content: flex-start;
-            gap: 10px;
-            margin-top: 25px;
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
         }
 
-        /* Responsive */
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        /* Estilos responsivos */
         @media (max-width: 991.98px) {
             .sidebar {
                 width: 70px;
@@ -308,15 +464,6 @@
             .col-md-6 {
                 padding-right: 10px;
                 padding-left: 10px;
-            }
-
-            .form-actions {
-                flex-direction: column;
-            }
-
-            .form-actions .btn {
-                width: 100%;
-                margin-bottom: 10px;
             }
         }
     </style>

@@ -69,7 +69,51 @@ class Empleado {
             return [];
         }
     }
+
+    // Método para obtener todos los puestos
+    public function obtenerPuestos() {
+        try {
+            $query = "CALL spObtenerPuestos();";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
     
+            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $resultados;
+        } catch (PDOException $e) {
+            error_log("Error al obtener puestos: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    // Método para obtener 1 empleado
+    public function obtenerEmpleadoPorId($id) {
+        try {
+            // Preparar la llamada al procedimiento almacenado
+            $query = "CALL spObtenerEmpleado_ID(?)";
+            $stmt = $this->conn->prepare($query);
+            
+            // Vincular el parámetro ID
+            $stmt->bindParam(1, $id, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // Obtener el resultado
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Si no hay resultados, devolver false
+            if (!$resultado) {
+                return false;
+            }
+            
+            // Devolver los datos del empleado
+            return $resultado;
+        } catch (PDOException $e) {
+            // Registrar el error y devolver false
+            error_log("Error al obtener empleado por ID: " . $e->getMessage());
+            return false;
+        }
+    }
+
      // Método para ACTUALIZAR un empleado
     public function actualizar($id, $datos) {
         try {
@@ -100,5 +144,5 @@ class Empleado {
             return false;
         }
     }
-
+    
 }
