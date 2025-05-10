@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-05-2025 a las 08:03:31
+-- Tiempo de generación: 10-05-2025 a las 23:53:33
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -136,6 +136,23 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerEmpleados` ()   BEGIN
 	FROM empleado Emp INNER JOIN PUESTO Pue ON Emp.ID_Puesto = Pue.ID_Puesto;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerEmpleado_ID` (IN `p_ID_Emp` INT)   SELECT Emp.ID_Emp,
+	Emp.PriNombre_Emp,
+        Emp.SegNombre_Emp,
+        Emp.PriApellido_Emp,
+        Emp.SegApellido_Emp,
+        Emp.DPI_Emp,
+        Emp.FechaNacimiento_Emp,
+        Emp.Direccion_Emp,
+        Emp.Telefono_Emp,
+        Emp.Email_Emp,
+        Emp.FechaIngreso_Emp,
+        Emp.FechaBaja_Emp,
+        Emp.Estado_Emp,
+        Pue.Nombre_Puesto
+	FROM empleado Emp LEFT JOIN PUESTO Pue ON Emp.ID_Puesto = Pue.ID_Puesto
+    WHERE Emp.ID_Emp = p_ID_Emp$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerPuestos` ()   BEGIN
     SELECT ID_Puesto, Nombre_Puesto FROM Puesto;
 END$$
@@ -215,8 +232,9 @@ CREATE TABLE `empleado` (
 --
 
 INSERT INTO `empleado` (`ID_Emp`, `PriNombre_Emp`, `SegNombre_Emp`, `PriApellido_Emp`, `SegApellido_Emp`, `DPI_Emp`, `FechaNacimiento_Emp`, `Direccion_Emp`, `Telefono_Emp`, `Email_Emp`, `FechaIngreso_Emp`, `FechaBaja_Emp`, `Estado_Emp`, `ID_Puesto`) VALUES
-(1, 'Monica', 'Gabriela', 'Perez', 'Velásquez', '3017792360101', '2003-03-28', 'zona 17', '846513', 'monica@gmail.com', '2024-12-01', '2024-12-01', 'Activo', 1),
-(2, 'Axel', 'Jorge', 'Alvarado', 'Arana', '1234567891023', '2004-02-02', 'zona 5', '45215632', 'ax2@gmail.com', '2025-02-17', '2025-02-17', 'Activo', 2);
+(1, 'Monica', 'Gabriela', 'Perez', 'Velásquez', '3017792360101', '2003-03-28', 'zona 17', '846513', 'monica@gmail.com', '2024-12-01', NULL, 'Activo', 1),
+(2, 'Axel', 'Jorge', 'Alvarado', 'Arana', '1234567891023', '2004-02-02', 'zona 5', '45215632', 'axel@gmail.com', '2025-02-17', NULL, 'Activo', 4),
+(3, 'Lester', 'Ivan', 'Mendez', 'Jose', '1236547890101', '2000-01-06', 'zona 4', '87569830', 'lester@gmail.com', '2025-05-05', NULL, 'Activo', 7);
 
 -- --------------------------------------------------------
 
