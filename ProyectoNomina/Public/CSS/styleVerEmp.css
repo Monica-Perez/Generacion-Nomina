@@ -40,11 +40,10 @@
      z-index: 100;
  }
 
- /* Cabecera del menú lateral */
+ /* Fondo del titulo del menú lateral */
  .sidebar-header {
-     padding: 20px;
+     padding: 20px; 
      background-color: rgba(0, 0, 0, 0.2);
-     /* Fondo más oscuro para la cabecera */
      text-align: center;
  }
 
@@ -101,7 +100,7 @@
  /* Contenedor para centrar y limitar el ancho del contenido */
  .content-container {
      padding: 30px;
-     max-width: 1500px;
+     max-width: 1800px;
      /* Limita el ancho en pantallas muy grandes */
      margin: 0 auto;
  }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-05-2025 a las 23:53:33
+-- Tiempo de generación: 12-05-2025 a las 02:11:00
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -59,26 +59,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertarEmpleado` (IN `p_PriNombre_
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spActualizarEmpleado` (IN `p_ID_Emp` INT, IN `p_PriNombre_Emp` VARCHAR(50), IN `p_SegNombre_Emp` VARCHAR(50), IN `p_PriApellido_Emp` VARCHAR(50), IN `p_SegApellido_Emp` VARCHAR(50), IN `p_DPI_Emp` VARCHAR(20), IN `p_FechaNacimiento_Emp` DATE, IN `p_Direccion_Emp` VARCHAR(255), IN `p_Telefono_Emp` VARCHAR(15), IN `p_Email_Emp` VARCHAR(100), IN `p_FechaIngreso_Emp` DATE, IN `p_FechaBaja_Emp` DATE, IN `p_Estado_Emp` VARCHAR(20), IN `p_ID_Puesto` INT)   BEGIN
-    -- Declarar una variable para manejar errores
-    DECLARE exit handler for sqlexception
-    BEGIN
-        -- Revertir transacción en caso de error
-        ROLLBACK;
-        -- Señal de error para informar al cliente
-        SIGNAL SQLSTATE '45000' 
-        SET MESSAGE_TEXT = 'Error al actualizar el empleado';
-    END;
-
-    -- Iniciar transacción para asegurar integridad
     START TRANSACTION;
     
-    -- Verificar que el empleado existe
     IF (SELECT COUNT(*) FROM Empleado WHERE ID_Emp = p_ID_Emp) = 0 THEN
         SIGNAL SQLSTATE '45000' 
         SET MESSAGE_TEXT = 'El empleado no existe';
     END IF;
     
-    -- Actualizar la información del empleado
     UPDATE Empleado 
     SET 
         PriNombre_Emp = p_PriNombre_Emp,
@@ -97,20 +84,42 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spActualizarEmpleado` (IN `p_ID_Emp
     WHERE 
         ID_Emp = p_ID_Emp;
     
-    -- Si se cambia el estado a "Baja" y no se proporcionó fecha de baja, establecerla a la fecha actual
     IF p_Estado_Emp = 'Baja' AND p_FechaBaja_Emp IS NULL THEN
         UPDATE Empleado
         SET FechaBaja_Emp = CURRENT_DATE()
         WHERE ID_Emp = p_ID_Emp;
     END IF;
     
-    -- Confirmar la transacción
     COMMIT;
     
-    -- Devolver el ID del empleado actualizado para confirmar
     SELECT ID_Emp 
     FROM Empleado 
     WHERE ID_Emp = p_ID_Emp;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spCalcularB14_Agui` ()   BEGIN
+	SELECT 
+        Emp.ID_Emp,
+        CONCAT(Emp.PriNombre_Emp, ' ', Emp.SegNombre_Emp, ' ', Emp.PriApellido_Emp, ' ', Emp.SegApellido_Emp) AS Nombre,
+        -- Emp.DPI_Emp,
+        Emp.FechaIngreso_Emp,
+        Emp.FechaBaja_Emp,
+        Emp.Estado_Emp,
+        Pue.Nombre_Puesto,
+        Pue.SalarioBase_Puesto,
+
+        -- DATEDIFF(LEAST(COALESCE(Emp.FechaBaja_Emp, '2025-06-30'), '2025-06-30'), GREATEST(Emp.FechaIngreso_Emp, '2024-07-01')) + 1 AS Dias_Laborados_Bono,
+        ROUND(((DATEDIFF(LEAST(COALESCE(Emp.FechaBaja_Emp, '2025-06-30'), '2025-06-30'), 
+				GREATEST(Emp.FechaIngreso_Emp, '2024-07-01')) + 1) * Pue.SalarioBase_Puesto)/365, 2) AS Bono14,
+		
+        -- DATEDIFF(LEAST(COALESCE(Emp.FechaBaja_Emp, '2025-11-30'), '2025-11-30'), GREATEST(Emp.FechaIngreso_Emp, '2024-12-01')) + 1 AS Dias_Laborados_Ag,
+        ROUND(((DATEDIFF(LEAST(COALESCE(Emp.FechaBaja_Emp, '2025-11-30'), '2025-11-30'), 
+				GREATEST(Emp.FechaIngreso_Emp, '2024-12-01')) + 1) * Pue.SalarioBase_Puesto)/365, 2) AS Aguinaldo
+        
+        
+    FROM empleado Emp
+    INNER JOIN puesto Pue ON Emp.ID_Puesto = Pue.ID_Puesto;
+    -- WHERE Emp.ID_Emp = p_id_emp;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerDepartamentos` ()   BEGIN
@@ -233,8 +242,9 @@ CREATE TABLE `empleado` (
 
 INSERT INTO `empleado` (`ID_Emp`, `PriNombre_Emp`, `SegNombre_Emp`, `PriApellido_Emp`, `SegApellido_Emp`, `DPI_Emp`, `FechaNacimiento_Emp`, `Direccion_Emp`, `Telefono_Emp`, `Email_Emp`, `FechaIngreso_Emp`, `FechaBaja_Emp`, `Estado_Emp`, `ID_Puesto`) VALUES
 (1, 'Monica', 'Gabriela', 'Perez', 'Velásquez', '3017792360101', '2003-03-28', 'zona 17', '846513', 'monica@gmail.com', '2024-12-01', NULL, 'Activo', 1),
-(2, 'Axel', 'Jorge', 'Alvarado', 'Arana', '1234567891023', '2004-02-02', 'zona 5', '45215632', 'axel@gmail.com', '2025-02-17', NULL, 'Activo', 4),
-(3, 'Lester', 'Ivan', 'Mendez', 'Jose', '1236547890101', '2000-01-06', 'zona 4', '87569830', 'lester@gmail.com', '2025-05-05', NULL, 'Activo', 7);
+(2, 'Axel', 'Jorge', 'Alvarado', 'Arana', '1234567890101', '2004-02-02', 'zona 5', '45215632', 'axel@gmail.com', '2025-02-17', NULL, 'Activo', 4),
+(3, 'Lester', 'Ivan', 'Mendez', 'Jose', '1236547890101', '2000-01-06', 'zona 4', '87569830', 'lester@gmail.com', '2025-05-05', NULL, 'Activo', 7),
+(4, 'Diego', 'Pablo', 'Perez', 'Velasquez', '7896452190101', '2000-11-22', 'zona 17', '78541236', 'diego@gmail.com', '2019-08-08', '2025-05-11', 'Baja', 6);
 
 -- --------------------------------------------------------
 
@@ -245,7 +255,7 @@ INSERT INTO `empleado` (`ID_Emp`, `PriNombre_Emp`, `SegNombre_Emp`, `PriApellido
 CREATE TABLE `puesto` (
   `ID_Puesto` int(11) NOT NULL,
   `Nombre_Puesto` varchar(100) NOT NULL,
-  `SalarioBase` decimal(10,2) NOT NULL,
+  `SalarioBase_Puesto` decimal(10,2) NOT NULL,
   `ID_Dep` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -253,7 +263,7 @@ CREATE TABLE `puesto` (
 -- Volcado de datos para la tabla `puesto`
 --
 
-INSERT INTO `puesto` (`ID_Puesto`, `Nombre_Puesto`, `SalarioBase`, `ID_Dep`) VALUES
+INSERT INTO `puesto` (`ID_Puesto`, `Nombre_Puesto`, `SalarioBase_Puesto`, `ID_Dep`) VALUES
 (1, 'Analista de Datos', 5750.00, 1),
 (2, 'Soporte Técnico', 5000.00, 1),
 (3, 'Analista de Recursos Humanos', 6000.00, 2),

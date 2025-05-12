@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Empleados</title>
+    <title>Prestaciones Laborales</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="/ingenieriaSW/ProyectoNomina/Public/CSS/styleVerEmp.css">
@@ -16,23 +16,17 @@
         </div>
         <ul class="sidebar-menu">
             <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
-            <li><a href="index.php?controller=empleado&action=ver" class="active"><i class="fas fa-users"></i> Empleados</a></li>
-            <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
+            <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
+            <li><a href="index.php?controller=prestaciones&action=verpres" class="active"><i class="fas fa-coins"></i> Prestaciones</a></li>
             <li><a href="index.php?controller=nomina&action=vernomina"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
         </ul>
     </div>
 
     <div class="main-content">
         <div class="content-container">
-            <!-- Encabezado -->
             <div class="header">
                 <div class="header-title">
-                    <h1><i class="fas fa-users text-primary"></i> Lista de Empleados</h1>
-                </div>
-                <div class="header-actions">
-                    <a href="index.php?controller=empleado&action=crear" class="btn btn-primary ">
-                        <i class="fas fa-plus"></i> Nuevo Empleado
-                    </a>
+                    <h1><i class="fas fa-coins text-primary"></i> Prestacion Laborales</h1>
                 </div>
             </div>
 
@@ -40,7 +34,7 @@
                 <div class="card-header bg-white">
                     <div class="row align-items-center">
                         <div class="col-md-6">
-                            <h5 class="mb-0">Empleados Registrados</h5>
+                            <h5 class="mb-0">Prestaciones por Empleado</h5>
                         </div>
                         <div class="col-md-6">
                             <div class="input-group search-box">
@@ -52,11 +46,11 @@
                         </div>
                     </div>
                 </div>
-                
+    
                 <div class="card-body p-0">
-                    <?php if (empty($empleados)): ?>
+                    <?php if (empty($prestaciones)): ?>
                         <div class="alert alert-info m-3">
-                            <i class="fas fa-info-circle"></i> No hay empleados registrados en el sistema.
+                            <i class="fas fa-info-circle"></i> No hay prestaciones registradas en el sistema.
                         </div>
                     <?php else: ?>
                         <div class="table-container">
@@ -65,51 +59,39 @@
                                     <tr>
                                         <th>ID</th>
                                         <th>Nombre</th>
-                                        <th>DPI</th>
-                                        <th>Fecha Nacimiento</th>
-                                        <th>Dirección</th>
-                                        <th>Teléfono</th>
-                                        <th>Email</th>
+                                        <!-- <th>DPI</th> -->
                                         <th>Fecha Ingreso</th>
                                         <th>Fecha Baja</th>
                                         <th>Estado</th>
                                         <th>Puesto</th>
-                                        <th>Editar</th>
+                                        <th>Salario Base</th>
+                                        <!-- <th>Dias Laborados -></th> -->
+                                        <th>Bono 14</th>
+                                        <!-- <th>Dias Laborados -></th> -->
+                                        <th>Aguinaldo</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($empleados as $empleado): ?>
+                                    <?php foreach ($prestaciones as $prestacion): ?>
                                         <tr>
-                                            <!-- Datos de empleado -->
-                                            <td><?php echo $empleado['ID_Emp'];?></td>
+                                            <td><?php echo $prestacion['ID_Emp'];?></td>
+                                            <td><?php echo $prestacion['Nombre']; ?></td>
+                                            <!-- <td><?php echo $prestacion['DPI_Emp']; ?></td> -->
+                                            <td><?php echo date('d/m/Y', strtotime($prestacion['FechaIngreso_Emp'])); ?></td>
+                                            <td><?php echo $prestacion['FechaBaja_Emp'] ? date('d/m/Y', strtotime($prestacion['FechaBaja_Emp'])) : '-'; ?></td>
                                             <td>
-                                                <?php 
-                                                    echo $empleado['PriNombre_Emp'] . ' ' . 
-                                                        ($empleado['SegNombre_Emp'] ? $empleado['SegNombre_Emp'] . ' ' : '') . 
-                                                        $empleado['PriApellido_Emp'] . ' ' . 
-                                                        ($empleado['SegApellido_Emp'] ? $empleado['SegApellido_Emp'] : '');
-                                                ?>
-                                            </td>
-                                            <td><?php echo $empleado['DPI_Emp']; ?></td>
-                                            <td><?php echo date('d/m/Y', strtotime($empleado['FechaNacimiento_Emp'])); ?></td>
-                                            <td><?php echo $empleado['Direccion_Emp']; ?></td>
-                                            <td><?php echo $empleado['Telefono_Emp']; ?></td>
-                                            <td><?php echo $empleado['Email_Emp']; ?></td>
-                                            <td><?php echo date('d/m/Y', strtotime($empleado['FechaIngreso_Emp'])); ?></td>
-                                            <td><?php echo $empleado['FechaBaja_Emp'] ? date('d/m/Y', strtotime($empleado['FechaBaja_Emp'])) : '-'; ?></td>
-                                            <td>
-                                                <?php if ($empleado['Estado_Emp'] == 'Activo'): ?>
+                                                <?php if ($prestacion['Estado_Emp'] == 'Activo'): ?>
                                                     <span class="badge badge-success">Activo</span>
                                                 <?php else: ?>
                                                     <span class="badge badge-danger">Inactivo</span>
                                                 <?php endif; ?>
                                             </td>
-                                            <td><?php echo $empleado['Nombre_Puesto']; ?></td>
-                                            <td>
-                                                <a href="index.php?controller=empleado&action=editar&id=<?= $empleado['ID_Emp']; ?>" class="btn btn-primary btn-sm">
-                                                    <i class="fas fa-edit"></i></a>
-                                                <br> 
-                                            </td>
+                                            <td><?php echo $prestacion['Nombre_Puesto']; ?></td>
+                                            <td><?php echo number_format($prestacion['SalarioBase_Puesto'], 0, '.', ','); ?></td>
+                                            <!-- <td><?php echo $prestacion['Dias_Laborados_Bono']; ?></td> -->
+                                            <td><?php echo number_format($prestacion['Bono14'], 2, '.', ','); ?></td>
+                                            <!-- <td><?php echo $prestacion['Dias_Laborados_Ag']; ?></td> -->
+                                            <td><?php echo number_format($prestacion['Aguinaldo'], 2, '.', ','); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -117,7 +99,7 @@
                         </div>
                     <?php endif; ?>
                 </div>
-                
+
                 <div class="card-footer bg-white">
                     <div class="row">
                         <div class="col text-right">
@@ -137,6 +119,7 @@
     <script>
         $(document).ready(function(){
             $("#searchInput").on("keyup", function() {
+                // Obtener el valor de búsqueda y convertirlo a minúsculas
                 var value = $(this).val().toLowerCase();
                 // Filtrar las filas de la tabla
                 $("#employeeTable tbody tr").filter(function() {
@@ -145,5 +128,6 @@
             });
         });
     </script>
+
 </body>
 </html>

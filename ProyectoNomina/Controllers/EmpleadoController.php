@@ -1,5 +1,5 @@
 <?php
-require('Config/db.php');
+require_once 'Config/db.php';  // Cambia require a require_once
 
 class EmpleadoController {
 
@@ -114,7 +114,6 @@ class EmpleadoController {
                 'id_puesto'        => $_POST['id_puesto']
             ];
             
-            // Llamar al modelo para actualizar
             $resultado = $this->empleado->actualizar($id, $datos);
             
             // Preparar mensaje de resultado
@@ -127,8 +126,6 @@ class EmpleadoController {
             // Obtener datos actualizados del empleado
             $empleado = $this->empleado->obtenerEmpleadoPorId($id);
             
-            // Obtener listas para los selectores
-            $empleados = $this->empleado->obtenerEmpleados();
             $puestos = $this->empleado->obtenerPuestos();
             
             // Cargar la vista con los datos actualizados

@@ -1,5 +1,5 @@
 <?php
-require_once 'config/db.php';
+require_once 'Config/db.php';  // Cambia require a require_once
 
 class Empleado {
     private $conn;
@@ -58,7 +58,6 @@ class Empleado {
     
             $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-            // Para depuración
             // echo '<pre>';
             // print_r($resultados);
             // echo '</pre>';

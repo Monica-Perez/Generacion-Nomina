@@ -1,5 +1,8 @@
 <?php
 if (!isset($_GET['controller']) && !isset($_GET['action'])) {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
     echo '
     <html>
     <head>
@@ -18,7 +21,7 @@ if (!isset($_GET['controller']) && !isset($_GET['action'])) {
                     <li><a href="index.php?controller=empleado&action=crear">➕ Crear Empleado</a></li>
                     <li><a href="index.php?controller=empleado&action=ver">📄 Ver Empleados</a></li>
                     <li><a href="index.php?controller=empleado&action=editar"> Editar Empleados</a></li>
-                    <li><a href="index.php?controller=bonificacion&action=crearbon">💰 Bonificaciones</a></li>
+                    <li><a href="index.php?controller=prestacion&action=ver">💰 Prestaciones</a></li>
                     <li><a href="index.php?controller=deduccion&action=index">📉 Deducciones</a></li>
                     <li><a href="index.php?controller=deduccion&action=index">📅 Nomina</a></li>
                 </ul>
@@ -31,24 +34,21 @@ if (!isset($_GET['controller']) && !isset($_GET['action'])) {
 
 
 // Lógica MVC original
-require_once 'Controllers/EmpleadoController.php';
-require_once 'Models/EmpleadoModelo.php';
+
+// Primero importa la clase de conexión a la base de datos
 require_once 'Config/db.php';
+
+// Luego importa los modelos
+require_once 'Models/EmpleadoModelo.php';
+require_once 'Models/PrestacionModelo.php';
+// Otros modelos...
+
+// Finalmente importa los controladores
+require_once 'Controllers/EmpleadoController.php';
+require_once 'Controllers/PrestacionController.php';
 
 $controller = $_GET['controller'] ?? 'empleado';
 $action = $_GET['action'] ?? 'index';
-
-if ($controller === 'ver') {
-    $controller = 'EmpleadoController';  
-    $action = 'ver';
-}elseif($controller === 'editar') {
-    $controller = 'EmpleadoController';  
-    $action = 'editar';
-}
-elseif($controller === 'baja') {
-    $controller = 'EmpleadoController';  
-    $action = 'baja';
-}
 
 switch ($controller) {
     case 'empleado':
@@ -59,20 +59,12 @@ switch ($controller) {
             echo "Acción no encontrada.";
         }
         break;
-    // case 'ver':
-    //     $controlador = new EmpleadoController(); 
-    //     if (method_exists($controlador, $action)) {
-    //         $controlador->$action(); 
-    //     } else {
-    //         echo "Acción no encontrada.";
-    //     }
-    //     break;
-    case 'editar':
-        $controlador = new EmpleadoController(); 
+    case 'prestacion':
+        $controlador = new PrestacionController(); 
         if (method_exists($controlador, $action)) {
-            $controlador->$action(); 
+            $controlador->$action();
         } else {
-            echo "Acción no encontrada.";
+            echo "Acción no encontrada en Prestaciones.";
         }
         break;
 
