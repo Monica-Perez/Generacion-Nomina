@@ -14,7 +14,7 @@ class EmpleadoController {
     public function crear() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fechaIngreso = $_POST['fecha_ingreso'];
-            //$fechaBaja = !empty($_POST['fecha_baja']) ? $_POST['fecha_baja'] : $fechaIngreso;
+            $fechaBaja = !empty($_POST['fecha_baja']) ? $_POST['fecha_baja'] : $fechaIngreso;
     
             $datos = [
                 'pri_nombre'       => $_POST['pri_nombre'],
