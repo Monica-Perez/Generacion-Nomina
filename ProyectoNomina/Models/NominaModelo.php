@@ -42,6 +42,21 @@ class NominaModelo {
     $stmt->execute();
     }
 
+    public function obtenerNominaPorId($id) {
+        $stmt = $this->conn->prepare("
+            SELECT 
+                n.*, 
+                CONCAT(emp.PriNombre_Emp, ' ', emp.SegNombre_Emp, ' ', emp.PriApellido_Emp, ' ', emp.SegApellido_Emp) AS nombre_empleado
+            FROM nomina n
+            JOIN empleado emp ON n.ID_Emp = emp.ID_Emp
+            WHERE n.ID_Nomina = :id
+        ");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
 
 }
 ?>

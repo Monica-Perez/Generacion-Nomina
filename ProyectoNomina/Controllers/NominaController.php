@@ -34,5 +34,24 @@ class NominaController {
         header("Location: index.php?controller=nomina&action=ver");
     }
 
+    public function detalle() {
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            echo "ID no válido.";
+            return;
+        }
+        $nomina = $this->nomina->obtenerNominaPorId($id); 
+        require_once 'Views/Nomina/detalle.php';
+    }
+
+    public function eliminar() {
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            $stmt = db::conectar()->prepare("DELETE FROM nomina WHERE ID_Nomina = ?");
+            $stmt->execute([$id]);
+        }
+        header("Location: index.php?controller=nomina&action=ver");
+    }
+
 
 }

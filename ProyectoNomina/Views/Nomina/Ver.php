@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Nómina General</title>
-    <link rel="stylesheet" href="Public/CSS/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="Public/CSS/styleVerEmp.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
@@ -15,6 +16,7 @@
         <ul class="sidebar-menu">
             <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
             <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
+            <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
             <li><a href="index.php?controller=nomina&action=ver" class="active"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
         </ul>
     </div>
@@ -69,9 +71,14 @@
                                         <th>Tipo</th>
                                         <th>Salario Base</th>
                                         <th>Bonos</th>
+                                        <th class="small">Incentivo</th>
+                                        <th class="small">Antigüedad</th>
                                         <th>Deducciones</th>
+                                        <th class="small">ISR</th>
+                                        <th class="small">IGSS</th>
                                         <th>Total Neto</th>
                                         <th>Fecha</th>
+                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -80,17 +87,35 @@
                                             <td><?= htmlspecialchars($n['nombre_empleado'] ?? 'Empleado') ?></td>
                                             <td><?= $n['Tipo_Nomina'] ?></td>
                                             <td>Q<?= number_format($n['Salario_Base'], 2) ?></td>
-                                            <td class="text-success">
-                                                Q<?= number_format($n['Bono_Incentivo'] + $n['Bono_Antiguedad'], 2) ?>
-                                            </td>
-                                            <td class="text-danger">
-                                                Q<?= number_format($n['ISR'] + $n['IGSS'], 2) ?>
-                                            </td>
+
+                                            <!-- Bonos -->
+                                            <td class="text-success"><strong>Q<?= number_format($n['Bono_Incentivo'] + $n['Bono_Antiguedad'], 2) ?></strong></td>
+                                            <td class="text-success">Q<?= number_format($n['Bono_Incentivo'], 2) ?></td>
+                                            <td class="text-success">Q<?= number_format($n['Bono_Antiguedad'], 2) ?></td>
+
+                                            <!-- Deducciones -->
+                                            <td class="text-danger"><strong>Q<?= number_format($n['ISR'] + $n['IGSS'], 2) ?></strong></td>
+                                            <td class="text-danger">Q<?= number_format($n['ISR'], 2) ?></td>
+                                            <td class="text-danger">Q<?= number_format($n['IGSS'], 2) ?></td>
+
                                             <td><strong>Q<?= number_format($n['Total_Neto'], 2) ?></strong></td>
                                             <td><?= date('d/m/Y', strtotime($n['Fecha_Nomina'])) ?></td>
+
+                                            <td class="text-center">
+                                                <a href="index.php?controller=nomina&action=detalle&id=<?= $n['ID_Nomina'] ?>" class="btn btn-sm btn-info mb-1">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="index.php?controller=nomina&action=editar&id=<?= $n['ID_Nomina'] ?>" class="btn btn-sm btn-warning mb-1">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="index.php?controller=nomina&action=eliminar&id=<?= $n['ID_Nomina'] ?>" class="btn btn-sm btn-danger mb-1" onclick="return confirm('¿Está seguro que desea eliminar esta nómina?');">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </a>
+                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
+
                             </table>
                         </div>
                     <?php endif; ?>
