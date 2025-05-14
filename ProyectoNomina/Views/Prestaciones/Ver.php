@@ -119,9 +119,7 @@
     <script>
         $(document).ready(function(){
             $("#searchInput").on("keyup", function() {
-                // Obtener el valor de búsqueda y convertirlo a minúsculas
                 var value = $(this).val().toLowerCase();
-                // Filtrar las filas de la tabla
                 $("#employeeTable tbody tr").filter(function() {
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });

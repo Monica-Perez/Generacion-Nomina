@@ -40,8 +40,12 @@ class NominaController {
             echo "ID no válido.";
             return;
         }
-        $nomina = $this->nomina->obtenerNominaPorId($id); 
-        require_once 'Views/Nomina/detalle.php';
+
+        $nomina = $this->nomina->obtenerNominaPorId($id);
+        $detalle = $this->nomina->calcularDistribucion($id);
+        $resumen = $this->nomina->resumenNomina($id);
+
+        require_once 'Views/nomina/detalle.php';
     }
 
     public function eliminar() {

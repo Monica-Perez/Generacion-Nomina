@@ -1,6 +1,7 @@
 <?php
 require_once '../Config/db.php';
-require '../vendor/autoload.php';
+require_once '../Models/NominaModelo.php';
+require_once '../vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -8,82 +9,86 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Font;
 
-// Verificar ID
 if (!isset($_GET['id'])) {
     die('ID de nómina no proporcionado.');
 }
 
 $id = $_GET['id'];
 
-// Obtener datos de la nómina
 $db = db::conectar();
-$stmt = $db->prepare("
-    SELECT 
-        n.*, 
-        CONCAT(e.PriNombre_Emp, ' ', e.SegNombre_Emp, ' ', e.PriApellido_Emp, ' ', e.SegApellido_Emp) AS nombre_empleado
-    FROM nomina n
-    JOIN empleado e ON n.ID_Emp = e.ID_Emp
-    WHERE ID_Nomina = :id
-");
-$stmt->bindParam(':id', $id, PDO::PARAM_INT);
-$stmt->execute();
-$nomina = $stmt->fetch(PDO::FETCH_ASSOC);
+$modelo = new NominaModelo($db);
+$nomina = $modelo->obtenerNominaPorId($id);
 
 if (!$nomina) {
     die('Nómina no encontrada.');
 }
 
-// Calcular campos extra
-$bonos = $nomina['Bono_Incentivo'] + $nomina['Bono_Antiguedad'];
-$deducciones = $nomina['ISR'] + $nomina['IGSS'];
+$nomina = $modelo->obtenerNominaPorId($id);
+$resumen = $modelo->resumenNomina($id);
+$distribucion = $modelo->calcularDistribucion($id);
 
-// Crear archivo Excel
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 $sheet->setTitle("Detalle Nómina");
 
-// Estilos
-$titleFont = new Font();
-$titleFont->setBold(true)->setSize(14);
 $bold = ['font' => ['bold' => true]];
 $border = ['borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]];
+$center = ['alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]];
 
-// Título
 $sheet->mergeCells('A1:B1');
 $sheet->setCellValue('A1', 'Detalle de Nómina Individual');
 $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
-$sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+$sheet->getStyle('A1')->applyFromArray($center);
 
-// Datos
 $row = 3;
-$datos = [
-    'Empleado' => $nomina['nombre_empleado'],
-    'Tipo de Nómina' => $nomina['Tipo_Nomina'],
-    'Fecha de Nómina' => date('d/m/Y', strtotime($nomina['Fecha_Nomina'])),
-    'Salario Base Mensual' => $nomina['Salario_Base'],
-    'Bono Incentivo' => $nomina['Bono_Incentivo'],
-    'Bono Antigüedad' => $nomina['Bono_Antiguedad'],
-    'Total Bonificaciones' => $bonos,
-    'ISR' => $nomina['ISR'],
-    'IGSS' => $nomina['IGSS'],
-    'Total Deducciones' => $deducciones,
-    'Total Neto del Mes' => $nomina['Total_Neto']
-];
+$sheet->setCellValue("A$row", "Empleado:");
+$sheet->setCellValue("B$row", $nomina['nombre_empleado']); $row++;
+$sheet->setCellValue("A$row", "Tipo de Nómina:");
+$sheet->setCellValue("B$row", $nomina['Tipo_Nomina']); $row++;
+$sheet->setCellValue("A$row", "Fecha:");
+$sheet->setCellValue("B$row", date('d/m/Y', strtotime($nomina['Fecha_Nomina']))); $row++;
 
-foreach ($datos as $campo => $valor) {
-    $sheet->setCellValue("A$row", $campo);
-    $sheet->setCellValue("B$row", $valor);
-    $sheet->getStyle("A$row")->applyFromArray($bold);
-    $sheet->getStyle("A$row:B$row")->applyFromArray($border);
-    $sheet->getStyle("B$row")->getNumberFormat()->setFormatCode('#,##0.00');
-    $row++;
+$row++;
+
+$sheet->setCellValue("A$row", "Salario Base Mensual");
+$sheet->setCellValue("B$row", $resumen['salario_base']); $row++;
+$sheet->setCellValue("A$row", "Bono Incentivo");
+$sheet->setCellValue("B$row", $resumen['bono_incentivo']); $row++;
+$sheet->setCellValue("A$row", "Bono Antigüedad");
+$sheet->setCellValue("B$row", $resumen['bono_antiguedad']); $row++;
+$sheet->setCellValue("A$row", "Total Bonificaciones");
+$sheet->setCellValue("B$row", $resumen['total_bonos']); $row++;
+$sheet->setCellValue("A$row", "ISR");
+$sheet->setCellValue("B$row", $resumen['ISR']); $row++;
+$sheet->setCellValue("A$row", "IGSS");
+$sheet->setCellValue("B$row", $resumen['IGSS']); $row++;
+$sheet->setCellValue("A$row", "Total Deducciones");
+$sheet->setCellValue("B$row", $resumen['total_deducciones']); $row++;
+$sheet->setCellValue("A$row", "Total Neto del Mes");
+$sheet->setCellValue("B$row", $resumen['total_neto']); $row++;
+
+$row++;
+
+if (!empty($distribucion)) {
+    $sheet->setCellValue("A$row", "Distribución por Periodo");
+    $sheet->mergeCells("A$row:B$row");
+    $sheet->getStyle("A$row")->getFont()->setBold(true); $row++;
+
+    foreach ($distribucion as $fila) {
+        $sheet->setCellValue("A$row", $fila['periodo']);
+        $sheet->setCellValue("B$row", $fila['monto']);
+        $row++;
+    }
 }
 
-// Ajustar ancho
-$sheet->getColumnDimension('A')->setWidth(30);
+$sheet->getStyle("A3:A$row")->applyFromArray($bold);
+$sheet->getStyle("A3:B$row")->applyFromArray($border);
+$sheet->getStyle("B3:B$row")->getNumberFormat()->setFormatCode('#,##0.00');
+
+$sheet->getColumnDimension('A')->setWidth(35);
 $sheet->getColumnDimension('B')->setWidth(20);
 
-// Descargar archivo
+ob_clean();
 $filename = 'detalle_nomina_' . $nomina['ID_Nomina'] . '.xlsx';
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 header("Content-Disposition: attachment; filename=\"$filename\"");

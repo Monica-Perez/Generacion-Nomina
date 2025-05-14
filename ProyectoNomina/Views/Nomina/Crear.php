@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Generar Nómina</title>
-    <link rel="stylesheet" href="Public/CSS/styleVerEmp.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="Public/CSS/styleVerEmp.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
@@ -74,6 +74,7 @@
                         <i class="fas fa-arrow-left"></i> Volver
                     </a>
                 </div>
+
             </div>
         </div>
     </div>

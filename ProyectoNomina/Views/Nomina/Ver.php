@@ -88,12 +88,10 @@
                                             <td><?= $n['Tipo_Nomina'] ?></td>
                                             <td>Q<?= number_format($n['Salario_Base'], 2) ?></td>
 
-                                            <!-- Bonos -->
                                             <td class="text-success"><strong>Q<?= number_format($n['Bono_Incentivo'] + $n['Bono_Antiguedad'], 2) ?></strong></td>
                                             <td class="text-success">Q<?= number_format($n['Bono_Incentivo'], 2) ?></td>
                                             <td class="text-success">Q<?= number_format($n['Bono_Antiguedad'], 2) ?></td>
 
-                                            <!-- Deducciones -->
                                             <td class="text-danger"><strong>Q<?= number_format($n['ISR'] + $n['IGSS'], 2) ?></strong></td>
                                             <td class="text-danger">Q<?= number_format($n['ISR'], 2) ?></td>
                                             <td class="text-danger">Q<?= number_format($n['IGSS'], 2) ?></td>

@@ -1,36 +1,3 @@
-<?php
-$base = $nomina['Salario_Base'];
-$bonos = $nomina['Bono_Incentivo'] + $nomina['Bono_Antiguedad'];
-$deducciones = $nomina['ISR'] + $nomina['IGSS'];
-$neto = $nomina['Total_Neto'];
-$tipo = $nomina['Tipo_Nomina'];
-
-$detalle = [];
-
-if ($tipo === 'Semanal') {
-    $semana1 = round($base / 4, 2);
-    $semana2 = $semana1 + $bonos;
-    $semana3 = $semana1;
-    $acumulado = $semana1 + $semana2 + $semana3;
-    $semana4 = round($neto - $acumulado, 2);
-
-    $detalle = [
-        'Semana 1' => $semana1,
-        'Semana 2 (con bonos)' => $semana2,
-        'Semana 3' => $semana3,
-        'Semana 4 (ajuste final)' => $semana4
-    ];
-} elseif ($tipo === 'Quincenal') {
-    $quincena1 = round($base * 0.30 + $bonos, 2);
-    $quincena2 = round($neto - $quincena1, 2);
-
-    $detalle = [
-        'Primera Quincena (30% + bonos)' => $quincena1,
-        'Fin de Mes (ajuste final)' => $quincena2
-    ];
-}
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -47,6 +14,8 @@ if ($tipo === 'Semanal') {
         </div>
         <ul class="sidebar-menu">
             <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
+            <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
+            <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
             <li><a href="index.php?controller=nomina&action=ver" class="active"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
         </ul>
     </div>
@@ -61,22 +30,23 @@ if ($tipo === 'Semanal') {
 
             <div class="card">
                 <div class="card-header">
-                    <h5><?= $nomina['nombre_empleado'] ?> - <?= $tipo ?></h5>
+                    <h5><?= $nomina['nombre_empleado'] ?> - <?= $nomina['Tipo_Nomina'] ?></h5>
                     <p>Fecha de Nómina: <?= date('d/m/Y', strtotime($nomina['Fecha_Nomina'])) ?></p>
                 </div>
+
                 <div class="card-body">
                     <table class="table table-bordered">
                         <tbody>
-                            <tr><th>Salario Base Mensual</th><td>Q<?= number_format($base, 2) ?></td></tr>
-                            <tr><th>Bono Incentivo</th><td>Q<?= number_format($nomina['Bono_Incentivo'], 2) ?></td></tr>
-                            <tr><th>Bono Antigüedad</th><td>Q<?= number_format($nomina['Bono_Antiguedad'], 2) ?></td></tr>
-                            <tr><th>Total Bonificaciones</th><td class="text-success font-weight-bold">Q<?= number_format($bonos, 2) ?></td></tr>
-                            <tr><th>ISR</th><td>Q<?= number_format($nomina['ISR'], 2) ?></td></tr>
-                            <tr><th>IGSS</th><td>Q<?= number_format($nomina['IGSS'], 2) ?></td></tr>
-                            <tr><th>Total Deducciones</th><td class="text-danger font-weight-bold">Q<?= number_format($deducciones, 2) ?></td></tr>
+                            <tr><th>Salario Base Mensual</th><td>Q<?= number_format($resumen['salario_base'], 2) ?></td></tr>
+                            <tr><th>Bono Incentivo</th><td>Q<?= number_format($resumen['bono_incentivo'], 2) ?></td></tr>
+                            <tr><th>Bono Antigüedad</th><td>Q<?= number_format($resumen['bono_antiguedad'], 2) ?></td></tr>
+                            <tr><th>Total Bonificaciones</th><td class="text-success font-weight-bold">Q<?= number_format($resumen['total_bonos'], 2) ?></td></tr>
+                            <tr><th>ISR</th><td>Q<?= number_format($resumen['ISR'], 2) ?></td></tr>
+                            <tr><th>IGSS</th><td>Q<?= number_format($resumen['IGSS'], 2) ?></td></tr>
+                            <tr><th>Total Deducciones</th><td class="text-danger font-weight-bold">Q<?= number_format($resumen['total_deducciones'], 2) ?></td></tr>
                             <tr class="table-success">
                                 <th>Total Neto del Mes</th>
-                                <td><strong>Q<?= number_format($neto, 2) ?></strong></td>
+                                <td><strong>Q<?= number_format($resumen['total_neto'], 2) ?></strong></td>
                             </tr>
                         </tbody>
                     </table>
@@ -86,16 +56,17 @@ if ($tipo === 'Semanal') {
                         <table class="table table-sm table-bordered">
                             <thead><tr><th>Periodo</th><th>Monto</th></tr></thead>
                             <tbody>
-                                <?php foreach ($detalle as $periodo => $monto): ?>
+                                <?php foreach ($detalle as $fila): ?>
                                     <tr>
-                                        <td><?= $periodo ?></td>
-                                        <td>Q<?= number_format($monto, 2) ?></td>
+                                        <td><?= $fila['periodo'] ?></td>
+                                        <td>Q<?= number_format($fila['monto'], 2) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
                     <?php endif; ?>
                 </div>
+
                 <div class="card-footer text-right">
                     <a href="core/exportar_detalle.php?id=<?= $nomina['ID_Nomina'] ?>" class="btn btn-success">
                         <i class="fas fa-file-excel"></i> Exportar Excel
@@ -104,6 +75,7 @@ if ($tipo === 'Semanal') {
                         <i class="fas fa-arrow-left"></i> Volver
                     </a>
                 </div>
+
             </div>
         </div>
     </div>

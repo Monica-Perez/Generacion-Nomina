@@ -24,7 +24,6 @@
 
     <div class="main-content">
         <div class="content-container">
-            <!-- Encabezado -->
             <div class="header">
                 <div class="header-title">
                     <h1><i class="fas fa-users text-primary"></i> Lista de Empleados</h1>
@@ -80,7 +79,6 @@
                                 <tbody>
                                     <?php foreach ($empleados as $empleado): ?>
                                         <tr>
-                                            <!-- Datos de empleado -->
                                             <td><?php echo $empleado['ID_Emp'];?></td>
                                             <td>
                                                 <?php 
@@ -138,7 +136,6 @@
         $(document).ready(function(){
             $("#searchInput").on("keyup", function() {
                 var value = $(this).val().toLowerCase();
-                // Filtrar las filas de la tabla
                 $("#employeeTable tbody tr").filter(function() {
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });

@@ -70,14 +70,5 @@
             <button>Guardar</button>
         </form>
     </div>
-    <style>
-        .error-message {
-            background-color: #ffdddd;
-            border-left: 6px solid #f44336;
-            margin-bottom: 15px;
-            padding: 10px;
-            color: #333;
-        }
-    </style>
 </body>
 </html>
