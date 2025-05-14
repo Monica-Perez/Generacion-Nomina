@@ -23,7 +23,7 @@ if (!isset($_GET['controller']) && !isset($_GET['action'])) {
                     <li><a href="index.php?controller=empleado&action=editar"> Editar Empleados</a></li>
                     <li><a href="index.php?controller=prestacion&action=ver">💰 Prestaciones</a></li>
                     <li><a href="index.php?controller=deduccion&action=index">📉 Deducciones</a></li>
-                    <li><a href="index.php?controller=deduccion&action=index">📅 Nomina</a></li>
+                    <li><a href="index.php?controller=nomina&action=ver">📅 Nomina</a></li>
                 </ul>
             </div>
         </div>
@@ -41,11 +41,14 @@ require_once 'Config/db.php';
 // Luego importa los modelos
 require_once 'Models/EmpleadoModelo.php';
 require_once 'Models/PrestacionModelo.php';
+require_once 'Models/NominaModelo.php';
 // Otros modelos...
 
 // Finalmente importa los controladores
 require_once 'Controllers/EmpleadoController.php';
 require_once 'Controllers/PrestacionController.php';
+require_once 'Controllers/NominaController.php';
+// Otros controladores...
 
 $controller = $_GET['controller'] ?? 'empleado';
 $action = $_GET['action'] ?? 'index';
@@ -65,6 +68,14 @@ switch ($controller) {
             $controlador->$action();
         } else {
             echo "Acción no encontrada en Prestaciones.";
+        }
+        break;
+    case 'nomina':
+        $controlador = new NominaController();
+        if (method_exists($controlador, $action)) {
+            $controlador->$action();
+        } else {
+            echo "Acción no encontrada en Nómina.";
         }
         break;
 

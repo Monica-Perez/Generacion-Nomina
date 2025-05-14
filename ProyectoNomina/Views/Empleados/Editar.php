@@ -7,9 +7,9 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="Public/CSS/styleVerEmp.css">
 </head>
 <body>
-    <!-- Menú lateral -->
     <div class="sidebar">
         <div class="sidebar-header">
             <h3>Sistema de Nómina</h3>
@@ -24,7 +24,6 @@
 
     <div class="main-content">
         <div class="container-fluid">
-            <!-- Encabezado -->
             <div class="header">
                 <div class="header-title">
                     <h1><i class="fas fa-user-edit text-primary"></i> Editar Empleado</h1>
@@ -37,9 +36,7 @@
                 </div>
             </div>
 
-            <!-- Tarjeta principal -->
             <div class="card">
-                <!-- Mostrar mensaje si existe -->
                 <?php if (isset($mensaje)): ?>
                     <div class="alert <?php echo strpos($mensaje, '❌') === 0 ? 'alert-danger' : 'alert-success'; ?> m-3">
                         <?php echo $mensaje; ?>
@@ -47,9 +44,7 @@
                 <?php endif; ?>
 
                 <div class="card-body">
-                    <!-- Formulario de edición -->
                     <form method="POST" action="index.php?controller=empleado&action=actualizar">
-                        <!-- Campo oculto para el ID del empleado -->
                         <input type="hidden" name="id_emp" value="<?php echo $empleado['ID_Emp']; ?>">
                         
                         <div class="form-section">
@@ -104,7 +99,6 @@
                             </div>
                         </div>
 
-                        <!-- Información de contacto -->
                         <div class="form-section">
                             <h5 class="section-title"><i class="fas fa-address-card"></i> Información de Contacto</h5>
                             <div class="row">
@@ -134,7 +128,6 @@
                             </div>
                         </div>
 
-                        <!-- Información laboral -->
                         <div class="form-section">
                             <h5 class="section-title"><i class="fas fa-briefcase"></i> Información Laboral</h5>
                             <div class="row">
@@ -145,7 +138,6 @@
                                             <option value="">Seleccione un puesto</option>
                                             <?php foreach ($puestos as $puesto): ?>
                                                 <?php 
-                                                // Comparar por nombre de puesto en lugar de ID
                                                 $seleccionado = ($puesto['Nombre_Puesto'] == $empleado['Nombre_Puesto']) ? 'selected="selected"' : '';
                                                 ?>
                                                 <option value="<?php echo $puesto['ID_Puesto']; ?>" <?php echo $seleccionado; ?>>
@@ -184,7 +176,6 @@
                             </div>
                         </div>
 
-                        <!-- Botones de acción -->
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save"></i> Guardar Cambios
@@ -193,236 +184,12 @@
                                 <i class="fas fa-times"></i> Cancelar
                             </a>
                         </div>
+
                     </form>
                 </div>
+                
             </div>
         </div>
     </div>
-
-    <style>
-        /* Variables CSS */
-        :root {
-            --primary: #4361ee;
-            --secondary: #3f3d56;
-            --success: #2ecc71;
-            --danger: #e74c3c;
-            --light: #f8f9fa;
-            --dark: #343a40;
-            --gray: #6c757d;
-            --sidebar-width: 13%; /*Barra Lateral*/
-        }
-
-        /* Estilos generales */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Menú lateral */
-        .sidebar {
-            width: var(--sidebar-width);
-            background-color: var(--secondary);
-            color: white;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-        }
-
-        .sidebar-header {
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
-
-        .sidebar-header h3 {
-            margin: 0;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
-            margin: 20px 0;
-        }
-
-        .sidebar-menu li {
-            margin-bottom: 2px;
-        }
-
-        .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            padding: 12px 20px;
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: all 0.3s;
-            border-left: 4px solid transparent;
-        }
-
-        .sidebar-menu a:hover,
-        .sidebar-menu a.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-left-color: var(--primary);
-        }
-
-        .sidebar-menu i {
-            margin-right: 12px;
-        }
-
-        /* Contenido principal */
-        .main-content {
-            flex: 1;
-            margin-left: var(--sidebar-width);
-            padding: 30px;
-            overflow-y: auto;
-        }
-
-        /* Encabezado */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .header-title h1 {
-            margin: 0;
-            font-size: 1.8rem;
-            color: var(--secondary);
-            display: flex;
-            align-items: center;
-        }
-
-        .header-title h1 i {
-            margin-right: 10px;
-        }
-
-        .header-title p {
-            margin: 5px 0 0;
-            font-size: 0.9rem;
-        }
-
-        /* Tarjeta */
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-            background-color: white;
-        }
-
-        .card-body {
-            padding: 25px;
-        }
-
-        /* Secciones del formulario */
-        .form-section {
-            margin-bottom: 25px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .form-section:last-child {
-            border-bottom: none;
-        }
-
-        .section-title {
-            color: var(--primary);
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-        }
-
-        .section-title i {
-            margin-right: 8px;
-        }
-
-        /* Campos del formulario */
-        .form-group label {
-            font-weight: 500;
-            color: var(--dark);
-            margin-bottom: 5px;
-        }
-
-        .form-control {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 8px 12px;
-            height: auto;
-            transition: border-color 0.3s;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
-        }
-
-        /* Mensajes de error y ayuda */
-        .text-danger {
-            color: var(--danger) !important;
-        }
-
-        .form-text {
-            font-size: 0.8rem;
-        }
-
-        /* Botones de acción */
-        .form-actions {
-            margin-top: 25px;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .btn-primary:hover {
-            background-color: #3651d3;
-            border-color: #3651d3;
-        }
-
-        .btn-outline-secondary {
-            color: var(--gray);
-            border-color: var(--gray);
-        }
-
-        .btn-outline-secondary:hover {
-            background-color: var(--gray);
-            color: white;
-        }
-
-        /* Alertas */
-        .alert {
-            border-radius: 5px;
-            padding: 15px;
-        }
-
-        .alert-danger {
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-            color: #721c24;
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            color: #155724;
-        }
-
-    </style>
 </body>
 </html>

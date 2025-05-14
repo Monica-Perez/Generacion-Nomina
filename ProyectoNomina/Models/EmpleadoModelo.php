@@ -1,20 +1,17 @@
 <?php
-require_once 'Config/db.php';  // Cambia require a require_once
+require_once 'Config/db.php';
 
 class Empleado {
     private $conn;
 
-    // Constructor que inyecta la conexión a la base de datos
     public function __construct($db) {
         $this->conn = $db;
     }
 
-    // Método para crear un empleado
     public function crear($datos) {
         try {
             $stmt = $this->conn->prepare("CALL InsertarEmpleado(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             
-            // Depurar parámetros
             error_log("Parámetros enviados al SP: " . json_encode($datos));
             
             $params = [
@@ -40,16 +37,12 @@ class Empleado {
             
             return $rowCount > 0;
         } catch (PDOException $e) {
-            // Loggear el error en producción
             error_log("Error PDO al crear empleado: " . $e->getMessage());
-            // También registra la consulta SQL
             error_log("SQL: CALL InsertarEmpleado(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             error_log("Parámetros: " . json_encode($params));
             return false;
         }
     }
-
-    // Método para obtener todos los empleados
     public function obtenerEmpleados() {
         try {
             $query = "CALL spObtenerEmpleados();";
@@ -69,7 +62,6 @@ class Empleado {
         }
     }
 
-    // Método para obtener todos los puestos
     public function obtenerPuestos() {
         try {
             $query = "CALL spObtenerPuestos();";
@@ -85,38 +77,29 @@ class Empleado {
         }
     }
     
-    // Método para obtener 1 empleado
     public function obtenerEmpleadoPorId($id) {
         try {
-            // Preparar la llamada al procedimiento almacenado
             $query = "CALL spObtenerEmpleado_ID(?)";
             $stmt = $this->conn->prepare($query);
             
-            // Vincular el parámetro ID
             $stmt->bindParam(1, $id, PDO::PARAM_INT);
             $stmt->execute();
             
-            // Obtener el resultado
             $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            // Si no hay resultados, devolver false
             if (!$resultado) {
                 return false;
             }
             
-            // Devolver los datos del empleado
             return $resultado;
         } catch (PDOException $e) {
-            // Registrar el error y devolver false
             error_log("Error al obtener empleado por ID: " . $e->getMessage());
             return false;
         }
     }
 
-     // Método para ACTUALIZAR un empleado
     public function actualizar($id, $datos) {
         try {
-            // Llamar al procedimiento almacenado
             $stmt = $this->conn->prepare("CALL spActualizarEmpleado(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             
             $stmt->execute([
@@ -136,7 +119,6 @@ class Empleado {
                 $datos['id_puesto']
             ]);
             
-            // Verificar si se actualizó correctamente
             return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
             error_log("Error al actualizar empleado: " . $e->getMessage());
