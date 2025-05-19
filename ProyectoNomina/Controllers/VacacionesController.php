@@ -13,16 +13,18 @@ class VacacionesController {
 
     public function ver() {
         $id = $_GET['id'] ?? null;
-        if (!$id) {
-            echo "ID no válido.";
-            return;
+
+        if ($id && is_numeric($id)) {
+            $this->vacaciones->actualizarPeriodosVacaciones($id);
+            $vacaciones = $this->vacaciones->obtenerPeriodosVacaciones($id);
+        } else {
+            $vacaciones = []; // ⚠ Si no hay ID, tratamos como sin vacaciones
         }
-        
-        $this->vacaciones->actualizarPeriodosVacaciones($id);
-        $vacaciones = $this->vacaciones->obtenerPeriodosVacaciones($id);
 
         include 'Views/Vacaciones/Ver.php';
     }
+
+
 
     public function ingresar() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

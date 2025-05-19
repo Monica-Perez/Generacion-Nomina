@@ -17,6 +17,7 @@
             <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
             <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
             <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
+            <li><a href="index.php?controller=vacaciones&action=ver"><i class="fas fa-file-invoice-dollar"></i> Vacaciones</a></li>
             <li><a href="index.php?controller=nomina&action=ver" class="active"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
         </ul>
     </div>
@@ -73,6 +74,7 @@
                                         <th>Bonos</th>
                                         <th class="small">Incentivo</th>
                                         <th class="small">Antigüedad</th>
+                                        <th class="small">Horas Extra</th>
                                         <th>Deducciones</th>
                                         <th class="small">ISR</th>
                                         <th class="small">IGSS</th>
@@ -85,12 +87,22 @@
                                     <?php foreach ($nominas as $n): ?>
                                         <tr>
                                             <td><?= htmlspecialchars($n['nombre_empleado'] ?? 'Empleado') ?></td>
-                                            <td><?= $n['Tipo_Nomina'] ?></td>
+
+                                            <td class="tipo-nomina-cell" data-id="<?= $n['ID_Nomina'] ?>">
+                                                <span class="tipo-nomina-text"><?= $n['Tipo_Nomina'] ?></span>
+                                                <select class="form-control form-control-sm tipo-nomina-select d-none" style="width: 120px;">
+                                                    <option value="Mensual" <?= $n['Tipo_Nomina'] == 'Mensual' ? 'selected' : '' ?>>Mensual</option>
+                                                    <option value="Quincenal" <?= $n['Tipo_Nomina'] == 'Quincenal' ? 'selected' : '' ?>>Quincenal</option>
+                                                    <option value="Semanal" <?= $n['Tipo_Nomina'] == 'Semanal' ? 'selected' : '' ?>>Semanal</option>
+                                                </select>
+                                            </td>
+
                                             <td>Q<?= number_format($n['Salario_Base'], 2) ?></td>
 
-                                            <td class="text-success"><strong>Q<?= number_format($n['Bono_Incentivo'] + $n['Bono_Antiguedad'], 2) ?></strong></td>
+                                            <td class="text-success"><strong>Q<?= number_format($n['Bono_Incentivo'] + $n['Bono_Antiguedad'] + $n['Bono_HorasExtras'], 2) ?></strong></td>
                                             <td class="text-success">Q<?= number_format($n['Bono_Incentivo'], 2) ?></td>
                                             <td class="text-success">Q<?= number_format($n['Bono_Antiguedad'], 2) ?></td>
+                                            <td class="text-success">Q<?= number_format($n['Bono_HorasExtras'], 2) ?></td>
 
                                             <td class="text-danger"><strong>Q<?= number_format($n['ISR'] + $n['IGSS'], 2) ?></strong></td>
                                             <td class="text-danger">Q<?= number_format($n['ISR'], 2) ?></td>
@@ -103,7 +115,7 @@
                                                 <a href="index.php?controller=nomina&action=detalle&id=<?= $n['ID_Nomina'] ?>" class="btn btn-sm btn-info mb-1">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="index.php?controller=nomina&action=editar&id=<?= $n['ID_Nomina'] ?>" class="btn btn-sm btn-warning mb-1">
+                                                <a href="#" class="btn btn-sm btn-warning mb-1 editar-tipo-nomina" data-id="<?= $n['ID_Nomina'] ?>">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 <a href="index.php?controller=nomina&action=eliminar&id=<?= $n['ID_Nomina'] ?>" class="btn btn-sm btn-danger mb-1" onclick="return confirm('¿Está seguro que desea eliminar esta nómina?');">
@@ -139,4 +151,7 @@
         });
     </script>
 </body>
+
+<script src="Public/JS/Nomina.js"></script>
+
 </html>

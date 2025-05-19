@@ -18,6 +18,7 @@
             <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
             <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
             <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
+            <li><a href="index.php?controller=vacaciones&action=ver"><i class="fas fa-file-invoice-dollar"></i> Vacaciones</a></li>
             <li><a href="index.php?controller=nomina&action=ver"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
         </ul>
     </div>
@@ -33,9 +34,19 @@
             <div class="card">
                 <div class="card-header bg-white">
                     <div class="row align-items-center">
+
                         <div class="col-md-6">
                             <h5 class="mb-0">Vacaciones por Empleado</h5>
                         </div>
+
+                        <?php if (!empty($vacaciones) && isset($vacaciones[0]['ID'])): ?>
+                            <div class="text-right m-3">
+                                <a href="index.php?controller=vacaciones&action=ingresar&ID_periodo=<?= $vacaciones[0]['ID'] ?>&id=<?= $vacaciones[0]['ID_Emp'] ?>" class="btn btn-success">
+                                    <i class="fas fa-plus-circle"></i> Registrar Vacaciones
+                                </a>
+                            </div>
+                        <?php endif; ?>
+
                         <div class="col-md-6">
                             <div class="input-group search-box">
                                 <input type="text" id="searchInput" class="form-control" placeholder="Buscar empleado...">
@@ -44,6 +55,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
     

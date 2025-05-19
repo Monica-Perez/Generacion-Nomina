@@ -16,6 +16,7 @@
             <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
             <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
             <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
+            <li><a href="index.php?controller=vacaciones&action=ver"><i class="fas fa-file-invoice-dollar"></i> Vacaciones</a></li>
             <li><a href="index.php?controller=nomina&action=ver" class="active"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
         </ul>
     </div>
@@ -40,6 +41,7 @@
                             <tr><th>Salario Base Mensual</th><td>Q<?= number_format($resumen['salario_base'], 2) ?></td></tr>
                             <tr><th>Bono Incentivo</th><td>Q<?= number_format($resumen['bono_incentivo'], 2) ?></td></tr>
                             <tr><th>Bono Antigüedad</th><td>Q<?= number_format($resumen['bono_antiguedad'], 2) ?></td></tr>
+                            <tr><th>Bono por Horas Extras</th><td>Q<?= number_format($resumen['bono_horas_extras'], 2) ?></td></tr>
                             <tr><th>Total Bonificaciones</th><td class="text-success font-weight-bold">Q<?= number_format($resumen['total_bonos'], 2) ?></td></tr>
                             <tr><th>ISR</th><td>Q<?= number_format($resumen['ISR'], 2) ?></td></tr>
                             <tr><th>IGSS</th><td>Q<?= number_format($resumen['IGSS'], 2) ?></td></tr>

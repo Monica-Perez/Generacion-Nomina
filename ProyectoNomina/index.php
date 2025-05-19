@@ -9,7 +9,7 @@ if (!isset($_GET['controller']) && !isset($_GET['action'])) {
         <meta charset="UTF-8">
         <title>Sistema de Nómina</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="Public/CSS/styleVerEmp.css">
+        <link rel="stylesheet" href="Public/CSS/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     </head>
     <body>
@@ -22,7 +22,7 @@ if (!isset($_GET['controller']) && !isset($_GET['action'])) {
                     <li><a href="index.php?controller=empleado&action=ver">📄 Ver Empleados</a></li>
                     <li><a href="index.php?controller=empleado&action=editar"> Editar Empleados</a></li>
                     <li><a href="index.php?controller=prestacion&action=ver">💰 Prestaciones</a></li>
-                    <li><a href="index.php?controller=deduccion&action=index">📉 Deducciones</a></li>
+                    <li><a href="index.php?controller=vacaciones&action=ver">Vacaciones</a></li>
                     <li><a href="index.php?controller=nomina&action=ver">📅 Nomina</a></li>
                 </ul>
             </div>

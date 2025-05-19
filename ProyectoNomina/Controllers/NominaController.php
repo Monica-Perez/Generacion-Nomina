@@ -57,5 +57,19 @@ class NominaController {
         header("Location: index.php?controller=nomina&action=ver");
     }
 
+    public function actualizarTipoNomina() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $idNomina = $_POST['ID_Nomina'] ?? null;
+            $nuevoTipo = $_POST['Tipo_Nomina'] ?? null;
+
+            if ($idNomina && in_array($nuevoTipo, ['Semanal', 'Quincenal', 'Mensual'])) {
+                $this->nomina->actualizarTipoNomina($idNomina, $nuevoTipo);
+                echo json_encode(['success' => true]);
+                return;
+            }
+        }
+
+        echo json_encode(['success' => false, 'message' => 'Datos inválidos']);
+    }
 
 }
