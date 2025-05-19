@@ -90,8 +90,6 @@ class EmpleadoController {
         include 'Views/Empleados/Editar.php';
     }
 
-    // Método para actualizar un empleado (procesa el formulario de edición)
-
     public function actualizar() {
         // Verificar si se ha enviado el formulario
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

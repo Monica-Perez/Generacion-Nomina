@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prestaciones Laborales</title>
+    <title>Vacaciones por Empleado</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="Public/CSS/styleVerEmp.css">
@@ -18,7 +18,6 @@
             <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
             <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
             <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
-            <li><a href="index.php?controller=vacaciones&action=ver"><i class="fas fa-file-invoice-dollar"></i> Vacaciones</a></li>
             <li><a href="index.php?controller=nomina&action=ver"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
         </ul>
     </div>
@@ -27,7 +26,7 @@
         <div class="content-container">
             <div class="header">
                 <div class="header-title">
-                    <h1><i class="fas fa-coins text-primary"></i> Prestacion Laborales</h1>
+                    <h1><i class="fas fa-umbrella-beach text-primary"></i> Vacaciones</h1>
                 </div>
             </div>
 
@@ -35,7 +34,7 @@
                 <div class="card-header bg-white">
                     <div class="row align-items-center">
                         <div class="col-md-6">
-                            <h5 class="mb-0">Prestaciones por Empleado</h5>
+                            <h5 class="mb-0">Vacaciones por Empleado</h5>
                         </div>
                         <div class="col-md-6">
                             <div class="input-group search-box">
@@ -49,9 +48,9 @@
                 </div>
     
                 <div class="card-body p-0">
-                    <?php if (empty($prestaciones)): ?>
+                    <?php if (empty($vacaciones)): ?>
                         <div class="alert alert-info m-3">
-                            <i class="fas fa-info-circle"></i> No hay prestaciones registradas en el sistema.
+                            <i class="fas fa-info-circle"></i> No hay vacaciones registradas en el sistema.
                         </div>
                     <?php else: ?>
                         <div class="table-container">
@@ -60,43 +59,29 @@
                                     <tr>
                                         <th>ID</th>
                                         <th>Nombre</th>
-                                        <!-- <th>DPI</th> -->
-                                        <th>Fecha Ingreso</th>
-                                        <th>Fecha Baja</th>
-                                        <th>Estado</th>
-                                        <th>Puesto</th>
-                                        <th>Salario Base</th>
-                                        <!-- <th>Dias Laborados -></th> -->
-                                        <th>Bono 14</th>
-                                        <!-- <th>Dias Laborados -></th> -->
-                                        <th>Aguinaldo</th>
+                                        <th>Periodo Inicial</th>
+                                        <th>Periodo Final</th>
+                                        <th>Dias Laborados</th>
+                                        <th>Dias por Periodo</th>
+                                        <th>Dias Tomados</th>
+                                        <th>Dias Pendientes</th>
                                         <th>Vacaciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($prestaciones as $prestacion): ?>
+                                    <?php foreach ($vacaciones as $vac): ?>
                                         <tr>
-                                            <td><?php echo $prestacion['ID_Emp'];?></td>
-                                            <td><?php echo $prestacion['Nombre']; ?></td>
-                                            <!-- <td><?php echo $prestacion['DPI_Emp']; ?></td> -->
-                                            <td><?php echo date('d/m/Y', strtotime($prestacion['FechaIngreso_Emp'])); ?></td>
-                                            <td><?php echo $prestacion['FechaBaja_Emp'] ? date('d/m/Y', strtotime($prestacion['FechaBaja_Emp'])) : '-'; ?></td>
+                                            <td><?php echo $vac['ID'];?></td>
+                                            <td><?php echo $vac['Nombre'];?></td>
+                                            <td><?php echo date('d/m/Y', strtotime($vac['PeriodoInicial'])); ?></td>
+                                            <td><?php echo date('d/m/Y', strtotime($vac['PeriodoFinal'])); ?></td>
+                                            <td><?php echo number_format($vac['DiasLaborados'], 0); ?></td>
+                                            <td><?php echo number_format($vac['CantDias'], 0); ?></td>
+                                            <td><?php echo number_format($vac['DiasTomados'], 0); ?></td>
+                                            <td><?php echo number_format($vac['DiasPendientes'], 1); ?></td>
                                             <td>
-                                                <?php if ($prestacion['Estado_Emp'] == 'Activo'): ?>
-                                                    <span class="badge badge-success">Activo</span>
-                                                <?php else: ?>
-                                                    <span class="badge badge-danger">Inactivo</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td><?php echo $prestacion['Nombre_Puesto']; ?></td>
-                                            <td>Q<?php echo number_format($prestacion['SalarioBase_Puesto'], 0, '.', ','); ?></td>
-                                            <!-- <td><?php echo $prestacion['Dias_Laborados_Bono']; ?></td> -->
-                                            <td>Q<?php echo number_format($prestacion['Bono14'], 2, '.', ','); ?></td>
-                                            <!-- <td><?php echo $prestacion['Dias_Laborados_Ag']; ?></td> -->
-                                            <td>Q<?php echo number_format($prestacion['Aguinaldo'], 2, '.', ','); ?></td>
-                                            <td>
-                                                <a href="index.php?controller=vacaciones&action=ver&id=<?= $prestacion['ID_Emp']; ?>" class="btn btn-sm btn-success mb-1">
-                                                    <i class="fas fa-gift"></i></a>
+                                                <a href="index.php?controller=vacaciones&action=Ingresar&ID_periodo=<?= $vac['ID']; ?>" class="btn btn-sm btn-success mb-1">
+                                                    <i class="fas fa-plus"></i></a>
                                                 <br> 
                                             </td>
                                         </tr>
@@ -113,7 +98,7 @@
                             <button type="button" class="btn btn-info btn-sm mr-2" onclick="window.print()">
                                 <i class="fas fa-print"></i> Imprimir
                             </button>
-                            <a href="index.php" class="btn btn-secondary btn-sm">
+                            <a href="index.php?controller=prestacion&action=ver" class="btn btn-secondary btn-sm">
                                 <i class="fas fa-arrow-left"></i> Volver
                             </a>
                         </div>

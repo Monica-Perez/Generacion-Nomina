@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Empleado</title>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="Public/CSS/styleVerEmp.css">
@@ -16,9 +15,9 @@
         </div>
         <ul class="sidebar-menu">
             <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
-            <li><a href="index.php?controller=empleado&action=ver" class="active"><i class="fas fa-users"></i> Empleados</a></li>
-            <li><a href="index.php?controller=prestaciones&action=verpres"><i class="fas fa-gift"></i> Prestaciones</a></li>
-            <li><a href="index.php?controller=nomina&action=vernomina"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
+            <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
+            <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
+            <li><a href="index.php?controller=nomina&action=ver"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
         </ul>
     </div>
 
@@ -191,5 +190,10 @@
             </div>
         </div>
     </div>
+    <style>
+        .main-content{
+            padding: 30px;
+        }
+    </style>
 </body>
 </html>

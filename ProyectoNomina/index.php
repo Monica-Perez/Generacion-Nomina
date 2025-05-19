@@ -9,7 +9,7 @@ if (!isset($_GET['controller']) && !isset($_GET['action'])) {
         <meta charset="UTF-8">
         <title>Sistema de Nómina</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="Public/CSS/style.css">
+        <link rel="stylesheet" href="Public/CSS/styleVerEmp.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     </head>
     <body>
@@ -34,21 +34,17 @@ if (!isset($_GET['controller']) && !isset($_GET['action'])) {
 
 
 // Lógica MVC original
-
-// Primero importa la clase de conexión a la base de datos
 require_once 'Config/db.php';
 
-// Luego importa los modelos
 require_once 'Models/EmpleadoModelo.php';
 require_once 'Models/PrestacionModelo.php';
 require_once 'Models/NominaModelo.php';
-// Otros modelos...
+require_once 'Models/VacacionesModelo.php';
 
-// Finalmente importa los controladores
 require_once 'Controllers/EmpleadoController.php';
 require_once 'Controllers/PrestacionController.php';
 require_once 'Controllers/NominaController.php';
-// Otros controladores...
+require_once 'Controllers/VacacionesController.php';
 
 $controller = $_GET['controller'] ?? 'empleado';
 $action = $_GET['action'] ?? 'index';
@@ -76,6 +72,14 @@ switch ($controller) {
             $controlador->$action();
         } else {
             echo "Acción no encontrada en Nómina.";
+        }
+        break;
+    case 'vacaciones':
+        $controlador = new VacacionesController();
+        if (method_exists($controlador, $action)) {
+            $controlador->$action();
+        } else {
+            echo "Acción no encontrada en Vacaciones.";
         }
         break;
 

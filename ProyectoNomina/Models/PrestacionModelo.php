@@ -15,10 +15,6 @@ class Prestacion {
 
             $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // echo '<pre>';
-            // print_r($resultados);
-            // echo '</pre>';
-
             return $resultados;
         } catch (PDOException $e) {
             error_log("Error al obtener Prestaciones de Empleados: " . $e->getMessage());

@@ -15,6 +15,5 @@ class PrestacionController {
         extract(['prestaciones' => $prestaciones]);
         include 'Views/Prestaciones/Ver.php';
     }
-
 }
 ?>

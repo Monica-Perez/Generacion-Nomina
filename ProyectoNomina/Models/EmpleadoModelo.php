@@ -50,11 +50,7 @@ class Empleado {
             $stmt->execute();
     
             $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-            // echo '<pre>';
-            // print_r($resultados);
-            // echo '</pre>';
-    
+
             return $resultados;
         } catch (PDOException $e) {
             error_log("Error al obtener empleados: " . $e->getMessage());

@@ -104,7 +104,7 @@
                                             </td>
                                             <td><?php echo $empleado['Nombre_Puesto']; ?></td>
                                             <td>
-                                                <a href="index.php?controller=empleado&action=editar&id=<?= $empleado['ID_Emp']; ?>" class="btn btn-primary btn-sm">
+                                                <a href="index.php?controller=empleado&action=editar&id=<?= $empleado['ID_Emp']; ?>" class="btn btn-sm btn-warning mb-1">
                                                     <i class="fas fa-edit"></i></a>
                                                 <br> 
                                             </td>
