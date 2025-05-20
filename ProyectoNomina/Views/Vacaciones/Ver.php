@@ -18,7 +18,6 @@
             <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
             <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
             <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
-            <li><a href="index.php?controller=vacaciones&action=ver"><i class="fas fa-file-invoice-dollar"></i> Vacaciones</a></li>
             <li><a href="index.php?controller=nomina&action=ver"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
         </ul>
     </div>

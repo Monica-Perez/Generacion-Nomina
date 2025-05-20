@@ -23,6 +23,7 @@ if (!isset($_GET['controller']) && !isset($_GET['action'])) {
                     <li><a href="index.php?controller=empleado&action=editar"> Editar Empleados</a></li>
                     <li><a href="index.php?controller=prestacion&action=ver">💰 Prestaciones</a></li>
                     <li><a href="index.php?controller=vacaciones&action=ver">Vacaciones</a></li>
+                    <li><a href="index.php?controller=productividad&action=ver">Productividad</a></li>
                     <li><a href="index.php?controller=nomina&action=ver">📅 Nomina</a></li>
                 </ul>
             </div>
@@ -40,11 +41,13 @@ require_once 'Models/EmpleadoModelo.php';
 require_once 'Models/PrestacionModelo.php';
 require_once 'Models/NominaModelo.php';
 require_once 'Models/VacacionesModelo.php';
+require_once 'Models/ProductividadModelo.php';
 
 require_once 'Controllers/EmpleadoController.php';
 require_once 'Controllers/PrestacionController.php';
 require_once 'Controllers/NominaController.php';
 require_once 'Controllers/VacacionesController.php';
+require_once 'Controllers/ProductividadController.php';
 
 $controller = $_GET['controller'] ?? 'empleado';
 $action = $_GET['action'] ?? 'index';
@@ -80,6 +83,15 @@ switch ($controller) {
             $controlador->$action();
         } else {
             echo "Acción no encontrada en Vacaciones.";
+        }
+        break;
+
+    case 'productividad':
+        $controlador = new ProductividadController();
+        if (method_exists($controlador, $action)) {
+            $controlador->$action();
+        } else {
+            echo "Acción no encontrada en Productividad.";
         }
         break;
 

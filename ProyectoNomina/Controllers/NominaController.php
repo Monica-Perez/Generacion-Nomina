@@ -72,4 +72,12 @@ class NominaController {
         echo json_encode(['success' => false, 'message' => 'Datos inválidos']);
     }
 
+    public function eliminarMultiples() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ids'])) {
+            $ids = $_POST['ids'];
+            $this->nomina->eliminarNominasMultiples($ids);
+        }
+        header("Location: index.php?controller=nomina&action=ver");
+    }
+
 }

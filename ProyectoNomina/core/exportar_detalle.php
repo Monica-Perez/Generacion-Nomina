@@ -56,6 +56,8 @@ $sheet->setCellValue("A$row", "Bono Incentivo");
 $sheet->setCellValue("B$row", $resumen['bono_incentivo']); $row++;
 $sheet->setCellValue("A$row", "Bono Antigüedad");
 $sheet->setCellValue("B$row", $resumen['bono_antiguedad']); $row++;
+$sheet->setCellValue("A$row", "Bono Horas Extra");
+$sheet->setCellValue("B$row", $resumen['bono_horas_extras']); $row++;
 $sheet->setCellValue("A$row", "Total Bonificaciones");
 $sheet->setCellValue("B$row", $resumen['total_bonos']); $row++;
 $sheet->setCellValue("A$row", "ISR");

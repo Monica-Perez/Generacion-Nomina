@@ -55,22 +55,26 @@ class NominaModelo {
     }
 
     public function actualizarTipoNomina($idNomina, $nuevoTipo) {
-        // 1. Obtener ID del empleado
         $stmt = $this->conn->prepare("SELECT ID_Emp FROM nomina WHERE ID_Nomina = ?");
         $stmt->execute([$idNomina]);
         $emp = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($emp) {
-            // 2. Actualizar tipo de nómina
             $stmt2 = $this->conn->prepare("UPDATE nomina SET Tipo_Nomina = ? WHERE ID_Nomina = ?");
             $stmt2->execute([$nuevoTipo, $idNomina]);
 
-            // 3. Volver a calcular la nómina para ese empleado y tipo
             $stmt3 = $this->conn->prepare("CALL spCalcularNomina(:idEmp, :tipo)");
             $stmt3->bindParam(':idEmp', $emp['ID_Emp'], PDO::PARAM_INT);
             $stmt3->bindParam(':tipo', $nuevoTipo);
             $stmt3->execute();
         }
+    }
+
+    public function eliminarNominasMultiples($ids) {
+        $lista = implode(',', array_map('intval', $ids));
+        $stmt = $this->conn->prepare("CALL spEliminarNominasMultiples(:ids)");
+        $stmt->bindParam(':ids', $lista, PDO::PARAM_STR);
+        $stmt->execute();
     }
 
 }
