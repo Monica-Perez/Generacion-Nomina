@@ -18,13 +18,11 @@ class VacacionesController {
             $this->vacaciones->actualizarPeriodosVacaciones($id);
             $vacaciones = $this->vacaciones->obtenerPeriodosVacaciones($id);
         } else {
-            $vacaciones = []; // ⚠ Si no hay ID, tratamos como sin vacaciones
+            $vacaciones = []; 
         }
 
         include 'Views/Vacaciones/Ver.php';
     }
-
-
 
     public function ingresar() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -46,11 +44,10 @@ class VacacionesController {
             $resultado = $this->vacaciones->Registrar($datos);
 
             if ($resultado) {
-                // Obtenemos el ID del empleado para redirigir
                 $id_emp = $_POST['id_emp'] ?? null;
                 
                 if ($id_emp) {
-                    header("Location: index.php?controller=vacaciones&action=ver&id=" . $id_emp);
+                    header("Location: index.php?controller=vacaciones&action=ver&id=". $id_emp);
                     exit; 
                 } else {
                     header("Location: index.php?controller=prestacion&action=ver");
@@ -62,7 +59,7 @@ class VacacionesController {
         } else {
             $id = $_GET['id'] ?? null;
             if ($id) {
-                $vac = $this->vacaciones->obtenerPeriodosVacaciones($id); // 🔁 Este método debe existir en tu modelo
+                $vac = $this->vacaciones->obtenerPeriodosVacaciones($id); 
             } else {
                 $vac = null;
             }

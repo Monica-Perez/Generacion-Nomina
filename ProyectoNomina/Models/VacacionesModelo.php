@@ -55,20 +55,14 @@ class Vacaciones {
         }
     }
 
-    // Método para obtener el historial de vacaciones
-    public function obtenerHistorialVacaciones($idEmpleado) {
+    public function obtenerPeriodoPorId($IdPeriodo) {
         try {
-            $query = "SELECT hv.*, pv.PeriodoInicial, pv.PeriodoFinal 
-                     FROM HistorialVacaciones hv
-                     JOIN PeriodosVacaciones pv ON hv.ID_PeriodoVacaciones = pv.ID
-                     WHERE pv.ID_Emp = ?
-                     ORDER BY hv.FechaInicio DESC";
-            $stmt = $this->conn->prepare($query);
-            $stmt->execute([$idEmpleado]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt = $this->conn->prepare("CALL spObtenerPeriodo_ID(?)");
+            $stmt->execute([$IdPeriodo]);
+            return true;
         } catch (PDOException $e) {
-            error_log("Error al obtener historial de vacaciones: " . $e->getMessage());
-            return [];
+            error_log("Error al obtener un periodo por ID: " . $e->getMessage());
+            return false;
         }
     }
 }
