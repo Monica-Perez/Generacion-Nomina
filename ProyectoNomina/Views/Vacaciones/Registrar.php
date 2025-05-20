@@ -26,7 +26,7 @@
         <div class="container-fluid">
             <div class="header">
                 <div class="header-title">
-                    <h1><i class="fas fa-umbrella-beach text-success"></i> Registrar Vacaciones</h1>
+                    <h1><i class="fas fa-umbrella-beach text-primary"></i> Registrar Vacaciones</h1>
                     <p class="text-muted">Formulario para asignar vacaciones a un empleado</p>
                 </div>
                 <div class="header-actions">
@@ -37,24 +37,22 @@
             </div>
 
             <div class="card">
-                <?php if (isset($mensaje)): ?>
-                    <div class="alert <?php echo strpos($mensaje, '❌') === 0 ? 'alert-danger' : 'alert-success'; ?> m-3">
-                        <?php echo $mensaje; ?>
+                <?php if (isset($vacaciones['DiasPendientes']) && $vacaciones['DiasPendientes'] == 0): ?>
+                    <div class="alert alert-info m-3">
+                        <i class="fas fa-info-circle"></i> Todas las vacaciones de este periodo han sido gozadas.
                     </div>
-                <?php endif; ?>
+                <?php else: ?>
 
                 <div class="card-body">
                     <form method="POST" action="index.php?controller=vacaciones&action=ingresar">
                         <div class="form-section">
-                            <h5 class="section-title"><i class="fas fa-user-tag"></i> Datos del Empleado</h5>
+                            <h5 class="section-title"><i class="fas fa-user-tag"></i> Datos del Periodo</h5>
                             <div class="row">
-                                
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="ID_periodo">Periodo Vacaciones <span class="text-danger">*</span></label>
                                         <input type="text" name="ID_periodo" id="ID_periodo" class="form-control" 
                                             value="<?php echo isset($_GET['ID_periodo']) ? htmlspecialchars($_GET['ID_periodo']) : ''; ?>" required readonly>
-
                                     </div>
                                 </div> 
                             </div>
@@ -78,17 +76,18 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="DiasTomados">Dias Tomados <span class="text-danger">*</span></label>
-                                        <input type="number" name="DiasTomados" id="DiasTomados" class="form-control" min="1" max="15" required>
+                                        <input type="number" name="DiasTomados" id="DiasTomados" class="form-control" required readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Motivo">Motivo <span class="text-danger">*</span></label>
-                                        <input type="text" name="Motivo" id="Motivo" class="form-control" min="1" max="15" required>
+                                        <input type="text" name="Motivo" id="Motivo" class="form-control" required>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                <?php endif; ?>
 
                         <div class="form-actions">
                             <button type="submit" class="btn btn-success">
@@ -109,6 +108,31 @@
             padding: 30px;
         }
     </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const fechaInicio = document.getElementById("FechaInicio");
+            const fechaFin = document.getElementById("FechaFin");
+            const diasTomados = document.getElementById("DiasTomados");
+
+            function calcularDias() {
+                const inicio = new Date(fechaInicio.value);
+                const fin = new Date(fechaFin.value);
+
+                if (fechaInicio.value && fechaFin.value && fin >= inicio) {
+                    const diferenciaMs = fin - inicio;
+                    const diferenciaDias = Math.floor(diferenciaMs / (1000 * 60 * 60 * 24)) + 1; // Convertir un dia a milisegundos y +1 para contar los extremos
+                    diasTomados.value = diferenciaDias;
+                } else {
+                    diasTomados.value = '';
+                }
+            }
+
+            fechaInicio.addEventListener("change", calcularDias);
+            fechaFin.addEventListener("change", calcularDias);
+        });
+    </script>
+
 
 </body>
 </html>

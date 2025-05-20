@@ -38,14 +38,6 @@
                             <h5 class="mb-0">Vacaciones por Empleado</h5>
                         </div>
 
-                        <?php if (!empty($vacaciones) && isset($vacaciones[0]['ID'])): ?>
-                            <div class="text-right m-3">
-                                <a href="index.php?controller=vacaciones&action=ingresar&ID_periodo=<?= $vacaciones[0]['ID'] ?>&id=<?= $vacaciones[0]['ID_Emp'] ?>" class="btn btn-success">
-                                    <i class="fas fa-plus-circle"></i> Registrar Vacaciones
-                                </a>
-                            </div>
-                        <?php endif; ?>
-
                         <div class="col-md-6">
                             <div class="input-group search-box">
                                 <input type="text" id="searchInput" class="form-control" placeholder="Buscar empleado...">
@@ -89,7 +81,7 @@
                                             <td><?php echo number_format($vac['DiasLaborados'], 0); ?></td>
                                             <td><?php echo number_format($vac['CantDias'], 0); ?></td>
                                             <td><?php echo number_format($vac['DiasTomados'], 0); ?></td>
-                                            <td><?php echo number_format($vac['DiasPendientes'], 1); ?></td>
+                                            <td><?php echo number_format($vac['DiasPendientes'], 0); ?></td>
                                             <td>
                                                 <a href="index.php?controller=vacaciones&action=Ingresar&ID_periodo=<?= $vac['ID']; ?>" class="btn btn-sm btn-success mb-1">
                                                     <i class="fas fa-plus"></i></a>
