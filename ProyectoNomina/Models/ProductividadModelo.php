@@ -8,14 +8,14 @@ class ProductividadModelo {
         $this->conn = $db;
     }
 
-    public function obtenerProductividadActual() {
-        $stmt = $this->conn->prepare("CALL spObtenerProductividadActual()");
+    public function GetProduEmp() {
+        $stmt = $this->conn->prepare("CALL spGetProduEmp()");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function obtenerHistorialPorEmpleado($idEmp) {
-        $stmt = $this->conn->prepare("CALL spHistorialProductividadEmpleado(:idEmp)");
+    public function GetHistProduEmp($idEmp) {
+        $stmt = $this->conn->prepare("CALL spHistProduEmp(:idEmp)");
         $stmt->bindParam(':idEmp', $idEmp, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -28,15 +28,21 @@ class ProductividadModelo {
     }
 
     public function generarRegistro($idEmp, $mes, $anio, $horasTrabajadas, $horasExtras, $horasDescanso) {
-        $stmt = $this->conn->prepare("CALL spRegistrarProductividad(:idEmp, :mes, :anio, :trabajadas, :extras, :descanso)");
-        $stmt->bindParam(':idEmp', $idEmp);
-        $stmt->bindParam(':mes', $mes);
-        $stmt->bindParam(':anio', $anio);
-        $stmt->bindParam(':trabajadas', $horasTrabajadas);
-        $stmt->bindParam(':extras', $horasExtras);
-        $stmt->bindParam(':descanso', $horasDescanso);
-        $stmt->execute();
+        try {
+            $stmt = $this->conn->prepare("CALL spRegistrarProductividad(:idEmp, :mes, :anio, :trabajadas, :extras, :descanso)");
+            $stmt->bindParam(':idEmp', $idEmp);
+            $stmt->bindParam(':mes', $mes);
+            $stmt->bindParam(':anio', $anio);
+            $stmt->bindParam(':trabajadas', $horasTrabajadas);
+            $stmt->bindParam(':extras', $horasExtras);
+            $stmt->bindParam(':descanso', $horasDescanso);
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            return $e->getMessage(); // o simplemente false si no quieres mostrar el mensaje directamente
+        }
     }
+
 
     public function eliminar($idProd) {
         $stmt = $this->conn->prepare("CALL spEliminarProductividad(:id)");
@@ -45,11 +51,18 @@ class ProductividadModelo {
     }
 
     public function modificar($idProd, $horasTrabajadas, $horasExtras, $horasDescanso) {
-        $stmt = $this->conn->prepare("CALL spActualizarProductividad(:id, :trab, :extras, :desc)");
+        $stmt = $this->conn->prepare("CALL spUpdProdu(:id, :trab, :extras, :desc)");
         $stmt->bindParam(':id', $idProd);
         $stmt->bindParam(':trab', $horasTrabajadas);
         $stmt->bindParam(':extras', $horasExtras);
         $stmt->bindParam(':desc', $horasDescanso);
         $stmt->execute();
     }
+
+    public function empActivo() {
+        $stmt = $this->conn->prepare("CALL spGetEmpActivo()");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }

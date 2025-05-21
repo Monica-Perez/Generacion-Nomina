@@ -9,13 +9,14 @@ class ProductividadController {
     }
 
     public function ver() {
-        $data = $this->productividad->obtenerProductividadActual();
+        $data = $this->productividad->GetProduEmp();
 
         $labels = [];
         $porcentajes = [];
+
         foreach ($data as $row) {
             $labels[] = $row['nombre_empleado'];
-            $porcentajes[] = $row['PorcentajeProductividad'];
+            $porcentajes[] = isset($row['PorcentajeProductividad']) ? (float)$row['PorcentajeProductividad'] : 0;
         }
 
         $productividad = $data;
@@ -27,24 +28,36 @@ class ProductividadController {
         $id = $_GET['id'] ?? null;
         if (!$id) { echo "Empleado no válido."; return; }
 
-        $historial = $this->productividad->obtenerHistorialPorEmpleado($id);
+        $historial = $this->productividad->GetHistProduEmp($id);
         require_once 'Views/Productividad/historial.php';
     }
 
     public function crear() {
-        $empleados = $this->productividad->empleadosSinProductividad();
+        $empleados = $this->productividad->empActivo();
+        $idSeleccionado = $_GET['id'] ?? null;
         require_once 'Views/Productividad/crear.php';
     }
 
+
     public function registrar() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->productividad->generarRegistro(
+            $resultado = $this->productividad->generarRegistro(
                 $_POST['ID_Emp'], $_POST['Mes'], $_POST['Anio'],
                 $_POST['HorasTrabajadas'], $_POST['HorasExtras'], $_POST['HorasDescanso']
             );
+
+            if ($resultado === true) {
+                header("Location: index.php?controller=productividad&action=ver&status=success");
+            } else {
+                header("Location: index.php?controller=productividad&action=crear&error=" . urlencode($resultado));
+            }
+            exit;
         }
+
         header("Location: index.php?controller=productividad&action=ver");
+        exit;
     }
+
 
     public function eliminar() {
         $id = $_GET['id'] ?? null;
@@ -56,9 +69,14 @@ class ProductividadController {
 
     public function modificar() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->productividad->modificar(
-                $_POST['ID_Prod'], $_POST['HorasTrabajadas'], $_POST['HorasExtras'], $_POST['HorasDescanso']
-            );
+            $id = $_POST['ID_Prod'];
+            $horasTrabajadas = $_POST['HorasTrabajadas'];
+            $horasExtras = $_POST['HorasExtras'];
+            $horasDescanso = $_POST['HorasDescanso'];
+
+            $this->productividad->modificar($id, $horasTrabajadas, $horasExtras, $horasDescanso);
+            header("Location: index.php?controller=productividad&action=historial&id=" . $_POST['ID_Emp']);
+            exit;
         }
         header("Location: index.php?controller=productividad&action=ver");
     }
