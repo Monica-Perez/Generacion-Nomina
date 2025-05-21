@@ -6,7 +6,7 @@ class Vacaciones {
     public function __construct($db) {
         $this->conn = $db;
     }
-
+    
     public function obtenerPeriodosVacaciones($Id) {
         try {
             $query = "CALL spObtenerPeriodosVacaciones_ID(?)";
@@ -20,12 +20,13 @@ class Vacaciones {
     }
     public function Registrar($datos) {
         try {
-            $stmt = $this->conn->prepare("CALL spIngresarVacaciones(?, ?, ?, ?, ?)");
+            $stmt = $this->conn->prepare("CALL spIngresarVacaciones(?, ?, ?, ?, ?, ?)");
             
             error_log("Parámetros enviados al SP: " . json_encode($datos));
             
             $params = [
                 $datos['ID_periodo'],
+                $datos['ID_Emp'],
                 $datos['FechaInicio'],
                 $datos['FechaFin'],
                 $datos['DiasTomados'],
