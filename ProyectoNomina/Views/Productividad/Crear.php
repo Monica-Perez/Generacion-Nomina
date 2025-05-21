@@ -15,6 +15,7 @@
     <ul class="sidebar-menu">
         <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
         <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
+        <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
         <li><a href="index.php?controller=nomina&action=ver"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
         <li><a href="index.php?controller=productividad&action=ver" class="active"><i class="fas fa-chart-line"></i> Productividad</a></li>
     </ul>
@@ -39,16 +40,23 @@
                     <form action="index.php?controller=productividad&action=registrar" method="POST">
                         <div class="form-group">
                             <label for="ID_Emp">Empleado:</label>
-                            <select name="ID_Emp" id="ID_Emp" class="form-control" required>
+
+                            <!-- Campo oculto que se actualiza con JavaScript -->
+                            <input type="hidden" name="ID_Emp" id="ID_Emp_hidden" value="<?= $idSeleccionado ?? '' ?>">
+
+                            <select id="ID_Emp_select" class="form-control" <?= isset($idSeleccionado) ? 'disabled' : '' ?> required>
                                 <option value="">Seleccione un empleado</option>
                                 <?php foreach ($empleados as $e): ?>
-                                    <option value="<?= $e['ID_Emp'] ?>">
+                                    <option 
+                                        value="<?= $e['ID_Emp'] ?>" 
+                                        data-ingreso="<?= $e['FechaIngreso_Emp'] ?>"
+                                        <?= (isset($idSeleccionado) && $idSeleccionado == $e['ID_Emp']) ? 'selected' : '' ?>>
                                         <?= htmlspecialchars($e['nombre_completo']) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
-
+                        
                         <div class="form-group">
                             <label for="Mes">Mes:</label>
                             <select name="Mes" class="form-control" required>
@@ -85,10 +93,24 @@
                             <i class="fas fa-arrow-left"></i> Cancelar
                         </a>
                     </form>
+
+                    <?php if (isset($_GET['error'])): ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <?= htmlspecialchars($_GET['error']) ?>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    <?php endif; ?>
+
                 <?php endif; ?>
             </div>
         </div>
     </div>
 </div>
+
+<script src="Public/JS/Productividad.js?v=<?= time() ?>"></script>
+
 </body>
 </html>

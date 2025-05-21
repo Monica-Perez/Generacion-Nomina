@@ -1,15 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
-    if (typeof graficaLabels !== 'undefined' && typeof graficaDatos !== 'undefined') {
-        const colores = graficaLabels.map(() => `hsl(${Math.random() * 360}, 70%, 60%)`);
+    if (typeof labels !== 'undefined' && typeof data !== 'undefined') {
+        const colores = labels.map(() => `hsl(${Math.random() * 360}, 70%, 60%)`);
 
-        // Gráfico de Barras
-        new Chart(document.getElementById('graficaBarras'), {
+        new Chart(document.getElementById('graficaBarra'), {
             type: 'bar',
             data: {
-                labels: graficaLabels,
+                labels: labels,
                 datasets: [{
                     label: 'Productividad (%)',
-                    data: graficaDatos,
+                    data: data,
                     backgroundColor: colores,
                     borderRadius: 8,
                     borderWidth: 1
@@ -21,15 +20,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Productividad por Empleado',
+                        text: 'Productividad de empleados (Barras)',
                         font: {
                             size: 16,
                             weight: 'bold'
                         }
                     },
-                    legend: {
-                        display: false
-                    },
+                    legend: { display: false },
                     tooltip: {
                         callbacks: {
                             label: ctx => `${ctx.dataset.label}: ${ctx.formattedValue}%`
@@ -41,9 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         ticks: {
                             maxRotation: 45,
                             minRotation: 45,
-                            font: {
-                                size: 10
-                            }
+                            font: { size: 10 }
                         }
                     },
                     y: {
@@ -62,9 +57,9 @@ document.addEventListener("DOMContentLoaded", function () {
         new Chart(document.getElementById('graficaPastel'), {
             type: 'pie',
             data: {
-                labels: graficaLabels,
+                labels: labels,
                 datasets: [{
-                    data: graficaDatos,
+                    data: data,
                     backgroundColor: colores
                 }]
             },
@@ -74,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Distribución de la Productividad',
+                        text: 'Distribución de Productividad por mes',
                         font: {
                             size: 16,
                             weight: 'bold'
@@ -98,51 +93,25 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-console.log("Labels:", graficaLabels);
-console.log("Datos:", graficaDatos);
-
-
-document.querySelector('form').addEventListener('submit', function(e) {
-    const empleadoSelect = document.querySelector('#ID_Emp');
-    const selectedOption = empleadoSelect.options[empleadoSelect.selectedIndex];
-    const fechaIngresoStr = selectedOption.getAttribute('data-ingreso');
-    const mes = parseInt(document.querySelector('[name="Mes"]').value);
-    const anio = parseInt(document.querySelector('[name="Anio"]').value);
-
-    if (!fechaIngresoStr) return; // Si no hay fecha de ingreso, salta validación
-
-    const fechaIngreso = new Date(fechaIngresoStr);
-    const fechaProductividad = new Date(anio, mes - 1, 1);
-    const fechaActual = new Date();
-    const inicioMesActual = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1);
-
-    if (fechaProductividad < fechaIngreso) {
-        alert("La fecha de productividad no puede ser anterior a la fecha de ingreso del empleado.");
-        e.preventDefault();
-        return;
-    }
-
-    if (fechaProductividad > inicioMesActual) {
-        alert("No se puede registrar productividad en meses futuros.");
-        e.preventDefault();
-        return;
-    }
-});
-
 document.addEventListener('DOMContentLoaded', function () {
-    const selectEmp = document.getElementById('ID_Emp_select');
-    const hiddenEmp = document.getElementById('ID_Emp_hidden');
+    const editarBtns = document.querySelectorAll('.btn-editar');
 
-    if (selectEmp && hiddenEmp) {
-        // Actualiza al cargar
-        hiddenEmp.value = selectEmp.value;
+    editarBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            const fila = document.querySelector(`#fila-${id}`);
+            
+            // Mostrar input, ocultar span
+            fila.querySelectorAll('input[type="number"]').forEach(input => input.classList.remove('d-none'));
+            fila.querySelectorAll('.texto').forEach(span => span.classList.add('d-none'));
 
-        // Escucha cambios si el select está habilitado
-        if (!selectEmp.disabled) {
-            selectEmp.addEventListener('change', function () {
-                hiddenEmp.value = this.value;
-            });
-        }
-    }
+            // Mostrar botón guardar, ocultar editar
+            fila.querySelector(`#guardar-${id}`).classList.remove('d-none');
+            this.classList.add('d-none');
+        });
+    });
 });
+
+
+
 
