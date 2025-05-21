@@ -40,12 +40,14 @@ require_once 'Models/PrestacionModelo.php';
 require_once 'Models/NominaModelo.php';
 require_once 'Models/VacacionesModelo.php';
 require_once 'Models/IndemnizacionModelo.php';
+require_once 'Models/ProductividadModelo.php';
 
 require_once 'Controllers/EmpleadoController.php';
 require_once 'Controllers/PrestacionController.php';
 require_once 'Controllers/NominaController.php';
 require_once 'Controllers/VacacionesController.php';
 require_once 'Controllers/IndemnizacionController.php';
+require_once 'Controllers/ProductividadController.php';
 
 $controller = $_GET['controller'] ?? 'empleado';
 $action = $_GET['action'] ?? 'index';
@@ -88,7 +90,16 @@ switch ($controller) {
         if (method_exists($controlador, $action)) {
             $controlador->$action();
         } else {
-            echo "Acción no encontrada en Vacaciones.";
+            echo "Acción no encontrada en Indemnizacion.";
+        }
+        break;
+
+    case 'productividad':
+        $controlador = new ProductividadController();
+        if (method_exists($controlador, $action)) {
+            $controlador->$action();
+        } else {
+            echo "Acción no encontrada en Productividad.";
         }
         break;
 

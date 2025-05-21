@@ -1,13 +1,15 @@
 $(document).ready(function () {
-    // Buscar y filtrar empleados
+    console.log("🔧 Nomina.js cargado correctamente");
+
+    // Buscador
     $("#searchInput").on("keyup", function () {
         const value = $(this).val().toLowerCase();
         $("#nominaTable tbody tr").filter(function () {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
         });
     });
 
-    // Activar edición del tipo de nómina
+    // Editar tipo de nómina
     $(".editar-tipo-nomina").on("click", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
@@ -16,7 +18,6 @@ $(document).ready(function () {
         $cell.find('.tipo-nomina-select').removeClass('d-none').focus();
     });
 
-    // Guardar automáticamente al cambiar
     $(".tipo-nomina-select").on("change", function () {
         const $select = $(this);
         const nuevoTipo = $select.val();
@@ -29,10 +30,25 @@ $(document).ready(function () {
             const res = JSON.parse(response);
             if (res.success) {
                 alert("Tipo de nómina actualizado correctamente.");
-                location.reload(); // o actualizar dinámicamente solo la fila si prefieres
+                location.reload();
             } else {
                 alert("Error al actualizar.");
             }
         });
+    });
+
+    // Toggle seleccionar todos
+    let allSelected = false;
+
+    $(".toggleSelectAll").on("click", function () {
+        console.log("✅ Botón de seleccionar todos presionado");
+
+        allSelected = !allSelected;
+
+        $('input[name="ids[]"]').prop("checked", allSelected);
+
+        $(this).text(allSelected
+            ? "❌"
+            : "✅");
     });
 });

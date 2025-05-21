@@ -19,6 +19,7 @@
             <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
             <li><a href="index.php?controller=indemnizacion&action=ver"><i class="fas fa-money-check"></i> Indemnización</a></li>
             <li><a href="index.php?controller=nomina&action=ver" class="active"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
+            <li><a href="index.php?controller=productividad&action=ver"><i class="fas fa-chart-line"></i> Productividad</a></li>
         </ul>
     </div>
 
@@ -32,42 +33,48 @@
             </div>
 
             <div class="card">
-                <div class="card-header bg-white">
-                    <div class="row align-items-center">
-                        <div class="col-md-6">
-                            <h5 class="mb-0"><i class="fas fa-table"></i> Detalles de Nómina</h5>
-                        </div>
-                        <div class="col-md-6 text-right">
-                            <div class="d-flex justify-content-end">
-                                <form class="search-box mr-3">
-                                    <div class="input-group">
-                                        <input type="text" id="searchInput" class="form-control" placeholder="Buscar empleado...">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                <form id="formEliminarMultiples" method="POST" action="index.php?controller=nomina&action=eliminarMultiples" onsubmit="return confirm('¿Desea eliminar las nóminas seleccionadas?');">
+                    <div class="card-header bg-white">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h5 class="mb-0"><i class="fas fa-table"></i> Detalles de Nómina</h5>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <div class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-danger btn-sm mr-2">
+                                        <i class="fas fa-trash-alt"></i> Eliminar Seleccionadas
+                                    </button>
+
+                                    <div class="search-box mr-3">
+                                        <div class="input-group">
+                                            <input type="text" id="searchInput" class="form-control" placeholder="Buscar empleado...">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                            </div>
                                         </div>
                                     </div>
-                                </form>
-                                <a href="core/exportar_nomina.php" class="btn btn-success btn-sm mr-2">
-                                    <i class="fas fa-file-excel"></i> Exportar
-                                </a>
-                                <a href="index.php?controller=nomina&action=crear" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-plus-circle"></i> Generar Nómina
-                                </a>
+
+                                    <a href="core/exportar_nomina.php" class="btn btn-success btn-sm mr-2">
+                                        <i class="fas fa-file-excel"></i> Exportar
+                                    </a>
+                                    <a href="index.php?controller=nomina&action=crear" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-plus-circle"></i> Generar Nómina
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="card-body p-0">
-                    <?php if (empty($nominas)): ?>
-                        <div class="alert alert-info m-3">
-                            <i class="fas fa-info-circle"></i> No se encontraron registros de nómina.
-                        </div>
-                    <?php else: ?>
+                    <div class="card-body p-0">
                         <div class="table-container">
                             <table class="table table-striped table-hover" id="nominaTable">
                                 <thead>
                                     <tr>
+                                        <th>
+                                            <button type="button" class="btn btn-sm btn-outline-primary toggleSelectAll">
+                                            ✅
+                                            </button>
+                                        </th>
                                         <th>Empleado</th>
                                         <th>Tipo</th>
                                         <th>Salario Base</th>
@@ -86,6 +93,7 @@
                                 <tbody>
                                     <?php foreach ($nominas as $n): ?>
                                         <tr>
+                                            <td><input type="checkbox" name="ids[]" value="<?= $n['ID_Nomina'] ?>" class="custom-checkbox"></td>
                                             <td><?= htmlspecialchars($n['nombre_empleado'] ?? 'Empleado') ?></td>
 
                                             <td class="tipo-nomina-cell" data-id="<?= $n['ID_Nomina'] ?>">
@@ -125,33 +133,20 @@
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
-
                             </table>
                         </div>
-                    <?php endif; ?>
-                </div>
+                </form>
+            </div>
 
-                <div class="card-footer text-right">
-                    <button onclick="window.print()" class="btn btn-info btn-sm mr-2">
-                        <i class="fas fa-print"></i> Imprimir
-                    </button>
-                </div>
+            <div class="card-footer text-right">
+                <button onclick="window.print()" class="btn btn-info btn-sm mr-2">
+                    <i class="fas fa-print"></i> Imprimir
+                </button>
             </div>
         </div>
     </div>
 
-    <script>
-        $(document).ready(function(){
-            $("#searchInput").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
-                $("#nominaTable tbody tr").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
-        });
-    </script>
+    <script src="Public/JS/Nomina.js?v=<?= time() ?>"></script>
+
 </body>
-
-<script src="Public/JS/Nomina.js"></script>
-
 </html>

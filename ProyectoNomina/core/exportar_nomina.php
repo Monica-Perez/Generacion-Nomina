@@ -26,7 +26,8 @@ $sheet->setTitle('Nómina');
 
 $encabezados = [
     'Empleado', 'Tipo de Nómina', 'Fecha', 'Salario Base (Q)',
-    'Bono Incentivo (Q)', 'Bono Antigüedad (Q)', 'ISR (Q)', 'IGSS (Q)', 'Total Neto (Q)'
+    'Bono Incentivo (Q)', 'Bono Antigüedad (Q)', 'Bono Horas Extra (Q)',
+    'ISR (Q)', 'IGSS (Q)', 'Total Neto (Q)'
 ];
 
 $sheet->fromArray($encabezados, null, 'A1');
@@ -38,7 +39,7 @@ $headerStyle = [
     'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]],
 ];
 
-$sheet->getStyle('A1:I1')->applyFromArray($headerStyle);
+$sheet->getStyle('A1:J1')->applyFromArray($headerStyle);
 
 $row = 2;
 foreach ($nominas as $n) {
@@ -48,16 +49,17 @@ foreach ($nominas as $n) {
     $sheet->setCellValue("D$row", $n['Salario_Base']);
     $sheet->setCellValue("E$row", $n['Bono_Incentivo']);
     $sheet->setCellValue("F$row", $n['Bono_Antiguedad']);
-    $sheet->setCellValue("G$row", $n['ISR']);
-    $sheet->setCellValue("H$row", $n['IGSS']);
-    $sheet->setCellValue("I$row", $n['Total_Neto']);
+    $sheet->setCellValue("G$row", $n['Bono_HorasExtras']);
+    $sheet->setCellValue("H$row", $n['ISR']);
+    $sheet->setCellValue("I$row", $n['IGSS']);
+    $sheet->setCellValue("J$row", $n['Total_Neto']);
 
-    $sheet->getStyle("A$row:I$row")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-    $sheet->getStyle("A$row:I$row")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+    $sheet->getStyle("A$row:J$row")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    $sheet->getStyle("A$row:J$row")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
     $row++;
 }
 
-foreach (range('A', 'I') as $col) {
+foreach (range('A', 'J') as $col) {
     $sheet->getColumnDimension($col)->setAutoSize(true);
 }
 
