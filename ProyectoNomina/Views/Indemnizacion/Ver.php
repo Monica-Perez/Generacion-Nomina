@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Empleados</title>
+    <title>Indemnizaciones </title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="Public/CSS/styleVerEmp.css">
+    <link rel="stylesheet" href="Public/CSS/styleVer.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
@@ -16,7 +16,7 @@
         </div>
         <ul class="sidebar-menu">
             <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
-            <li><a href="index.php?controller=empleado&action=ver" class="active"><i class="fas fa-users"></i> Empleados</a></li>
+            <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
             <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
             <li><a href="index.php?controller=indemnizacion&action=ver"><i class="fas fa-money-check"></i> Indemnización</a></li>
             <li><a href="index.php?controller=nomina&action=ver"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
@@ -27,13 +27,8 @@
         <div class="content-container">
             <div class="header">
                 <div class="header-title">
-                    <h1><i class="fas fa-users text-primary"></i> Lista de Empleados</h1>
-                    <p class="text-muted">Detalle de empleados activos e inactivos</p>
-                </div>
-                <div class="header-actions">
-                    <a href="index.php?controller=empleado&action=crear" class="btn btn-primary ">
-                        <i class="fas fa-plus"></i> Nuevo Empleado
-                    </a>
+                    <h1><i class="fas fa-coins text-primary"></i> Indemnizaciones </h1>
+                    <p class="text-muted">Indemnizaciones de los empleados dados de Baja</p>
                 </div>
             </div>
 
@@ -41,7 +36,7 @@
                 <div class="card-header bg-white">
                     <div class="row align-items-center">
                         <div class="col-md-6">
-                            <h5 class="mb-0">Empleados Registrados</h5>
+                            <h5 class="mb-0">Indemnizaciones por Empleados</h5>
                         </div>
                         <div class="col-md-6">
                             <div class="input-group search-box">
@@ -53,11 +48,11 @@
                         </div>
                     </div>
                 </div>
-                
+    
                 <div class="card-body p-0">
-                    <?php if (empty($empleados)): ?>
+                    <?php if (empty($indemnizaciones)): ?>
                         <div class="alert alert-info m-3">
-                            <i class="fas fa-info-circle"></i> No hay empleados registrados en el sistema.
+                            <i class="fas fa-info-circle"></i> No hay indemnizaciones registradas en el sistema.
                         </div>
                     <?php else: ?>
                         <div class="table-container">
@@ -66,50 +61,31 @@
                                     <tr>
                                         <th>ID</th>
                                         <th>Nombre</th>
-                                        <th>DPI</th>
-                                        <th>Fecha Nacimiento</th>
-                                        <th>Dirección</th>
-                                        <th>Teléfono</th>
-                                        <th>Email</th>
+                                        <th>Estado</th>
                                         <th>Fecha Ingreso</th>
                                         <th>Fecha Baja</th>
-                                        <th>Estado</th>
-                                        <th>Puesto</th>
-                                        <th>Editar</th>
+                                        <th>Salario Base</th>
+                                        <th>Bono 14</th>
+                                        <th>Aguinaldo</th>
+                                        <th>Indemnización</th>
+                                        <th>Vacaciones sin Gozar</th>
+                                        <th>Pago de Vacaciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($empleados as $empleado): ?>
+                                    <?php foreach ($indemnizaciones as $indem): ?>
                                         <tr>
-                                            <td><?php echo $empleado['ID_Emp'];?></td>
-                                            <td>
-                                                <?php 
-                                                    echo $empleado['PriNombre_Emp'] . ' ' . 
-                                                        ($empleado['SegNombre_Emp'] ? $empleado['SegNombre_Emp'] . ' ' : '') . 
-                                                        $empleado['PriApellido_Emp'] . ' ' . 
-                                                        ($empleado['SegApellido_Emp'] ? $empleado['SegApellido_Emp'] : '');
-                                                ?>
-                                            </td>
-                                            <td><?php echo $empleado['DPI_Emp']; ?></td>
-                                            <td><?php echo date('d/m/Y', strtotime($empleado['FechaNacimiento_Emp'])); ?></td>
-                                            <td><?php echo $empleado['Direccion_Emp']; ?></td>
-                                            <td><?php echo $empleado['Telefono_Emp']; ?></td>
-                                            <td><?php echo $empleado['Email_Emp']; ?></td>
-                                            <td><?php echo date('d/m/Y', strtotime($empleado['FechaIngreso_Emp'])); ?></td>
-                                            <td><?php echo $empleado['FechaBaja_Emp'] ? date('d/m/Y', strtotime($empleado['FechaBaja_Emp'])) : '-'; ?></td>
-                                            <td>
-                                                <?php if ($empleado['Estado_Emp'] == 'Activo'): ?>
-                                                    <span class="badge badge-success">Activo</span>
-                                                <?php else: ?>
-                                                    <span class="badge badge-danger">Baja</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td><?php echo $empleado['Nombre_Puesto']; ?></td>
-                                            <td>
-                                                <a href="index.php?controller=empleado&action=editar&id=<?= $empleado['ID_Emp']; ?>" class="btn btn-sm btn-warning mb-1">
-                                                    <i class="fas fa-edit"></i></a>
-                                                <br> 
-                                            </td>
+                                            <td><?php echo $indem['ID_Emp'];?></td>
+                                            <td><?php echo $indem['Nombre']; ?></td>
+                                            <td><span class="badge badge-danger"><?php echo $indem['Estado']; ?></span></td>
+                                            <td><?php echo date('d/m/Y', strtotime($indem['Ingreso'])); ?></td>
+                                            <td><?php echo date('d/m/Y', strtotime($indem['Baja'])); ?></td>
+                                            <td>Q<?php echo number_format($indem['SalarioBase'], 0, '.', ','); ?></td>
+                                            <td>Q<?php echo number_format($indem['Bono14'], 2, '.', ','); ?></td>
+                                            <td>Q<?php echo number_format($indem['Aguinaldo'], 2, '.', ','); ?></td>
+                                            <td>Q<?php echo number_format($indem['Indemnizacion'], 2, '.', ','); ?></td>
+                                            <td><?php echo $indem['DiasPendientesV']; ?></td>
+                                            <td>Q<?php echo number_format($indem['PagoVacaciones'], 2, '.', ','); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -117,7 +93,7 @@
                         </div>
                     <?php endif; ?>
                 </div>
-                
+
                 <div class="card-footer bg-white">
                     <div class="row">
                         <div class="col text-right">
@@ -144,5 +120,6 @@
             });
         });
     </script>
+
 </body>
 </html>

@@ -38,7 +38,7 @@ class EmpleadoController {
                 header('Location: index.php?controller=empleado&action=ver');
                 exit;
             } else {
-                echo "❌ No se insertó ningún empleado. Revisa los campos.";
+                echo "No se insertó ningún empleado. Revisa los campos.";
             }
         } else {
             $conn = db::conectar();
@@ -74,7 +74,7 @@ class EmpleadoController {
         $empleado = $this->empleado->obtenerEmpleadoPorId($id);
         
         if (!$empleado) {
-            $_SESSION['mensaje'] = "❌ El empleado no existe.";
+            $_SESSION['mensaje'] = "El empleado no existe.";
             header('Location: index.php?controller=empleado&action=ver');
             exit;
         }
@@ -116,9 +116,9 @@ class EmpleadoController {
             
             // Preparar mensaje de resultado
             if ($resultado) {
-                $mensaje = "✅ Empleado actualizado correctamente.";
+                $mensaje = "Empleado actualizado correctamente.";
             } else {
-                $mensaje = "❌ Error al actualizar el empleado. Por favor, revise los datos e intente nuevamente.";
+                $mensaje = "Error al actualizar el empleado. Por favor, revise los datos e intente nuevamente.";
             }
             
             // Obtener datos actualizados del empleado

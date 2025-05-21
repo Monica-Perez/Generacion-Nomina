@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-05-2025 a las 06:45:58
+-- Tiempo de generación: 21-05-2025 a las 07:10:36
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -105,6 +105,125 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spActualizarPeriodosVacaciones` (IN
     DECLARE v_PeriodoFinal DATE;
     DECLARE v_DiasLaborados INT;
     DECLARE v_CantDias DECIMAL(10,2);
+    DECLARE v_DiasRestantes DECIMAL(10,2);
+    DECLARE v_PeriodoID INT;
+    DECLARE v_CantPeriodo DECIMAL(10,2);
+    DECLARE done INT DEFAULT 0;
+
+    -- Cursor para iterar periodos
+    DECLARE cur CURSOR FOR
+        SELECT ID, CantDias FROM PeriodosVacaciones
+        WHERE ID_Emp = p_ID_Emp
+        ORDER BY PeriodoInicial;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    -- Obtener fechas del empleado
+    SELECT FechaIngreso_Emp, FechaBaja_Emp
+    INTO v_FechaIngreso, v_FechaBaja
+    FROM Empleado
+    WHERE ID_Emp = p_ID_Emp;
+
+    -- Si no hay fecha de baja, usar la actual
+	IF v_FechaBaja IS NULL THEN
+		SET v_FechaBaja = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY);
+	END IF;
+
+    -- Eliminar periodos anteriores
+    DELETE FROM PeriodosVacaciones WHERE ID_Emp = p_ID_Emp;
+
+    -- Generar periodos nuevos
+    SET v_FechaActual = v_FechaIngreso;
+
+    WHILE v_FechaActual < v_FechaBaja DO
+        SET v_PeriodoInicial = v_FechaActual;
+        SET v_PeriodoFinal = DATE_ADD(v_PeriodoInicial, INTERVAL 1 YEAR);
+
+        IF v_PeriodoFinal > v_FechaBaja THEN
+            SET v_PeriodoFinal = v_FechaBaja;
+        END IF;
+
+        SET v_DiasLaborados = DATEDIFF(v_PeriodoFinal, v_PeriodoInicial);
+
+        IF v_DiasLaborados >= 365 THEN
+            SET v_CantDias = 15;
+        ELSE
+            SET v_CantDias = (v_DiasLaborados * 15) / 365;
+        END IF;
+
+        INSERT INTO PeriodosVacaciones (
+            ID_Emp, PeriodoInicial, PeriodoFinal, DiasLaborados, CantDias, DiasTomados
+        ) VALUES (
+            p_ID_Emp, v_PeriodoInicial, v_PeriodoFinal, v_DiasLaborados, v_CantDias, 0
+        );
+
+        SET v_FechaActual = v_PeriodoFinal;
+    END WHILE;
+
+    -- Calcular días tomados totales del empleado
+    SELECT SUM(DiasTomados) INTO v_DiasRestantes
+    FROM HistorialVacaciones
+    WHERE ID_Emp = p_ID_Emp;
+
+    IF v_DiasRestantes IS NULL OR v_DiasRestantes = 0 THEN
+        SET v_DiasRestantes = 0;
+    END IF;
+
+    -- Repartir días tomados entre periodos en orden
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO v_PeriodoID, v_CantPeriodo;
+        IF done = 1 THEN
+            LEAVE read_loop;
+        END IF;
+
+        IF v_DiasRestantes >= v_CantPeriodo THEN
+            -- Resta completa al periodo
+            UPDATE PeriodosVacaciones
+            SET DiasTomados = v_CantPeriodo
+            WHERE ID = v_PeriodoID;
+
+            SET v_DiasRestantes = v_DiasRestantes - v_CantPeriodo;
+        ELSE
+            -- Solo lo que queda
+            UPDATE PeriodosVacaciones
+            SET DiasTomados = v_DiasRestantes
+            WHERE ID = v_PeriodoID;
+
+            SET v_DiasRestantes = 0;
+            LEAVE read_loop;
+        END IF;
+    END LOOP;
+    CLOSE cur;
+
+    -- Mostrar resultado
+    SELECT 
+        pv.ID,
+        pv.ID_Emp,
+        pv.PeriodoInicial,
+        pv.PeriodoFinal,
+        pv.DiasLaborados,
+        pv.CantDias,
+        pv.DiasTomados,
+        (pv.CantDias - pv.DiasTomados) AS DiasPendientes,
+        e.PriNombre_Emp AS Nombre
+    FROM 
+        PeriodosVacaciones pv
+        JOIN Empleado e ON pv.ID_Emp = e.ID_Emp
+    WHERE 
+        pv.ID_Emp = p_ID_Emp
+    ORDER BY 
+        pv.PeriodoInicial;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spActualizarPeriodosVacaciones2` (IN `p_ID_Emp` INT)   BEGIN
+    DECLARE v_FechaIngreso DATE;
+    DECLARE v_FechaBaja DATE;
+    DECLARE v_FechaActual DATE;
+    DECLARE v_PeriodoInicial DATE;
+    DECLARE v_PeriodoFinal DATE;
+    DECLARE v_DiasLaborados INT;
+    DECLARE v_CantDias DECIMAL(10,2);
     DECLARE v_AñosTrabajados INT;
     DECLARE done INT DEFAULT FALSE;
     DECLARE cur_id INT;
@@ -130,10 +249,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spActualizarPeriodosVacaciones` (IN
     WHERE 
         e.ID_Emp = p_ID_Emp;
     
-    -- Si no hay fecha de baja, usar la fecha actual
-    IF v_FechaBaja IS NULL THEN
-        SET v_FechaBaja = CURRENT_DATE();
-    END IF;
+	-- Si no hay fecha de baja, calcular hasta el último aniversario
+	IF v_FechaBaja IS NULL THEN
+		SET v_FechaBaja = DATE_ADD(v_FechaIngreso, INTERVAL TIMESTAMPDIFF(YEAR, v_FechaIngreso, CURRENT_DATE()) YEAR);
+	END IF;
+
     
     SET v_FechaActual = v_FechaIngreso;
     SET v_AñosTrabajados = 0;
@@ -226,141 +346,6 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spActualizarPeriodosVacaciones` (IN
         pv.ID_Emp = p_ID_Emp
     ORDER BY 
         pv.PeriodoInicial;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spActualizarPeriodosVacaciones2` ()   BEGIN
-    DECLARE v_done INT DEFAULT FALSE;
-    DECLARE v_ID_Emp INT;
-    DECLARE v_FechaIngreso DATE;
-    DECLARE v_FechaBaja DATE;
-    DECLARE v_FechaActual DATE;
-    DECLARE v_PeriodoInicial DATE;
-    DECLARE v_PeriodoFinal DATE;
-    DECLARE v_DiasLaborados INT;
-    DECLARE v_CantDias DECIMAL(10,2);
-    DECLARE v_SalarioDiario DECIMAL(10,2);
-	
-    -- Declarar cursor para recorrer todos los empleados
-    DECLARE cur_empleados CURSOR FOR 
-        SELECT 
-            e.ID_Emp,
-            e.FechaIngreso_Emp,
-            e.FechaBaja_Emp,
-            p.SalarioBase_Puesto / 30
-        FROM 
-            Empleado e
-        JOIN 
-            Puesto p ON e.ID_Puesto = p.ID_Puesto;
-
-    -- Declarar handler para el fin del cursor
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_done = TRUE;
-	
-    -- Se borra la tabla para que no se dupliquen los registros de diferentes dias
-    TRUNCATE periodosvacaciones;
-    -- Abrir cursor
-    OPEN cur_empleados;
-
-    -- Iniciar el bucle de procesamiento
-    emp_loop: LOOP
-        -- Obtener el siguiente empleado
-        FETCH cur_empleados INTO v_ID_Emp, v_FechaIngreso, v_FechaBaja, v_SalarioDiario;
-
-        -- Salir si no hay más empleados
-        IF v_done THEN
-            LEAVE emp_loop;
-        END IF;
-
-        -- Si no hay fecha de baja, usar la fecha actual
-        IF v_FechaBaja IS NULL THEN
-            SET v_FechaBaja = CURRENT_DATE();
-        END IF;
-
-        -- Inicializar la fecha actual para este empleado
-        SET v_FechaActual = v_FechaIngreso;
-
-        -- Procesar cada período anual para este empleado
-        WHILE v_FechaActual < v_FechaBaja DO
-            SET v_PeriodoInicial = v_FechaActual;
-            SET v_PeriodoFinal = DATE_ADD(v_PeriodoInicial, INTERVAL 1 YEAR);
-
-            -- Ajustar el período final si es mayor a la fecha de baja
-            IF v_PeriodoFinal > v_FechaBaja THEN
-                SET v_PeriodoFinal = v_FechaBaja;
-            END IF;
-
-            -- Calcular días laborados en este período
-            SET v_DiasLaborados = DATEDIFF(v_PeriodoFinal, v_PeriodoInicial);
-
-            -- Calcular días de vacaciones proporcionales
-            IF v_DiasLaborados >= 365 THEN
-                SET v_CantDias = 15;
-            ELSE
-                SET v_CantDias = (v_DiasLaborados / 365) * 15;
-            END IF;
-
-            -- Verificar si este período ya existe
-            IF NOT EXISTS (
-                SELECT 1 FROM PeriodosVacaciones 
-                WHERE ID_Emp = v_ID_Emp 
-                  AND PeriodoInicial = v_PeriodoInicial 
-                  AND PeriodoFinal = v_PeriodoFinal
-            ) THEN
-                -- Insertar nuevo período
-                INSERT INTO PeriodosVacaciones (
-                    ID_Emp, 
-                    PeriodoInicial, 
-                    PeriodoFinal, 
-                    DiasLaborados, 
-                    CantDias, 
-                    DiasTomados, 
-                    MontoPagar
-                ) VALUES (
-                    v_ID_Emp,
-                    v_PeriodoInicial,
-                    v_PeriodoFinal,
-                    v_DiasLaborados,
-                    v_CantDias,
-                    0,
-                    0
-                );
-            ELSE
-                -- Actualizar período existente
-                UPDATE PeriodosVacaciones
-                SET DiasLaborados = v_DiasLaborados,
-                    CantDias = v_CantDias
-                WHERE ID_Emp = v_ID_Emp 
-                  AND PeriodoInicial = v_PeriodoInicial 
-                  AND PeriodoFinal = v_PeriodoFinal;
-            END IF;
-
-            -- Avanzar al siguiente período
-            SET v_FechaActual = v_PeriodoFinal;
-        END WHILE;
-
-        -- Actualizar montos a pagar
-        UPDATE PeriodosVacaciones
-        SET MontoPagar = DiasPendientes * (v_SalarioDiario * 1.30)
-        WHERE ID_Emp = v_ID_Emp;
-    END LOOP;
-
-    -- Cerrar cursor
-    CLOSE cur_empleados;
-
-    -- Devolver resultados
-    SELECT 
-        ID,
-        ID_Emp,
-        PeriodoInicial,
-        PeriodoFinal,
-        DiasLaborados,
-        CantDias,
-        DiasTomados,
-        DiasPendientes,
-        MontoPagar
-    FROM 
-        PeriodosVacaciones
-    ORDER BY 
-        ID;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spCalcularB14_Agui` ()   BEGIN
@@ -463,6 +448,60 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spCalcularNomina` (IN `emp_id` INT,
     END IF;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spCalculoIndemnizacion` ()   BEGIN
+	WITH DatosEmpleado AS (
+	SELECT
+		e.ID_Emp,
+		CONCAT(e.PriNombre_Emp, ' ', e.PriApellido_Emp) AS Nombre,
+		e.Estado_Emp AS Estado,
+		e.FechaIngreso_Emp AS Ingreso,
+		e.FechaBaja_Emp AS Baja,
+		p.SalarioBase_Puesto AS SalarioBase,
+		(p.SalarioBase_Puesto / 30) AS SDiario,
+		TIMESTAMPDIFF(DAY, e.FechaIngreso_Emp, e.FechaBaja_Emp) AS DiasLaborados,
+		DATEDIFF(
+			LEAST(e.FechaBaja_Emp, '2025-06-30'), -- Se toma en cuenta la fecha de baja, siempre que sea menor a -> 30/06/25, si es mayor se toma 30/06/25
+			GREATEST(e.FechaIngreso_Emp, '2024-07-01') -- Se toma en cuenta la fecha de ingreso, siempre que sea menor a -> 1/07/24, si es mayor se toma 1/07/24
+		) + 1 AS Dias_Laborados_Bono,
+		DATEDIFF(
+			LEAST(e.FechaBaja_Emp, '2025-11-30'), -- Se toma en cuenta la fecha de baja, siempre que sea menor a -> 30/11/25, si es mayor se toma 30/11/25
+			GREATEST(e.FechaIngreso_Emp, '2024-12-01') -- Se toma en cuenta la fecha de ingreso, siempre que sea menor a -> 1/12/24, si es mayor se toma 1/12/24
+		) + 1 AS Dias_Laborados_Ag
+	  FROM Empleado e
+	  LEFT JOIN Puesto p ON e.ID_Puesto = p.ID_Puesto
+	  WHERE e.Estado_Emp = 'Baja'
+	),
+
+	DiasTomados AS(
+		SELECT 
+			pv.ID_Emp,
+			SUM(pv.DiasTomados) AS DiasTomados,
+			SUM(pv.DiasPendientes) AS DiasPendientesV
+		FROM periodosvacaciones pv
+		INNER JOIN Empleado e ON pv.ID_Emp = e.ID_Emp
+		GROUP BY pv.ID_Emp
+	)
+	SELECT
+		de.ID_Emp,
+		de.Nombre,
+		de.Estado,
+		de.Ingreso,
+		de.Baja,
+		de.SalarioBase,
+		-- de.DiasLaborados,
+		-- ROUND(de.DiasLaborados / 365.25, 2) AS AniosLaborados,
+		ROUND((de.SalarioBase * de.Dias_Laborados_Bono) / 365, 2) AS Bono14, 
+		ROUND((de.SalarioBase * de.Dias_Laborados_Ag) / 365, 2) AS Aguinaldo,
+		ROUND(de.SalarioBase * de.DiasLaborados / 365.25, 2) AS Indemnizacion,
+		-- ROUND(de.SDiario) AS SalarioDiario,
+		-- dt.DiasTomados,
+		dt.DiasPendientesV, -- Dias de vacaciones que no tomo el empleado
+		ROUND(de.SDiario * dt.DiasPendientesV, 2) AS PagoVacaciones
+	FROM DatosEmpleado de
+	LEFT JOIN DiasTomados dt ON de.ID_Emp = dt.ID_Emp;
+		
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spDistribucionNomina` (IN `nomina_id` INT)   BEGIN
     DECLARE tipo ENUM('Semanal','Quincenal','Mensual');
     DECLARE base DECIMAL(10,2);
@@ -524,7 +563,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spEmpleadosSinNominaMesActual` ()  
     );
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spIngresarVacaciones` (IN `p_ID_PeriodoVacaciones` INT, IN `p_FechaInicio` DATE, IN `p_FechaFin` DATE, IN `p_DiasTomados` DECIMAL(10,2), IN `p_Motivo` VARCHAR(255))   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spIngresarVacaciones` (IN `p_ID_PeriodoVacaciones` INT, `p_ID_Emp` INT, IN `p_FechaInicio` DATE, IN `p_FechaFin` DATE, IN `p_DiasTomados` DECIMAL(10,2), IN `p_Motivo` VARCHAR(255))   BEGIN
 	DECLARE v_DiasPendientes DECIMAL(10,2);
     
     -- Verificar disponibilidad de días
@@ -545,12 +584,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spIngresarVacaciones` (IN `p_ID_Per
         -- Registrar en el historial
         INSERT INTO HistorialVacaciones (
             ID_PeriodoVacaciones,
+            ID_Emp,
             FechaInicio,
             FechaFin,
             DiasTomados,
             Motivo
         ) VALUES (
             p_ID_PeriodoVacaciones,
+            p_ID_Emp,
             p_FechaInicio,
             p_FechaFin,
             p_DiasTomados,
@@ -627,6 +668,7 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerPeriodosVacaciones_ID` (IN `p_ID_Emp` INT)   BEGIN
 	SELECT
 		pv.ID,
+        e.ID_Emp,
         CONCAT(e.PriNombre_Emp, ' ', e.PriApellido_Emp) AS Nombre,
         pv.PeriodoInicial,
         pv.PeriodoFinal,
@@ -763,7 +805,8 @@ INSERT INTO `empleado` (`ID_Emp`, `PriNombre_Emp`, `SegNombre_Emp`, `PriApellido
 (2, 'Axel', 'Jorge', 'Alvarado', 'Arana', '1234567890101', '2004-02-02', 'zona 5', '45215632', 'axel@gmail.com', '2025-02-17', NULL, 'Activo', 4, 0.00),
 (3, 'Lester', 'Ivan', 'Mendez', 'Jose', '1236547890101', '2000-01-06', 'zona 4', '87569830', 'lester@gmail.com', '2025-05-05', NULL, 'Activo', 7, 0.00),
 (4, 'Diego', 'Pablo', 'Perez', 'Velasquez', '7896452190101', '2000-11-22', 'zona 17', '78541236', 'diego@gmail.com', '2019-08-08', '2025-05-11', 'Baja', 6, 0.00),
-(5, 'Fernando', 'Jorge', 'Alvarado', 'Arana', '222222222', '2002-01-02', '21 Av. A 12-61 Alameda 4 Zona 18', '36707871', 'aranaaxel22@gmail.com', '2015-06-26', NULL, 'Activo', 8, 0.00);
+(5, 'Fernando', 'Jorge', 'Alvarado', 'Arana', '222222222', '2002-01-02', '21 Av. A 12-61 Alameda 4 Zona 18', '36707871', 'aranaaxel22@gmail.com', '2015-06-26', NULL, 'Activo', 8, 0.00),
+(6, 'qq', 'ww', 'ww', 'ww', '435352', '2006-01-02', 'thr', '433532222222222', 'ax2@gmail.com', '2024-07-01', NULL, 'Activo', 5, 0.00);
 
 --
 -- Disparadores `empleado`
@@ -791,6 +834,7 @@ DELIMITER ;
 CREATE TABLE `historialvacaciones` (
   `ID` int(11) NOT NULL,
   `ID_PeriodoVacaciones` int(11) NOT NULL,
+  `ID_Emp` int(11) NOT NULL,
   `FechaInicio` date NOT NULL,
   `FechaFin` date NOT NULL,
   `DiasTomados` decimal(10,2) NOT NULL,
@@ -801,13 +845,13 @@ CREATE TABLE `historialvacaciones` (
 -- Volcado de datos para la tabla `historialvacaciones`
 --
 
-INSERT INTO `historialvacaciones` (`ID`, `ID_PeriodoVacaciones`, `FechaInicio`, `FechaFin`, `DiasTomados`, `Motivo`) VALUES
-(1, 1, '2025-05-01', '2025-05-02', 2.00, 'Personal'),
-(2, 1, '2025-03-04', '2025-03-06', 3.00, 'Personal'),
-(3, 1, '2025-02-03', '2025-02-07', 5.00, 'Prueba acumulados'),
-(4, 1, '2025-03-17', '2025-03-19', 3.00, 'Prueba acumulados'),
-(5, 1, '2025-05-15', '2025-05-16', 2.00, 'Prueba acumulados llegando a 15'),
-(6, 2, '2025-05-20', '2025-05-20', 1.00, 'Personal');
+INSERT INTO `historialvacaciones` (`ID`, `ID_PeriodoVacaciones`, `ID_Emp`, `FechaInicio`, `FechaFin`, `DiasTomados`, `Motivo`) VALUES
+(1, 82, 5, '2025-04-28', '2025-05-02', 5.00, 'Personal'),
+(2, 11, 5, '2025-03-03', '2025-03-07', 5.00, 'Acumulado 5'),
+(3, 21, 5, '2025-03-10', '2025-03-13', 4.00, 'Acumulado 14'),
+(4, 41, 5, '2025-05-02', '2025-05-02', 1.00, 'Acumulado 15 del periodo'),
+(5, 52, 5, '2025-05-19', '2025-05-19', 1.00, 'Personal'),
+(6, 88, 4, '2025-03-03', '2025-03-17', 15.00, 'Acumulado 15 para ver indemnizacion');
 
 -- --------------------------------------------------------
 
@@ -861,25 +905,24 @@ CREATE TABLE `periodosvacaciones` (
 --
 
 INSERT INTO `periodosvacaciones` (`ID`, `ID_Emp`, `PeriodoInicial`, `PeriodoFinal`, `DiasLaborados`, `CantDias`, `DiasTomados`) VALUES
-(1, 5, '2015-06-26', '2016-06-26', 366, 15.00, 15.00),
-(2, 5, '2016-06-26', '2017-06-26', 365, 15.00, 1.00),
-(3, 5, '2017-06-26', '2018-06-26', 365, 15.00, 0.00),
-(4, 5, '2018-06-26', '2019-06-26', 365, 15.00, 0.00),
-(5, 5, '2019-06-26', '2020-06-26', 366, 15.00, 0.00),
-(6, 5, '2020-06-26', '2021-06-26', 365, 15.00, 0.00),
-(7, 5, '2021-06-26', '2022-06-26', 365, 15.00, 0.00),
-(8, 5, '2022-06-26', '2023-06-26', 365, 15.00, 0.00),
-(9, 5, '2023-06-26', '2024-06-26', 366, 15.00, 0.00),
-(10, 5, '2024-06-26', '2025-05-19', 327, 13.44, 0.00),
-(11, 1, '2024-12-01', '2025-05-19', 169, 6.95, 0.00),
-(12, 2, '2025-02-17', '2025-05-19', 91, 3.74, 0.00),
-(13, 3, '2025-05-05', '2025-05-19', 14, 0.58, 0.00),
-(14, 4, '2019-08-08', '2020-08-08', 366, 15.00, 0.00),
-(15, 4, '2020-08-08', '2021-08-08', 365, 15.00, 0.00),
-(16, 4, '2021-08-08', '2022-08-08', 365, 15.00, 0.00),
-(17, 4, '2022-08-08', '2023-08-08', 365, 15.00, 0.00),
-(18, 4, '2023-08-08', '2024-08-08', 366, 15.00, 0.00),
-(19, 4, '2024-08-08', '2025-05-11', 276, 11.34, 0.00);
+(81, 6, '2024-07-01', '2025-05-19', 322, 13.23, 0.00),
+(113, 5, '2015-06-26', '2016-06-26', 366, 15.00, 15.00),
+(114, 5, '2016-06-26', '2017-06-26', 365, 15.00, 1.00),
+(115, 5, '2017-06-26', '2018-06-26', 365, 15.00, 0.00),
+(116, 5, '2018-06-26', '2019-06-26', 365, 15.00, 0.00),
+(117, 5, '2019-06-26', '2020-06-26', 366, 15.00, 0.00),
+(118, 5, '2020-06-26', '2021-06-26', 365, 15.00, 0.00),
+(119, 5, '2021-06-26', '2022-06-26', 365, 15.00, 0.00),
+(120, 5, '2022-06-26', '2023-06-26', 365, 15.00, 0.00),
+(121, 5, '2023-06-26', '2024-06-26', 366, 15.00, 0.00),
+(122, 5, '2024-06-26', '2025-05-19', 327, 13.44, 0.00),
+(123, 4, '2019-08-08', '2020-08-08', 366, 15.00, 15.00),
+(124, 4, '2020-08-08', '2021-08-08', 365, 15.00, 0.00),
+(125, 4, '2021-08-08', '2022-08-08', 365, 15.00, 0.00),
+(126, 4, '2022-08-08', '2023-08-08', 365, 15.00, 0.00),
+(127, 4, '2023-08-08', '2024-08-08', 366, 15.00, 0.00),
+(128, 4, '2024-08-08', '2025-05-11', 276, 11.34, 0.00),
+(130, 1, '2024-12-01', '2025-05-19', 169, 6.95, 0.00);
 
 -- --------------------------------------------------------
 
@@ -1001,7 +1044,7 @@ ALTER TABLE `departamento`
 -- AUTO_INCREMENT de la tabla `empleado`
 --
 ALTER TABLE `empleado`
-  MODIFY `ID_Emp` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `ID_Emp` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `historialvacaciones`
@@ -1019,7 +1062,7 @@ ALTER TABLE `nomina`
 -- AUTO_INCREMENT de la tabla `periodosvacaciones`
 --
 ALTER TABLE `periodosvacaciones`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=131;
 
 --
 -- AUTO_INCREMENT de la tabla `productividad`

@@ -6,7 +6,7 @@
     <title>Prestaciones Laborales</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="Public/CSS/styleVerEmp.css">
+    <link rel="stylesheet" href="Public/CSS/styleVer.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
@@ -18,6 +18,7 @@
             <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
             <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
             <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
+            <li><a href="index.php?controller=indemnizacion&action=ver"><i class="fas fa-money-check"></i> Indemnización</a></li>
             <li><a href="index.php?controller=nomina&action=ver"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
         </ul>
     </div>
@@ -27,6 +28,7 @@
             <div class="header">
                 <div class="header-title">
                     <h1><i class="fas fa-coins text-primary"></i> Prestacion Laborales</h1>
+                    <p class="text-muted">Prestaciones de los empleados</p>
                 </div>
             </div>
 
@@ -94,8 +96,8 @@
                                             <!-- <td><?php echo $prestacion['Dias_Laborados_Ag']; ?></td> -->
                                             <td>Q<?php echo number_format($prestacion['Aguinaldo'], 2, '.', ','); ?></td>
                                             <td>
-                                                <a href="index.php?controller=vacaciones&action=ver&id=<?= $prestacion['ID_Emp']; ?>" class="btn btn-sm btn-success mb-1">
-                                                    <i class="fas fa-gift"></i></a>
+                                                <a href="index.php?controller=vacaciones&action=ver&id=<?= $prestacion['ID_Emp']; ?>" class="btn btn-sm btn-primary mb-1">
+                                                    <i class="fas fa-umbrella-beach"></i></a>
                                                 <br> 
                                             </td>
                                         </tr>
