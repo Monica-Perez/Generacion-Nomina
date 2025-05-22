@@ -31,11 +31,6 @@
                     <h1><i class="fas fa-umbrella-beach text-primary"></i> Registrar Vacaciones</h1>
                     <p class="text-muted">Formulario para asignar vacaciones a un empleado</p>
                 </div>
-                <div class="header-actions">
-                    <a href="index.php?controller=vacaciones&action=ver" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left"></i> Ver Vacaciones
-                    </a>
-                </div>
             </div>
 
             <div class="card">
@@ -124,12 +119,14 @@
                 <?php endif; ?>
 
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-save"></i> Guardar Vacaciones
-                            </button>
-                            <a href="index.php?controller=prestacion&action=ver" class="btn btn-outline-secondary ml-2">
-                                <i class="fas fa-times"></i> Cancelar
-                            </a>
+                            <div class="col text-right">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save"></i> Guardar Vacaciones
+                                </button>
+                                <a href="index.php?controller=prestacion&action=ver" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </a>
+                            </div>
                         </div>
                     </form>
                 </div>

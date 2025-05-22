@@ -15,25 +15,20 @@
         </div>
         <ul class="sidebar-menu">
             <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
-            <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
+            <li><a href="index.php?controller=empleado&action=ver" class="active"><i class="fas fa-users"></i> Empleados</a></li>
             <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
             <li><a href="index.php?controller=indemnizacion&action=ver"><i class="fas fa-money-check"></i> Indemnización</a></li>
             <li><a href="index.php?controller=nomina&action=ver"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
-            <li><a href="index.php?controller=productividad&action=ver" class="active"><i class="fas fa-chart-line"></i> Productividad</a></li>
+            <li><a href="index.php?controller=productividad&action=ver"><i class="fas fa-chart-line"></i> Productividad</a></li>
         </ul>
     </div>
 
     <div class="main-content">
-        <div class="container-fluid">
+        <div class="content-container">
             <div class="header">
                 <div class="header-title">
                     <h1><i class="fas fa-user-edit text-primary"></i> Editar Empleado</h1>
                     <p class="text-muted">Actualizar información del empleado</p>
-                </div>
-                <div class="header-actions">
-                    <a href="index.php?controller=empleado&action=ver" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left"></i> Ver Empleados
-                    </a>
                 </div>
             </div>
 
@@ -177,11 +172,11 @@
                             </div>
                         </div>
 
-                        <div class="form-actions">
+                        <div class="form-group text-right">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save"></i> Guardar Cambios
                             </button>
-                            <a href="index.php?controller=empleado&action=ver" class="btn btn-outline-secondary ml-2">
+                            <a href="index.php?controller=empleado&action=ver" class="btn btn-secondary">
                                 <i class="fas fa-times"></i> Cancelar
                             </a>
                         </div>
@@ -192,10 +187,5 @@
             </div>
         </div>
     </div>
-    <style>
-        .main-content{
-            padding: 30px;
-        }
-    </style>
 </body>
 </html>

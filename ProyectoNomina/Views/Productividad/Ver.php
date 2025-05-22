@@ -22,6 +22,7 @@ ini_set('display_errors', 1);
             <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
             <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
             <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
+            <li><a href="index.php?controller=indemnizacion&action=ver"><i class="fas fa-money-check"></i> Indemnización</a></li>
             <li><a href="index.php?controller=nomina&action=ver"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
             <li><a href="index.php?controller=productividad&action=ver" class="active"><i class="fas fa-chart-line"></i> Productividad</a></li>
         </ul>
@@ -32,7 +33,7 @@ ini_set('display_errors', 1);
             <div class="header">
                 <div class="header-title">
                     <h1><i class="fas fa-chart-line text-primary"></i> Productividad Mensual</h1>
-                    <p>Resumen de productividad de empleados Ultimo Registro</p>
+                    <p class="text-muted">Resumen de productividad de empleados Ultimo Registro</p>
                 </div>
             </div>
 

@@ -13,8 +13,6 @@ class EmpleadoController {
 
     public function crear() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $fechaIngreso = $_POST['fecha_ingreso'];
-            $fechaBaja = !empty($_POST['fecha_baja']) ? $_POST['fecha_baja'] : $fechaIngreso;
     
             $datos = [
                 'pri_nombre'       => $_POST['pri_nombre'],
@@ -26,8 +24,8 @@ class EmpleadoController {
                 'direccion'        => $_POST['direccion'] ?? '',
                 'telefono'         => $_POST['telefono'] ?? '',
                 'email'            => $_POST['email'] ?? '',
-                'fecha_ingreso'    => $fechaIngreso,
-                'fecha_baja'       => $fechaBaja,
+                'fecha_ingreso'    => $_POST['fecha_ingreso'],
+                'fecha_baja'       => !empty($_POST['fecha_baja']) ? $_POST['fecha_baja'] : null,
                 'estado'           => $_POST['estado'] ?? 'Activo',
                 'id_puesto'        => $_POST['id_puesto']
             ];
@@ -59,10 +57,8 @@ class EmpleadoController {
     }
 
     public function editar() {
-        // Obtener todos los puestos disponibles
         $puestos = $this->empleado->obtenerPuestos();
         
-        // Verificar si se ha proporcionado un ID
         if (!isset($_GET['id'])) {
             header('Location: index.php?controller=empleado&action=ver');
             exit;
@@ -70,7 +66,6 @@ class EmpleadoController {
         
         $id = (int)$_GET['id'];
         
-        // Obtener datos del empleado
         $empleado = $this->empleado->obtenerEmpleadoPorId($id);
         
         if (!$empleado) {
@@ -86,16 +81,13 @@ class EmpleadoController {
         $stmt->execute();
         $puestos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        // Cargar la vista
         include 'Views/Empleados/Editar.php';
     }
 
     public function actualizar() {
-        // Verificar si se ha enviado el formulario
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = (int)$_POST['id_emp'];
             
-            // Crear array con los datos del formulario
             $datos = [
                 'pri_nombre'       => $_POST['pri_nombre'],
                 'seg_nombre'       => $_POST['seg_nombre'] ?? '',

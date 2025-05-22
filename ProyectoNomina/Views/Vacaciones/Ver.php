@@ -29,6 +29,7 @@
             <div class="header">
                 <div class="header-title">
                     <h1><i class="fas fa-umbrella-beach text-primary"></i> Vacaciones</h1>
+                    <p class="text-muted">Periodos de Vacaciones por Empleado</p>
                 </div>
             </div>
 
@@ -42,7 +43,7 @@
 
                         <div class="col-md-6">
                             <div class="input-group search-box">
-                                <input type="text" id="searchInput" class="form-control" placeholder="Buscar empleado...">
+                                <input type="text" id="searchInput" class="form-control" placeholder="Buscar periodo...">
                                 <div class="input-group-append">
                                     <span class="input-group-text"><i class="fas fa-search"></i></span>
                                 </div>
