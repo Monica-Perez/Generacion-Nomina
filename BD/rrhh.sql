@@ -1,1019 +1,379 @@
-CREATE DATABASE  IF NOT EXISTS `rrhh` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
-USE `rrhh`;
--- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1    Database: rrhh
--- ------------------------------------------------------
--- Server version	5.5.5-10.4.32-MariaDB
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 22-05-2025 a las 05:06:29
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Table structure for table `departamento`
+-- Base de datos: `rrhh`
 --
 
-DROP TABLE IF EXISTS `departamento`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `departamento` (
-  `ID_Dep` int(11) NOT NULL AUTO_INCREMENT,
-  `Nombre_Dep` varchar(100) NOT NULL,
-  PRIMARY KEY (`ID_Dep`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
+DELIMITER $$
 --
--- Dumping data for table `departamento`
+-- Procedimientos
 --
-
-LOCK TABLES `departamento` WRITE;
-/*!40000 ALTER TABLE `departamento` DISABLE KEYS */;
-INSERT INTO `departamento` VALUES (1,'IT'),(2,'Recursos Humanos'),(3,'Contabilidad'),(4,'Auditoria');
-/*!40000 ALTER TABLE `departamento` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `empleado`
---
-
-DROP TABLE IF EXISTS `empleado`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `empleado` (
-  `ID_Emp` int(11) NOT NULL AUTO_INCREMENT,
-  `PriNombre_Emp` varchar(50) NOT NULL,
-  `SegNombre_Emp` varchar(50) NOT NULL,
-  `PriApellido_Emp` varchar(50) NOT NULL,
-  `SegApellido_Emp` varchar(50) NOT NULL,
-  `DPI_Emp` varchar(20) NOT NULL,
-  `FechaNacimiento_Emp` date NOT NULL,
-  `Direccion_Emp` varchar(255) DEFAULT NULL,
-  `Telefono_Emp` varchar(15) DEFAULT NULL,
-  `Email_Emp` varchar(100) DEFAULT NULL,
-  `FechaIngreso_Emp` date NOT NULL,
-  `FechaBaja_Emp` date DEFAULT NULL,
-  `Estado_Emp` varchar(10) DEFAULT 'Activo',
-  `ID_Puesto` int(11) DEFAULT NULL,
-  `Horas_Extras` decimal(5,2) DEFAULT 0.00,
-  PRIMARY KEY (`ID_Emp`),
-  UNIQUE KEY `DPI_Emp` (`DPI_Emp`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `empleado`
---
-
-LOCK TABLES `empleado` WRITE;
-/*!40000 ALTER TABLE `empleado` DISABLE KEYS */;
-INSERT INTO `empleado` VALUES (1,'Monica','Gabriela','Perez','Velásquez','3017792360101','2003-03-28','zona 17','846513','monica@gmail.com','2024-12-01',NULL,'Activo',1,0.00),(2,'Axel','Jorge','Alvarado','Arana','1234567890101','2004-02-02','zona 5','45215632','axel@gmail.com','2025-02-17',NULL,'Activo',4,0.00),(3,'Lester','Ivan','Mendez','Jose','1236547890101','2000-01-06','zona 4','87569830','lester@gmail.com','2025-05-05',NULL,'Activo',7,0.00),(4,'Diego','Pablo','Perez','Velasquez','7896452190101','2000-11-22','zona 17','78541236','diego@gmail.com','2019-08-08','2025-05-11','Baja',6,0.00),(5,'Fernando','Jorge','Alvarado','Arana','222222222','2002-01-02','21 Av. A 12-61 Alameda 4 Zona 18','36707871','aranaaxel22@gmail.com','2015-06-26',NULL,'Activo',8,0.00);
-/*!40000 ALTER TABLE `empleado` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trg_ActualizarVacacionesAlDarBaja` AFTER UPDATE ON `empleado` FOR EACH ROW BEGIN
-
-    -- Si el empleado fue dado de baja
-
-    IF NEW.Estado_Emp = 'Baja' AND OLD.Estado_Emp = 'Activo' THEN
-
-        -- Calcular vacaciones pendientes
-
-        CALL spCalcularVacacionesPendientes(NEW.ID_Emp);
-
-        
-
-        -- Actualizar el saldo de vacaciones
-
-        -- Este trigger solo calcula; el pago sería un proceso separado
-
-    END IF;
-
-END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Table structure for table `historialvacaciones`
---
-
-DROP TABLE IF EXISTS `historialvacaciones`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `historialvacaciones` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `ID_PeriodoVacaciones` int(11) NOT NULL,
-  `FechaInicio` date NOT NULL,
-  `FechaFin` date NOT NULL,
-  `DiasTomados` decimal(10,2) NOT NULL,
-  `Motivo` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `ID_PeriodoVacaciones` (`ID_PeriodoVacaciones`),
-  CONSTRAINT `historialvacaciones_ibfk_1` FOREIGN KEY (`ID_PeriodoVacaciones`) REFERENCES `periodosvacaciones` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `historialvacaciones`
---
-
-LOCK TABLES `historialvacaciones` WRITE;
-/*!40000 ALTER TABLE `historialvacaciones` DISABLE KEYS */;
-INSERT INTO `historialvacaciones` VALUES (1,1,'2024-04-20','2024-04-22',2.00,'Vacaciones familiares'),(2,1,'2025-05-12','2025-05-13',2.00,'Personal'),(3,1,'2025-05-15','2025-05-16',2.00,'Personal'),(4,1,'2025-04-09','2025-04-09',1.00,'Personal'),(5,1,'2025-05-01','2025-05-01',1.00,'Personal'),(6,1,'2025-05-05','2025-05-05',1.00,'Personal'),(7,1,'2025-03-04','2025-03-04',1.00,'Personal');
-/*!40000 ALTER TABLE `historialvacaciones` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `nomina`
---
-
-DROP TABLE IF EXISTS `nomina`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `nomina` (
-  `ID_Nomina` int(11) NOT NULL AUTO_INCREMENT,
-  `ID_Emp` int(11) NOT NULL,
-  `Tipo_Nomina` enum('Semanal','Quincenal','Mensual') NOT NULL,
-  `Fecha_Nomina` date NOT NULL,
-  `Salario_Base` decimal(10,2) NOT NULL,
-  `Bono_Incentivo` decimal(10,2) DEFAULT 250.00,
-  `Bono_Antiguedad` decimal(10,2) DEFAULT 0.00,
-  `Bono_HorasExtras` decimal(10,2) DEFAULT 0.00,
-  `ISR` decimal(10,2) DEFAULT 0.00,
-  `IGSS` decimal(10,2) DEFAULT 0.00,
-  `Total_Neto` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`ID_Nomina`),
-  KEY `ID_Emp` (`ID_Emp`),
-  CONSTRAINT `nomina_ibfk_1` FOREIGN KEY (`ID_Emp`) REFERENCES `empleado` (`ID_Emp`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `nomina`
---
-
-LOCK TABLES `nomina` WRITE;
-/*!40000 ALTER TABLE `nomina` DISABLE KEYS */;
-INSERT INTO `nomina` VALUES (22,3,'Mensual','2025-05-19',7200.00,250.00,0.00,540.00,360.00,347.76,7282.24),(24,5,'Mensual','2025-05-19',8000.00,250.00,900.00,0.00,400.00,386.40,8363.60),(25,2,'Semanal','2025-05-19',5800.00,250.00,0.00,271.88,0.00,280.14,6041.74),(27,1,'Mensual','2025-05-21',5750.00,250.00,0.00,1078.20,0.00,277.73,6800.47);
-/*!40000 ALTER TABLE `nomina` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `periodosvacaciones`
---
-
-DROP TABLE IF EXISTS `periodosvacaciones`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `periodosvacaciones` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `ID_Emp` int(11) NOT NULL,
-  `PeriodoInicial` date NOT NULL,
-  `PeriodoFinal` date NOT NULL,
-  `DiasLaborados` int(11) NOT NULL,
-  `CantDias` decimal(10,2) NOT NULL,
-  `DiasTomados` decimal(10,2) DEFAULT 0.00,
-  `DiasPendientes` decimal(10,2) GENERATED ALWAYS AS (`CantDias` - `DiasTomados`) VIRTUAL,
-  PRIMARY KEY (`ID`),
-  KEY `ID_Emp` (`ID_Emp`),
-  CONSTRAINT `periodosvacaciones_ibfk_1` FOREIGN KEY (`ID_Emp`) REFERENCES `empleado` (`ID_Emp`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `periodosvacaciones`
---
-
-LOCK TABLES `periodosvacaciones` WRITE;
-/*!40000 ALTER TABLE `periodosvacaciones` DISABLE KEYS */;
-INSERT INTO `periodosvacaciones` (`ID`, `ID_Emp`, `PeriodoInicial`, `PeriodoFinal`, `DiasLaborados`, `CantDias`, `DiasTomados`) VALUES (1,5,'2015-06-26','2016-06-26',366,15.00,10.00),(2,5,'2016-06-26','2017-06-26',365,15.00,0.00),(3,5,'2017-06-26','2018-06-26',365,15.00,0.00),(4,5,'2018-06-26','2019-06-26',365,15.00,0.00),(5,5,'2019-06-26','2020-06-26',366,15.00,0.00),(6,5,'2020-06-26','2021-06-26',365,15.00,0.00),(7,5,'2021-06-26','2022-06-26',365,15.00,0.00),(8,5,'2022-06-26','2023-06-26',365,15.00,0.00),(9,5,'2023-06-26','2024-06-26',366,15.00,0.00),(10,5,'2024-06-26','2025-05-18',326,13.40,0.00),(11,4,'2019-08-08','2020-08-08',366,15.00,0.00),(12,4,'2020-08-08','2021-08-08',365,15.00,0.00),(13,4,'2021-08-08','2022-08-08',365,15.00,0.00),(14,4,'2022-08-08','2023-08-08',365,15.00,0.00),(15,4,'2023-08-08','2024-08-08',366,15.00,0.00),(16,4,'2024-08-08','2025-05-11',276,11.34,0.00),(17,1,'2024-12-01','2025-05-18',168,6.90,0.00),(18,5,'2024-06-26','2025-05-20',328,13.48,0.00),(19,3,'2025-05-05','2025-05-20',15,0.62,0.00),(20,1,'2024-12-01','2025-05-20',170,6.99,0.00);
-/*!40000 ALTER TABLE `periodosvacaciones` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `productividad`
---
-
-DROP TABLE IF EXISTS `productividad`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `productividad` (
-  `ID_Prod` int(11) NOT NULL AUTO_INCREMENT,
-  `ID_Emp` int(11) NOT NULL,
-  `Mes` int(11) NOT NULL,
-  `Anio` int(11) NOT NULL,
-  `HorasTrabajadas` decimal(5,2) NOT NULL,
-  `HorasExtras` decimal(5,2) DEFAULT 0.00,
-  `HorasDescanso` decimal(5,2) DEFAULT 0.00,
-  `TiempoProductivo` decimal(5,2) GENERATED ALWAYS AS (`HorasTrabajadas` - `HorasDescanso`) STORED,
-  `PorcentajeProductividad` decimal(5,2) GENERATED ALWAYS AS (round((`HorasTrabajadas` - `HorasDescanso`) / 140 * 100,2)) STORED,
-  PRIMARY KEY (`ID_Prod`),
-  UNIQUE KEY `emp_mes_anio` (`ID_Emp`,`Mes`,`Anio`),
-  CONSTRAINT `fk_productividad_empleado` FOREIGN KEY (`ID_Emp`) REFERENCES `empleado` (`ID_Emp`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `productividad`
---
-
-LOCK TABLES `productividad` WRITE;
-/*!40000 ALTER TABLE `productividad` DISABLE KEYS */;
-INSERT INTO `productividad` (`ID_Prod`, `ID_Emp`, `Mes`, `Anio`, `HorasTrabajadas`, `HorasExtras`, `HorasDescanso`) VALUES (1,1,4,2025,150.00,20.00,10.00),(2,2,4,2025,145.00,5.00,15.00),(3,3,4,2025,155.00,8.00,18.00),(4,5,4,2025,140.00,0.00,10.00),(5,2,5,2025,80.00,12.00,10.00),(12,1,5,2025,150.00,15.00,20.00),(13,3,5,2025,150.00,2.00,20.00),(15,1,1,2025,100.00,50.00,20.00),(16,1,2,2025,150.00,0.00,0.00);
-/*!40000 ALTER TABLE `productividad` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `puesto`
---
-
-DROP TABLE IF EXISTS `puesto`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `puesto` (
-  `ID_Puesto` int(11) NOT NULL AUTO_INCREMENT,
-  `Nombre_Puesto` varchar(100) NOT NULL,
-  `SalarioBase_Puesto` decimal(10,2) NOT NULL,
-  `ID_Dep` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID_Puesto`),
-  KEY `fk_departamento` (`ID_Dep`),
-  CONSTRAINT `fk_departamento` FOREIGN KEY (`ID_Dep`) REFERENCES `departamento` (`ID_Dep`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `puesto`
---
-
-LOCK TABLES `puesto` WRITE;
-/*!40000 ALTER TABLE `puesto` DISABLE KEYS */;
-INSERT INTO `puesto` VALUES (1,'Analista de Datos',5750.00,1),(2,'Soporte Técnico',5000.00,1),(3,'Analista de Recursos Humanos',6000.00,2),(4,'Reclutador',5800.00,2),(5,'Contador General',7000.00,3),(6,'Auxiliar Contable',4500.00,3),(7,'Auditor Interno',7200.00,4),(8,'Supervisor de Auditoría',8000.00,4);
-/*!40000 ALTER TABLE `puesto` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping events for database 'rrhh'
---
-
---
--- Dumping routines for database 'rrhh'
---
-/*!50003 DROP PROCEDURE IF EXISTS `InsertarEmpleado` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertarEmpleado`(IN `p_PriNombre_Emp` VARCHAR(50), IN `p_SegNombre_Emp` VARCHAR(50), IN `p_PriApellido_Emp` VARCHAR(50), IN `p_SegApellido_Emp` VARCHAR(50), IN `p_DPI_Emp` VARCHAR(20), IN `p_FechaNacimiento_Emp` DATE, IN `p_Direccion_Emp` VARCHAR(255), IN `p_Telefono_Emp` VARCHAR(15), IN `p_Email_Emp` VARCHAR(50), IN `p_FechaIngreso_Emp` DATE, IN `p_FechaBaja_Emp` DATE, IN `p_Estado_Emp` VARCHAR(20), IN `p_ID_Puesto` INT)
-BEGIN
-
+CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertarEmpleado` (IN `p_PriNombre_Emp` VARCHAR(50), IN `p_SegNombre_Emp` VARCHAR(50), IN `p_PriApellido_Emp` VARCHAR(50), IN `p_SegApellido_Emp` VARCHAR(50), IN `p_DPI_Emp` VARCHAR(20), IN `p_FechaNacimiento_Emp` DATE, IN `p_Direccion_Emp` VARCHAR(255), IN `p_Telefono_Emp` VARCHAR(15), IN `p_Email_Emp` VARCHAR(50), IN `p_FechaIngreso_Emp` DATE, IN `p_FechaBaja_Emp` DATE, IN `p_Estado_Emp` VARCHAR(20), IN `p_ID_Puesto` INT)   BEGIN
     INSERT INTO Empleado (
-
         PriNombre_Emp,
-
         SegNombre_Emp,
-
         PriApellido_Emp,
-
         SegApellido_Emp,
-
         DPI_Emp,
-
         FechaNacimiento_Emp,
-
         Direccion_Emp,
-
         Telefono_Emp,
-
         Email_Emp,
-
         FechaIngreso_Emp,
-
         FechaBaja_Emp,
-
         Estado_Emp,
-
         ID_Puesto
-
     )
-
     VALUES (
-
         p_PriNombre_Emp,
-
         p_SegNombre_Emp,
-
         p_PriApellido_Emp,
-
         p_SegApellido_Emp,
-
         p_DPI_Emp,
-
         p_FechaNacimiento_Emp,
-
         p_Direccion_Emp,
-
         p_Telefono_Emp,
-
         p_Email_Emp,
-
         p_FechaIngreso_Emp,
-
         p_FechaBaja_Emp,
-
         p_Estado_Emp,
-
         p_ID_Puesto
-
     );
+END$$
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spActualizarEmpleado` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spActualizarEmpleado`(IN `p_ID_Emp` INT, IN `p_PriNombre_Emp` VARCHAR(50), IN `p_SegNombre_Emp` VARCHAR(50), IN `p_PriApellido_Emp` VARCHAR(50), IN `p_SegApellido_Emp` VARCHAR(50), IN `p_DPI_Emp` VARCHAR(20), IN `p_FechaNacimiento_Emp` DATE, IN `p_Direccion_Emp` VARCHAR(255), IN `p_Telefono_Emp` VARCHAR(15), IN `p_Email_Emp` VARCHAR(100), IN `p_FechaIngreso_Emp` DATE, IN `p_FechaBaja_Emp` DATE, IN `p_Estado_Emp` VARCHAR(20), IN `p_ID_Puesto` INT)
-BEGIN
-
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spActualizarEmpleado` (IN `p_ID_Emp` INT, IN `p_PriNombre_Emp` VARCHAR(50), IN `p_SegNombre_Emp` VARCHAR(50), IN `p_PriApellido_Emp` VARCHAR(50), IN `p_SegApellido_Emp` VARCHAR(50), IN `p_DPI_Emp` VARCHAR(20), IN `p_FechaNacimiento_Emp` DATE, IN `p_Direccion_Emp` VARCHAR(255), IN `p_Telefono_Emp` VARCHAR(15), IN `p_Email_Emp` VARCHAR(100), IN `p_FechaIngreso_Emp` DATE, IN `p_FechaBaja_Emp` DATE, IN `p_Estado_Emp` VARCHAR(20), IN `p_ID_Puesto` INT)   BEGIN
     START TRANSACTION;
-
     
-
     IF (SELECT COUNT(*) FROM Empleado WHERE ID_Emp = p_ID_Emp) = 0 THEN
-
         SIGNAL SQLSTATE '45000' 
-
         SET MESSAGE_TEXT = 'El empleado no existe';
-
     END IF;
-
     
-
     UPDATE Empleado 
-
     SET 
-
         PriNombre_Emp = p_PriNombre_Emp,
-
         SegNombre_Emp = p_SegNombre_Emp,
-
         PriApellido_Emp = p_PriApellido_Emp,
-
         SegApellido_Emp = p_SegApellido_Emp,
-
         DPI_Emp = p_DPI_Emp,
-
         FechaNacimiento_Emp = p_FechaNacimiento_Emp,
-
         Direccion_Emp = p_Direccion_Emp,
-
         Telefono_Emp = p_Telefono_Emp,
-
         Email_Emp = p_Email_Emp,
-
         FechaIngreso_Emp = p_FechaIngreso_Emp,
-
         FechaBaja_Emp = p_FechaBaja_Emp,
-
         Estado_Emp = p_Estado_Emp,
-
         ID_Puesto = p_ID_Puesto
-
     WHERE 
-
         ID_Emp = p_ID_Emp;
-
     
-
     IF p_Estado_Emp = 'Baja' AND p_FechaBaja_Emp IS NULL THEN
-
         UPDATE Empleado
-
         SET FechaBaja_Emp = CURRENT_DATE()
-
         WHERE ID_Emp = p_ID_Emp;
-
     END IF;
-
     
-
     COMMIT;
-
     
-
     SELECT ID_Emp 
-
     FROM Empleado 
+    WHERE ID_Emp = p_ID_Emp;
+END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spActualizarPeriodosVacaciones` (IN `p_ID_Emp` INT)   BEGIN
+    DECLARE v_FechaIngreso DATE;
+    DECLARE v_FechaBaja DATE;
+    DECLARE v_FechaActual DATE;
+    DECLARE v_PeriodoInicial DATE;
+    DECLARE v_PeriodoFinal DATE;
+    DECLARE v_DiasLaborados INT;
+    DECLARE v_CantDias DECIMAL(10,2);
+    DECLARE v_DiasRestantes DECIMAL(10,2);
+    DECLARE v_PeriodoID INT;
+    DECLARE v_CantPeriodo DECIMAL(10,2);
+    DECLARE done INT DEFAULT 0;
+
+    -- Cursor para iterar periodos
+    DECLARE cur CURSOR FOR
+        SELECT ID, CantDias FROM PeriodosVacaciones
+        WHERE ID_Emp = p_ID_Emp
+        ORDER BY PeriodoInicial;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    -- Obtener fechas del empleado
+    SELECT FechaIngreso_Emp, FechaBaja_Emp
+    INTO v_FechaIngreso, v_FechaBaja
+    FROM Empleado
     WHERE ID_Emp = p_ID_Emp;
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spActualizarPeriodosVacaciones` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spActualizarPeriodosVacaciones`(IN `p_ID_Emp` INT)
-BEGIN
+    -- Si no hay fecha de baja, usar la actual
+	IF v_FechaBaja IS NULL THEN
+		SET v_FechaBaja = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY);
+	END IF;
 
-    DECLARE v_FechaIngreso DATE;
+    -- Eliminar periodos anteriores
+    DELETE FROM PeriodosVacaciones WHERE ID_Emp = p_ID_Emp;
 
-    DECLARE v_FechaBaja DATE;
-
-    DECLARE v_FechaActual DATE;
-
-    DECLARE v_PeriodoInicial DATE;
-
-    DECLARE v_PeriodoFinal DATE;
-
-    DECLARE v_DiasLaborados INT;
-
-    DECLARE v_CantDias DECIMAL(10,2);
-
-    DECLARE v_SalarioDiario DECIMAL(10,2);
-
-    DECLARE v_AñosTrabajados INT;
-
-    
-
-    SELECT 
-
-        e.FechaIngreso_Emp,
-
-        e.FechaBaja_Emp
-
-    INTO
-
-        v_FechaIngreso,
-
-        v_FechaBaja
-
-    FROM 
-
-        Empleado e
-
-    WHERE 
-
-        e.ID_Emp = p_ID_Emp;
-
-    
-
-    -- Si no hay fecha de baja, usar la fecha actual
-
-    IF v_FechaBaja IS NULL THEN
-
-        SET v_FechaBaja = CURRENT_DATE();
-
-    END IF;
-
-    
-
+    -- Generar periodos nuevos
     SET v_FechaActual = v_FechaIngreso;
 
-    SET v_AñosTrabajados = 0;
-
-    
-
-    -- Calcular cuántos años completos ha trabajado el empleado
-
     WHILE v_FechaActual < v_FechaBaja DO
-
         SET v_PeriodoInicial = v_FechaActual;
-
         SET v_PeriodoFinal = DATE_ADD(v_PeriodoInicial, INTERVAL 1 YEAR);
 
-        
-
-        -- Ajustar el período final si es mayor a la fecha de baja
-
         IF v_PeriodoFinal > v_FechaBaja THEN
-
             SET v_PeriodoFinal = v_FechaBaja;
-
         END IF;
-
-        
-
-        -- Calcular días laborados en este período
 
         SET v_DiasLaborados = DATEDIFF(v_PeriodoFinal, v_PeriodoInicial);
 
-        
-
-        -- Calcular días de vacaciones proporcionales
-
         IF v_DiasLaborados >= 365 THEN
-
-            SET v_CantDias = 15; -- Un año completo
-
+            SET v_CantDias = 15;
         ELSE
-
-            SET v_CantDias = (v_DiasLaborados * 15) / 365; 
-
+            SET v_CantDias = (v_DiasLaborados * 15) / 365;
         END IF;
 
-        
-
-        -- Verificar si este período ya existe
-
-        IF NOT EXISTS (
-
-            SELECT 1 FROM PeriodosVacaciones 
-
-            WHERE ID_Emp = p_ID_Emp 
-
-            AND PeriodoInicial = v_PeriodoInicial 
-
-            AND PeriodoFinal = v_PeriodoFinal
-
-        ) THEN
-
-            -- Insertar nuevo período
-
-            INSERT INTO PeriodosVacaciones (
-
-                ID_Emp, 
-
-                PeriodoInicial, 
-
-                PeriodoFinal, 
-
-                DiasLaborados, 
-
-                CantDias, 
-
-                DiasTomados
-
-            ) VALUES (
-
-                p_ID_Emp,
-
-                v_PeriodoInicial,
-
-                v_PeriodoFinal,
-
-                v_DiasLaborados,
-
-                v_CantDias,
-
-                0 -- Inicialmente no se han tomado días
-
-            );
-
-        END IF;
-
-        
-
-        -- Avanzar al siguiente período
+        INSERT INTO PeriodosVacaciones (
+            ID_Emp, PeriodoInicial, PeriodoFinal, DiasLaborados, CantDias, DiasTomados
+        ) VALUES (
+            p_ID_Emp, v_PeriodoInicial, v_PeriodoFinal, v_DiasLaborados, v_CantDias, 0
+        );
 
         SET v_FechaActual = v_PeriodoFinal;
-
-        SET v_AñosTrabajados = v_AñosTrabajados + 1;
-
     END WHILE;
 
-    
+    -- Calcular días tomados totales del empleado
+    SELECT SUM(DiasTomados) INTO v_DiasRestantes
+    FROM HistorialVacaciones
+    WHERE ID_Emp = p_ID_Emp;
 
-    -- Devolver los períodos actualizados
+    IF v_DiasRestantes IS NULL OR v_DiasRestantes = 0 THEN
+        SET v_DiasRestantes = 0;
+    END IF;
 
-    SELECT 
-
-        ID,
-
-        ID_Emp,
-
-        PeriodoInicial,
-
-        PeriodoFinal,
-
-        DiasLaborados,
-
-        CantDias,
-
-        DiasTomados,
-
-        DiasPendientes
-
-    FROM 
-
-        PeriodosVacaciones
-
-    WHERE 
-
-        ID_Emp = p_ID_Emp
-
-    ORDER BY 
-
-        ID;
-
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spActualizarPeriodosVacaciones2` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spActualizarPeriodosVacaciones2`()
-BEGIN
-
-    DECLARE v_done INT DEFAULT FALSE;
-
-    DECLARE v_ID_Emp INT;
-
-    DECLARE v_FechaIngreso DATE;
-
-    DECLARE v_FechaBaja DATE;
-
-    DECLARE v_FechaActual DATE;
-
-    DECLARE v_PeriodoInicial DATE;
-
-    DECLARE v_PeriodoFinal DATE;
-
-    DECLARE v_DiasLaborados INT;
-
-    DECLARE v_CantDias DECIMAL(10,2);
-
-    DECLARE v_SalarioDiario DECIMAL(10,2);
-
-	
-
-    -- Declarar cursor para recorrer todos los empleados
-
-    DECLARE cur_empleados CURSOR FOR 
-
-        SELECT 
-
-            e.ID_Emp,
-
-            e.FechaIngreso_Emp,
-
-            e.FechaBaja_Emp,
-
-            p.SalarioBase_Puesto / 30
-
-        FROM 
-
-            Empleado e
-
-        JOIN 
-
-            Puesto p ON e.ID_Puesto = p.ID_Puesto;
-
-
-
-    -- Declarar handler para el fin del cursor
-
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_done = TRUE;
-
-	
-
-    -- Se borra la tabla para que no se dupliquen los registros de diferentes dias
-
-    TRUNCATE periodosvacaciones;
-
-    -- Abrir cursor
-
-    OPEN cur_empleados;
-
-
-
-    -- Iniciar el bucle de procesamiento
-
-    emp_loop: LOOP
-
-        -- Obtener el siguiente empleado
-
-        FETCH cur_empleados INTO v_ID_Emp, v_FechaIngreso, v_FechaBaja, v_SalarioDiario;
-
-
-
-        -- Salir si no hay más empleados
-
-        IF v_done THEN
-
-            LEAVE emp_loop;
-
+    -- Repartir días tomados entre periodos en orden
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO v_PeriodoID, v_CantPeriodo;
+        IF done = 1 THEN
+            LEAVE read_loop;
         END IF;
 
+        IF v_DiasRestantes >= v_CantPeriodo THEN
+            -- Resta completa al periodo
+            UPDATE PeriodosVacaciones
+            SET DiasTomados = v_CantPeriodo
+            WHERE ID = v_PeriodoID;
 
+            SET v_DiasRestantes = v_DiasRestantes - v_CantPeriodo;
+        ELSE
+            -- Solo lo que queda
+            UPDATE PeriodosVacaciones
+            SET DiasTomados = v_DiasRestantes
+            WHERE ID = v_PeriodoID;
 
-        -- Si no hay fecha de baja, usar la fecha actual
-
-        IF v_FechaBaja IS NULL THEN
-
-            SET v_FechaBaja = CURRENT_DATE();
-
+            SET v_DiasRestantes = 0;
+            LEAVE read_loop;
         END IF;
-
-
-
-        -- Inicializar la fecha actual para este empleado
-
-        SET v_FechaActual = v_FechaIngreso;
-
-
-
-        -- Procesar cada período anual para este empleado
-
-        WHILE v_FechaActual < v_FechaBaja DO
-
-            SET v_PeriodoInicial = v_FechaActual;
-
-            SET v_PeriodoFinal = DATE_ADD(v_PeriodoInicial, INTERVAL 1 YEAR);
-
-
-
-            -- Ajustar el período final si es mayor a la fecha de baja
-
-            IF v_PeriodoFinal > v_FechaBaja THEN
-
-                SET v_PeriodoFinal = v_FechaBaja;
-
-            END IF;
-
-
-
-            -- Calcular días laborados en este período
-
-            SET v_DiasLaborados = DATEDIFF(v_PeriodoFinal, v_PeriodoInicial);
-
-
-
-            -- Calcular días de vacaciones proporcionales
-
-            IF v_DiasLaborados >= 365 THEN
-
-                SET v_CantDias = 15;
-
-            ELSE
-
-                SET v_CantDias = (v_DiasLaborados / 365) * 15;
-
-            END IF;
-
-
-
-            -- Verificar si este período ya existe
-
-            IF NOT EXISTS (
-
-                SELECT 1 FROM PeriodosVacaciones 
-
-                WHERE ID_Emp = v_ID_Emp 
-
-                  AND PeriodoInicial = v_PeriodoInicial 
-
-                  AND PeriodoFinal = v_PeriodoFinal
-
-            ) THEN
-
-                -- Insertar nuevo período
-
-                INSERT INTO PeriodosVacaciones (
-
-                    ID_Emp, 
-
-                    PeriodoInicial, 
-
-                    PeriodoFinal, 
-
-                    DiasLaborados, 
-
-                    CantDias, 
-
-                    DiasTomados, 
-
-                    MontoPagar
-
-                ) VALUES (
-
-                    v_ID_Emp,
-
-                    v_PeriodoInicial,
-
-                    v_PeriodoFinal,
-
-                    v_DiasLaborados,
-
-                    v_CantDias,
-
-                    0,
-
-                    0
-
-                );
-
-            ELSE
-
-                -- Actualizar período existente
-
-                UPDATE PeriodosVacaciones
-
-                SET DiasLaborados = v_DiasLaborados,
-
-                    CantDias = v_CantDias
-
-                WHERE ID_Emp = v_ID_Emp 
-
-                  AND PeriodoInicial = v_PeriodoInicial 
-
-                  AND PeriodoFinal = v_PeriodoFinal;
-
-            END IF;
-
-
-
-            -- Avanzar al siguiente período
-
-            SET v_FechaActual = v_PeriodoFinal;
-
-        END WHILE;
-
-
-
-        -- Actualizar montos a pagar
-
-        UPDATE PeriodosVacaciones
-
-        SET MontoPagar = DiasPendientes * (v_SalarioDiario * 1.30)
-
-        WHERE ID_Emp = v_ID_Emp;
-
     END LOOP;
+    CLOSE cur;
 
-
-
-    -- Cerrar cursor
-
-    CLOSE cur_empleados;
-
-
-
-    -- Devolver resultados
-
+    -- Mostrar resultado
     SELECT 
-
-        ID,
-
-        ID_Emp,
-
-        PeriodoInicial,
-
-        PeriodoFinal,
-
-        DiasLaborados,
-
-        CantDias,
-
-        DiasTomados,
-
-        DiasPendientes,
-
-        MontoPagar
-
+        pv.ID,
+        pv.ID_Emp,
+        pv.PeriodoInicial,
+        pv.PeriodoFinal,
+        pv.DiasLaborados,
+        pv.CantDias,
+        pv.DiasTomados,
+        (pv.CantDias - pv.DiasTomados) AS DiasPendientes,
+        e.PriNombre_Emp AS Nombre
     FROM 
-
-        PeriodosVacaciones
-
+        PeriodosVacaciones pv
+        JOIN Empleado e ON pv.ID_Emp = e.ID_Emp
+    WHERE 
+        pv.ID_Emp = p_ID_Emp
     ORDER BY 
+        pv.PeriodoInicial;
+END$$
 
-        ID;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spActualizarPeriodosVacaciones2` (IN `p_ID_Emp` INT)   BEGIN
+    DECLARE v_FechaIngreso DATE;
+    DECLARE v_FechaBaja DATE;
+    DECLARE v_FechaActual DATE;
+    DECLARE v_PeriodoInicial DATE;
+    DECLARE v_PeriodoFinal DATE;
+    DECLARE v_DiasLaborados INT;
+    DECLARE v_CantDias DECIMAL(10,2);
+    DECLARE v_AñosTrabajados INT;
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE cur_id INT;
+    DECLARE cur_total DECIMAL(10,2);
+    DECLARE cur CURSOR FOR 
+        SELECT 
+            ID_PeriodoVacaciones, 
+            SUM(DiasTomados) AS TotalDiasTomados
+        FROM 
+            HistorialVacaciones
+        GROUP BY 
+            ID_PeriodoVacaciones;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    
+    SELECT 
+        e.FechaIngreso_Emp,
+        e.FechaBaja_Emp
+    INTO
+        v_FechaIngreso,
+        v_FechaBaja
+    FROM 
+        Empleado e
+    WHERE 
+        e.ID_Emp = p_ID_Emp;
+    
+	-- Si no hay fecha de baja, calcular hasta el último aniversario
+	IF v_FechaBaja IS NULL THEN
+		SET v_FechaBaja = DATE_ADD(v_FechaIngreso, INTERVAL TIMESTAMPDIFF(YEAR, v_FechaIngreso, CURRENT_DATE()) YEAR);
+	END IF;
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spCalcularB14_Agui` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spCalcularB14_Agui`()
-BEGIN
+    
+    SET v_FechaActual = v_FechaIngreso;
+    SET v_AñosTrabajados = 0;
+    
+    -- Calcular cuántos años completos ha trabajado el empleado
+    WHILE v_FechaActual < v_FechaBaja DO
+        SET v_PeriodoInicial = v_FechaActual;
+        SET v_PeriodoFinal = DATE_ADD(v_PeriodoInicial, INTERVAL 1 YEAR);
+        
+        -- Ajustar el período final si es mayor a la fecha de baja
+        IF v_PeriodoFinal > v_FechaBaja THEN
+            SET v_PeriodoFinal = v_FechaBaja;
+        END IF;
+        
+        -- Calcular días laborados en este período
+        SET v_DiasLaborados = DATEDIFF(v_PeriodoFinal, v_PeriodoInicial);
+        
+        -- Calcular días de vacaciones proporcionales
+        IF v_DiasLaborados >= 365 THEN
+            SET v_CantDias = 15; -- Un año completo
+        ELSE
+            SET v_CantDias = (v_DiasLaborados * 15) / 365; 
+        END IF;
+        
+        -- Verificar si este período ya existe
+        IF NOT EXISTS (
+            SELECT 1 FROM PeriodosVacaciones 
+            WHERE ID_Emp = p_ID_Emp 
+            AND PeriodoInicial = v_PeriodoInicial 
+            AND PeriodoFinal = v_PeriodoFinal
+        ) THEN
+            -- Insertar nuevo período
+            INSERT INTO PeriodosVacaciones (
+                ID_Emp, 
+                PeriodoInicial, 
+                PeriodoFinal, 
+                DiasLaborados, 
+                CantDias, 
+                DiasTomados
+            ) VALUES (
+                p_ID_Emp,
+                v_PeriodoInicial,
+                v_PeriodoFinal,
+                v_DiasLaborados,
+                v_CantDias,
+                0
+            );
+        END IF;
+        
+        -- Avanzar al siguiente período
+        SET v_FechaActual = v_PeriodoFinal;
+        SET v_AñosTrabajados = v_AñosTrabajados + 1;
+    END WHILE;
+    
+    -- Primero, resetear todos los días tomados a 0 para este empleado
+    UPDATE PeriodosVacaciones 
+    SET DiasTomados = 0 
+    WHERE ID_Emp = p_ID_Emp;
+    
+    -- Actualizar los días tomados usando un cursor (para actualizar fila por fila)
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO cur_id, cur_total;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        
+        -- Actualizar por ID (clave primaria)
+        UPDATE PeriodosVacaciones 
+        SET DiasTomados = cur_total 
+        WHERE ID = cur_id;
+    END LOOP;
+    CLOSE cur;
+    
+    -- Devolver los períodos actualizados
+    SELECT 
+        pv.ID,
+        pv.ID_Emp,
+        pv.PeriodoInicial,
+        pv.PeriodoFinal,
+        pv.DiasLaborados,
+        pv.CantDias,
+        pv.DiasTomados,
+        pv.DiasPendientes,
+        e.PriNombre_Emp AS Nombre
+    FROM 
+        PeriodosVacaciones pv
+        JOIN Empleado e ON pv.ID_Emp = e.ID_Emp
+    WHERE 
+        pv.ID_Emp = p_ID_Emp
+    ORDER BY 
+        pv.PeriodoInicial;
+END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spCalcularB14_Agui` ()   BEGIN
 	SELECT 
-
         Emp.ID_Emp,
-
         CONCAT(Emp.PriNombre_Emp, ' ', Emp.SegNombre_Emp, ' ', Emp.PriApellido_Emp, ' ', Emp.SegApellido_Emp) AS Nombre,
-
         -- Emp.DPI_Emp,
-
         Emp.FechaIngreso_Emp,
-
         Emp.FechaBaja_Emp,
-
         Emp.Estado_Emp,
-
         Pue.Nombre_Puesto,
-
         Pue.SalarioBase_Puesto,
 
-
-
         -- DATEDIFF(LEAST(COALESCE(Emp.FechaBaja_Emp, '2025-06-30'), '2025-06-30'), GREATEST(Emp.FechaIngreso_Emp, '2024-07-01')) + 1 AS Dias_Laborados_Bono,
-
         ROUND(((DATEDIFF(LEAST(COALESCE(Emp.FechaBaja_Emp, '2025-06-30'), '2025-06-30'), 
-
 				GREATEST(Emp.FechaIngreso_Emp, '2024-07-01')) + 1) * Pue.SalarioBase_Puesto)/365, 2) AS Bono14,
-
 		
-
         -- DATEDIFF(LEAST(COALESCE(Emp.FechaBaja_Emp, '2025-11-30'), '2025-11-30'), GREATEST(Emp.FechaIngreso_Emp, '2024-12-01')) + 1 AS Dias_Laborados_Ag,
-
         ROUND(((DATEDIFF(LEAST(COALESCE(Emp.FechaBaja_Emp, '2025-11-30'), '2025-11-30'), 
-
 				GREATEST(Emp.FechaIngreso_Emp, '2024-12-01')) + 1) * Pue.SalarioBase_Puesto)/365, 2) AS Aguinaldo
-
         
-
         
-
     FROM empleado Emp
+    INNER JOIN puesto Pue ON Emp.ID_Puesto = Pue.ID_Puesto
+    WHERE Emp.Estado_Emp = 'Activo';
+END$$
 
-    INNER JOIN puesto Pue ON Emp.ID_Puesto = Pue.ID_Puesto;
-
-    -- WHERE Emp.ID_Emp = p_id_emp;
-
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spCalcularNomina` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spCalcularNomina`(IN emp_id INT, IN Tipo_Nomina ENUM('Semanal','Quincenal','Mensual'))
-BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spCalcularNomina` (IN `emp_id` INT, IN `Tipo_Nomina` ENUM('Semanal','Quincenal','Mensual'))   BEGIN
 
     DECLARE salario_mensual DECIMAL(10,2);
 
@@ -1159,236 +519,62 @@ BEGIN
 
     END IF;
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spCalcularVacacionesPendientes` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spCalcularVacacionesPendientes`(IN `p_ID_Emp` INT)
-BEGIN
-
-    DECLARE v_FechaIngreso DATE;
-
-    DECLARE v_FechaBaja DATE;
-
-    DECLARE v_SalarioDiario DECIMAL(10,2);
-
-    DECLARE v_DiasAcumulados DECIMAL(10,2);
-
-    DECLARE v_DiasTomados DECIMAL(10,2);
-
-    DECLARE v_DiasPendientes DECIMAL(10,2);
-
-    DECLARE v_MontoPagar DECIMAL(10,2);
-
-    
-
-    -- Obtener datos del empleado
-
-    SELECT 
-
-        e.FechaIngreso_Emp,
-
-        e.FechaBaja_Emp,
-
-        p.SalarioBase / 30 -- Salario diario aproximado
-
-    INTO
-
-        v_FechaIngreso,
-
-        v_FechaBaja,
-
-        v_SalarioDiario
-
-    FROM 
-
-        Empleado e
-
-    JOIN 
-
-        Puesto p ON e.ID_Puesto = p.ID_Puesto
-
-    WHERE 
-
-        e.ID_Emp = p_ID_Emp;
-
-    
-
-    -- Si no hay fecha de baja, usar la fecha actual
-
-    IF v_FechaBaja IS NULL THEN
-
-        SET v_FechaBaja = CURRENT_DATE();
-
-    END IF;
-
-    
-
-    -- Calcular días laborados (convertir a años)
-
-    SET v_DiasAcumulados = (15 * (DATEDIFF(v_FechaBaja, v_FechaIngreso) / 365));
-
-    
-
-    -- Obtener días tomados
-
-    SELECT COALESCE(SUM(DiasTomados), 0)
-
-    INTO v_DiasTomados
-
-    FROM VacacionesEmpleado
-
-    WHERE ID_Emp = p_ID_Emp AND Estado = 'Tomadas';
-
-    
-
-    -- Calcular días pendientes
-
-    SET v_DiasPendientes = v_DiasAcumulados - v_DiasTomados;
-
-    
-
-    -- Calcular monto a pagar (salario diario + 30%)
-
-    SET v_MontoPagar = v_DiasPendientes * (v_SalarioDiario * 1.30);
-
-    
-
-    -- Devolver resultados
-
-    SELECT 
-
-        p_ID_Emp AS ID_Emp,
-
-        v_FechaIngreso AS FechaIngreso,
-
-        v_FechaBaja AS FechaBaja,
-
-        DATEDIFF(v_FechaBaja, v_FechaIngreso) AS DiasLaborados,
-
-        v_DiasAcumulados AS DiasVacacionesAcumulados,
-
-        v_DiasTomados AS DiasVacacionesTomados,
-
-        v_DiasPendientes AS DiasVacacionesPendientes,
-
-        v_SalarioDiario AS SalarioDiario,
-
-        v_MontoPagar AS MontoPagar;
-
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spCalculoVacaciones` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spCalculoVacaciones`(IN `p_ID_Emp` INT)
-BEGIN
-
-	DECLARE vFechaIngreso DATE;
-
-    DECLARE vAniosTrabajados INT;
-
-    DECLARE vDiasTomados DECIMAL(10,2) DEFAULT 0;
-
-    DECLARE vDiasDisponibles DECIMAL(10,2);
-
-
-
-    -- Obtener la fecha de ingreso
-
-    SELECT FechaIngreso_Emp INTO vFechaIngreso
-
-    FROM empleado
-
-    WHERE ID_Emp = p_ID_Emp;
-
-
-
-    -- Calcular años completos trabajados
-
-    SET vAniosTrabajados = TIMESTAMPDIFF(YEAR, vFechaIngreso, CURDATE());
-
-
-
-    -- Ajuste si no ha cumplido el aniversario este año
-
-    IF DATE_ADD(vFechaIngreso, INTERVAL vAniosTrabajados YEAR) > CURDATE() THEN
-
-        SET vAniosTrabajados = vAniosTrabajados - 1;
-
-    END IF;
-
-
-
-    -- Calcular días ya tomados por el empleado
-
-    SELECT IFNULL(SUM(DiasTomados), 0) 
-
-    INTO vDiasTomados
-
-    FROM HistorialVacaciones
-
-    WHERE ID_Emp = p_ID_Emp;
-
-
-
-    -- Calcular días disponibles
-
-    SET vDiasDisponibles = (vAniosTrabajados * 15) - vDiasTomados;
-
-
-
-    -- Devolver resultados
-
-    SELECT p_ID_Emp AS EmpleadoID,
-
-           vAniosTrabajados AS AniosTrabajados,
-
-           vDiasTomados AS DiasTomados,
-
-           vDiasDisponibles AS VacacionesDisponibles;
-
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spDistribucionNomina` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spDistribucionNomina`(IN `nomina_id` INT)
-BEGIN
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spCalculoIndemnizacion` ()   BEGIN
+WITH DatosEmpleado AS (
+	SELECT
+		e.ID_Emp,
+		CONCAT(e.PriNombre_Emp, ' ', e.PriApellido_Emp) AS Nombre,
+		e.Estado_Emp AS Estado,
+		e.FechaIngreso_Emp AS Ingreso,
+		e.FechaBaja_Emp AS Baja,
+		p.SalarioBase_Puesto AS SalarioBase,
+		(p.SalarioBase_Puesto / 30) AS SDiario,
+		TIMESTAMPDIFF(DAY, e.FechaIngreso_Emp, e.FechaBaja_Emp) AS DiasLaborados,
+		DATEDIFF(
+			LEAST(e.FechaBaja_Emp, '2025-06-30'), -- Se toma en cuenta la fecha de baja, siempre que sea menor a -> 30/06/25, si es mayor se toma 30/06/25
+			GREATEST(e.FechaIngreso_Emp, '2024-07-01') -- Se toma en cuenta la fecha de ingreso, siempre que sea menor a -> 1/07/24, si es mayor se toma 1/07/24
+		) + 1 AS Dias_Laborados_Bono,
+		DATEDIFF(
+			LEAST(e.FechaBaja_Emp, '2025-11-30'), -- Se toma en cuenta la fecha de baja, siempre que sea menor a -> 30/11/25, si es mayor se toma 30/11/25
+			GREATEST(e.FechaIngreso_Emp, '2024-12-01') -- Se toma en cuenta la fecha de ingreso, siempre que sea menor a -> 1/12/24, si es mayor se toma 1/12/24
+		) + 1 AS Dias_Laborados_Ag
+	  FROM Empleado e
+	  LEFT JOIN Puesto p ON e.ID_Puesto = p.ID_Puesto
+	  WHERE e.Estado_Emp = 'Baja'
+	),
+
+	DiasTomados AS(
+		SELECT 
+			pv.ID_Emp,
+			SUM(pv.DiasTomados) AS DiasTomados,
+			SUM(pv.DiasPendientes) AS DiasPendientesV
+		FROM periodosvacaciones pv
+		INNER JOIN Empleado e ON pv.ID_Emp = e.ID_Emp
+		GROUP BY pv.ID_Emp
+	)
+	SELECT
+		de.ID_Emp,
+		de.Nombre,
+		de.Estado,
+		de.Ingreso,
+		de.Baja,
+		de.SalarioBase,
+		-- de.DiasLaborados,
+		-- ROUND(de.DiasLaborados / 365.25, 2) AS AniosLaborados,
+		ROUND((de.SalarioBase * de.Dias_Laborados_Bono) / 365, 2) AS Bono14, 
+		ROUND((de.SalarioBase * de.Dias_Laborados_Ag) / 365, 2) AS Aguinaldo,
+		ROUND(de.SalarioBase * de.DiasLaborados / 365.25, 2) AS Indemnizacion,
+		-- ROUND(de.SDiario) AS SalarioDiario,
+		-- dt.DiasTomados,
+		dt.DiasPendientesV, -- Dias de vacaciones que no tomo el empleado
+		ROUND(de.SDiario * dt.DiasPendientesV, 2) AS PagoVacaciones
+	FROM DatosEmpleado de
+	LEFT JOIN DiasTomados dt ON de.ID_Emp = dt.ID_Emp;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spDistribucionNomina` (IN `nomina_id` INT)   BEGIN
 
     DECLARE tipo ENUM('Semanal','Quincenal','Mensual');
 
@@ -1468,24 +654,9 @@ BEGIN
 
     END IF;
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spEliminarNominasMultiples` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spEliminarNominasMultiples`(IN lista_ids TEXT)
-BEGIN
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spEliminarNominasMultiples` (IN `lista_ids` TEXT)   BEGIN
 
     SET @sql = CONCAT('DELETE FROM nomina WHERE ID_Nomina IN (', lista_ids, ')');
 
@@ -1495,45 +666,15 @@ BEGIN
 
     DEALLOCATE PREPARE stmt;
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spEliminarProductividad` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spEliminarProductividad`(IN p_ID_Prod INT)
-BEGIN
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spEliminarProductividad` (IN `p_ID_Prod` INT)   BEGIN
 
     DELETE FROM productividad WHERE ID_Prod = p_ID_Prod;
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spEmpleadosSinNominaMesActual` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spEmpleadosSinNominaMesActual`()
-BEGIN
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spEmpleadosSinNominaMesActual` ()   BEGIN
 
     SELECT 
 
@@ -1567,24 +708,9 @@ BEGIN
 
     );
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spGetEmpActivo` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetEmpActivo`()
-BEGIN
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetEmpActivo` ()   BEGIN
 
     SELECT 
 
@@ -1598,24 +724,9 @@ BEGIN
 
     WHERE Estado_Emp = 'Activo';
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spGetProduEmp` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetProduEmp`()
-BEGIN
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetProduEmp` ()   BEGIN
 
     SELECT 
 
@@ -1669,24 +780,9 @@ BEGIN
 
     WHERE e.Estado_Emp = 'Activo';
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spHistProduEmp` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spHistProduEmp`(IN p_ID_Emp INT)
-BEGIN
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spHistProduEmp` (IN `p_ID_Emp` INT)   BEGIN
 
     SELECT 
 
@@ -1702,142 +798,59 @@ BEGIN
 
     ORDER BY Anio DESC, Mes DESC;
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spIngresarVacaciones` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spIngresarVacaciones`(IN `p_ID_PeriodoVacaciones` INT, IN `p_FechaInicio` DATE, IN `p_FechaFin` DATE, IN `p_DiasTomados` DECIMAL(10,2), IN `p_Motivo` VARCHAR(255))
-BEGIN
+END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spIngresarVacaciones` (IN `p_ID_PeriodoVacaciones` INT, `p_ID_Emp` INT, IN `p_FechaInicio` DATE, IN `p_FechaFin` DATE, IN `p_DiasTomados` DECIMAL(10,2), IN `p_Motivo` VARCHAR(255))   BEGIN
 	DECLARE v_DiasPendientes DECIMAL(10,2);
-
     
-
     -- Verificar disponibilidad de días
-
     SELECT DiasPendientes
-
     INTO v_DiasPendientes
-
     FROM PeriodosVacaciones
-
     WHERE ID = p_ID_PeriodoVacaciones;
-
     
-
     IF v_DiasPendientes >= p_DiasTomados THEN
-
         -- Iniciar transacción
-
         START TRANSACTION;
-
         
-
         -- Actualizar días tomados en el periodo
-
         UPDATE PeriodosVacaciones
-
         SET DiasTomados = DiasTomados + p_DiasTomados
-
         WHERE ID = p_ID_PeriodoVacaciones;
-
         
-
         -- Registrar en el historial
-
         INSERT INTO HistorialVacaciones (
-
             ID_PeriodoVacaciones,
-
+            ID_Emp,
             FechaInicio,
-
             FechaFin,
-
             DiasTomados,
-
             Motivo
-
         ) VALUES (
-
             p_ID_PeriodoVacaciones,
-
+            p_ID_Emp,
             p_FechaInicio,
-
             p_FechaFin,
-
             p_DiasTomados,
-
             p_Motivo
-
         );
-
         
-
         -- Confirmar cambios
-
         COMMIT;
-
         
-
         SELECT 'Vacaciones registradas correctamente' AS Mensaje;
-
     ELSE
-
         SELECT 'Error: Días solicitados superan los días disponibles' AS Mensaje;
-
     END IF;
+END$$
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spObtenerDepartamentos` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerDepartamentos`()
-BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerDepartamentos` ()   BEGIN
 
     SELECT ID_Dep, Nombre_Dep FROM Departamento;
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spObtenerEmpleados` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerEmpleados`()
-BEGIN
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerEmpleados` ()   BEGIN
 
     SELECT 
 
@@ -1871,24 +884,9 @@ BEGIN
 
 	FROM empleado Emp INNER JOIN PUESTO Pue ON Emp.ID_Puesto = Pue.ID_Puesto;
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spObtenerEmpleado_ID` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerEmpleado_ID`(IN `p_ID_Emp` INT)
-SELECT Emp.ID_Emp,
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerEmpleado_ID` (IN `p_ID_Emp` INT)   SELECT Emp.ID_Emp,
 
 	Emp.PriNombre_Emp,
 
@@ -1918,24 +916,9 @@ SELECT Emp.ID_Emp,
 
 	FROM empleado Emp LEFT JOIN PUESTO Pue ON Emp.ID_Puesto = Pue.ID_Puesto
 
-    WHERE Emp.ID_Emp = p_ID_Emp ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spObtenerNominaPorId` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerNominaPorId`(IN `nomina_id` INT)
-BEGIN
+    WHERE Emp.ID_Emp = p_ID_Emp$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerNominaPorId` (IN `nomina_id` INT)   BEGIN
 
     SELECT 
 
@@ -1949,24 +932,9 @@ BEGIN
 
     WHERE n.ID_Nomina = nomina_id;
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spObtenerNominas` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerNominas`()
-BEGIN
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerNominas` ()   BEGIN
 
     SELECT 
 
@@ -1980,69 +948,42 @@ BEGIN
 
     ORDER BY n.Fecha_Nomina DESC;
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spObtenerPeriodosVacaciones_ID` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerPeriodosVacaciones_ID`(IN `p_ID_Emp` INT)
-BEGIN
+END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerPeriodosVacaciones_ID` (IN `p_ID_Emp` INT)   BEGIN
 	SELECT
-
 		pv.ID,
-
+        e.ID_Emp,
         CONCAT(e.PriNombre_Emp, ' ', e.PriApellido_Emp) AS Nombre,
-
         pv.PeriodoInicial,
-
         pv.PeriodoFinal,
-
         pv.DiasLaborados,
-
         pv.CantDias,
-
         pv.DiasTomados,
-
         pv.DiasPendientes
-
     FROM PeriodosVacaciones pv
-
     LEFT JOIN Empleado e ON pv.ID_Emp = e.ID_Emp
-
     WHERE pv.ID_Emp = p_ID_Emp 
-
     ORDER BY PeriodoInicial;
+END$$
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spObtenerProductividadActual` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerProductividadActual`()
-BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerPeriodo_ID` (IN `p_ID` INT)   BEGIN
+	SELECT 
+		pv.ID,
+        CONCAT(e.PriNombre_Emp, ' ', e.PriApellido_Emp) AS Nombre,
+        pv.PeriodoInicial,
+        pv.PeriodoFinal,
+        pv.DiasLaborados,
+        pv.CantDias,
+        pv.DiasTomados,
+        pv.DiasPendientes
+    FROM PeriodosVacaciones pv
+    LEFT JOIN Empleado e ON pv.ID_Emp = e.ID_Emp
+    WHERE ID = p_ID
+    ORDER BY ID;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerProductividadActual` ()   BEGIN
 
     SELECT 
 
@@ -2056,59 +997,15 @@ BEGIN
 
     WHERE p.Mes = MONTH(CURDATE()) AND p.Anio = YEAR(CURDATE());
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spObtenerPuestos` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerPuestos`()
-BEGIN
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spObtenerPuestos` ()   BEGIN
 
     SELECT ID_Puesto, Nombre_Puesto FROM Puesto;
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spRegistrarProductividad` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spRegistrarProductividad`(
+END$$
 
-    IN p_ID_Emp INT,
-
-    IN p_Mes INT,
-
-    IN p_Anio INT,
-
-    IN p_HorasTrabajadas DECIMAL(5,2),
-
-    IN p_HorasExtras DECIMAL(5,2),
-
-    IN p_HorasDescanso DECIMAL(5,2)
-
-)
-BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spRegistrarProductividad` (IN `p_ID_Emp` INT, IN `p_Mes` INT, IN `p_Anio` INT, IN `p_HorasTrabajadas` DECIMAL(5,2), IN `p_HorasExtras` DECIMAL(5,2), IN `p_HorasDescanso` DECIMAL(5,2))   BEGIN
 
     DECLARE existe INT;
 
@@ -2164,24 +1061,9 @@ BEGIN
 
     );
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spResumenNomina` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spResumenNomina`(IN nomina_id INT)
-BEGIN
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spResumenNomina` (IN `nomina_id` INT)   BEGIN
 
     SELECT 
 
@@ -2209,34 +1091,9 @@ BEGIN
 
     WHERE n.ID_Nomina = nomina_id;
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `spUpdProdu` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spUpdProdu`(
+END$$
 
-    IN p_ID_Prod INT,
-
-    IN p_HorasTrabajadas DECIMAL(5,2),
-
-    IN p_HorasExtras DECIMAL(5,2),
-
-    IN p_HorasDescanso DECIMAL(5,2)
-
-)
-BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spUpdProdu` (IN `p_ID_Prod` INT, IN `p_HorasTrabajadas` DECIMAL(5,2), IN `p_HorasExtras` DECIMAL(5,2), IN `p_HorasDescanso` DECIMAL(5,2))   BEGIN
 
     DECLARE tiempo DECIMAL(5,2);
 
@@ -2272,20 +1129,380 @@ BEGIN
 
     WHERE ID_Prod = p_ID_Prod;
 
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+END$$
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `departamento`
+--
+
+CREATE TABLE `departamento` (
+  `ID_Dep` int(11) NOT NULL,
+  `Nombre_Dep` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `departamento`
+--
+
+INSERT INTO `departamento` (`ID_Dep`, `Nombre_Dep`) VALUES
+(1, 'IT'),
+(2, 'Recursos Humanos'),
+(3, 'Contabilidad'),
+(4, 'Auditoria');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `empleado`
+--
+
+CREATE TABLE `empleado` (
+  `ID_Emp` int(11) NOT NULL,
+  `PriNombre_Emp` varchar(50) NOT NULL,
+  `SegNombre_Emp` varchar(50) NOT NULL,
+  `PriApellido_Emp` varchar(50) NOT NULL,
+  `SegApellido_Emp` varchar(50) NOT NULL,
+  `DPI_Emp` varchar(20) NOT NULL,
+  `FechaNacimiento_Emp` date NOT NULL,
+  `Direccion_Emp` varchar(255) DEFAULT NULL,
+  `Telefono_Emp` varchar(15) DEFAULT NULL,
+  `Email_Emp` varchar(100) DEFAULT NULL,
+  `FechaIngreso_Emp` date NOT NULL,
+  `FechaBaja_Emp` date DEFAULT NULL,
+  `Estado_Emp` varchar(10) DEFAULT 'Activo',
+  `ID_Puesto` int(11) DEFAULT NULL,
+  `Horas_Extras` decimal(5,2) DEFAULT 0.00
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `empleado`
+--
+
+INSERT INTO `empleado` (`ID_Emp`, `PriNombre_Emp`, `SegNombre_Emp`, `PriApellido_Emp`, `SegApellido_Emp`, `DPI_Emp`, `FechaNacimiento_Emp`, `Direccion_Emp`, `Telefono_Emp`, `Email_Emp`, `FechaIngreso_Emp`, `FechaBaja_Emp`, `Estado_Emp`, `ID_Puesto`, `Horas_Extras`) VALUES
+(1, 'Monica', 'Gabriela', 'Perez', 'Velásquez', '3017792360101', '2003-03-28', 'zona 17', '846513', 'monica@gmail.com', '2024-12-01', NULL, 'Activo', 1, 0.00),
+(2, 'Axel', 'Jorge', 'Alvarado', 'Arana', '1234567890101', '2004-02-02', 'zona 5', '45215632', 'axel@gmail.com', '2025-02-17', NULL, 'Activo', 4, 0.00),
+(3, 'Lester', 'Ivan', 'Mendez', 'Jose', '1236547890101', '2000-01-06', 'zona 4', '87569830', 'lester@gmail.com', '2025-05-05', NULL, 'Activo', 7, 0.00),
+(4, 'Diego', 'Pablo', 'Perez', 'Velasquez', '7896452190101', '2000-11-22', 'zona 17', '78541236', 'diego@gmail.com', '2019-08-08', '2025-05-11', 'Baja', 6, 0.00),
+(5, 'Fernando', 'Jorge', 'Alvarado', 'Arana', '222222222', '2002-01-02', '21 Av. A 12-61 Alameda 4 Zona 18', '36707871', 'aranaaxel22@gmail.com', '2015-06-26', NULL, 'Activo', 8, 0.00),
+(6, 'Isabel', 'Merly', 'Chavez', 'Lopez', '789645210101', '1993-02-10', 'zona 8', '78965234', 'isa@gmail.com', '2023-08-01', NULL, 'Activo', 3, 0.00);
+
+--
+-- Disparadores `empleado`
+--
+DELIMITER $$
+CREATE TRIGGER `trg_ActualizarVacacionesAlDarBaja` AFTER UPDATE ON `empleado` FOR EACH ROW BEGIN
+
+    -- Si el empleado fue dado de baja
+
+    IF NEW.Estado_Emp = 'Baja' AND OLD.Estado_Emp = 'Activo' THEN
+
+        -- Calcular vacaciones pendientes
+
+        CALL spCalcularVacacionesPendientes(NEW.ID_Emp);
+
+        
+
+        -- Actualizar el saldo de vacaciones
+
+        -- Este trigger solo calcula; el pago sería un proceso separado
+
+    END IF;
+
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `historialvacaciones`
+--
+
+CREATE TABLE `historialvacaciones` (
+  `ID` int(11) NOT NULL,
+  `ID_PeriodoVacaciones` int(11) NOT NULL,
+  `ID_Emp` int(11) NOT NULL,
+  `FechaInicio` date NOT NULL,
+  `FechaFin` date NOT NULL,
+  `DiasTomados` decimal(10,2) NOT NULL,
+  `Motivo` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `historialvacaciones`
+--
+
+INSERT INTO `historialvacaciones` (`ID`, `ID_PeriodoVacaciones`, `ID_Emp`, `FechaInicio`, `FechaFin`, `DiasTomados`, `Motivo`) VALUES
+(1, 43, 5, '2025-03-03', '2025-03-07', 5.00, 'Personal'),
+(2, 116, 6, '2025-05-05', '2025-05-09', 5.00, 'Personal'),
+(3, 118, 6, '2025-05-12', '2025-05-16', 5.00, 'Personal 10 acumulados '),
+(4, 120, 6, '2024-10-07', '2024-10-10', 4.00, 'Personal'),
+(5, 122, 6, '2025-05-06', '2025-05-06', 1.00, 'Personal 15 acumulados'),
+(6, 127, 6, '2025-05-21', '2025-05-21', 1.00, 'Personal');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `nomina`
+--
+
+CREATE TABLE `nomina` (
+  `ID_Nomina` int(11) NOT NULL,
+  `ID_Emp` int(11) NOT NULL,
+  `Tipo_Nomina` enum('Semanal','Quincenal','Mensual') NOT NULL,
+  `Fecha_Nomina` date NOT NULL,
+  `Salario_Base` decimal(10,2) NOT NULL,
+  `Bono_Incentivo` decimal(10,2) DEFAULT 250.00,
+  `Bono_Antiguedad` decimal(10,2) DEFAULT 0.00,
+  `Bono_HorasExtras` decimal(10,2) DEFAULT 0.00,
+  `ISR` decimal(10,2) DEFAULT 0.00,
+  `IGSS` decimal(10,2) DEFAULT 0.00,
+  `Total_Neto` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `nomina`
+--
+
+INSERT INTO `nomina` (`ID_Nomina`, `ID_Emp`, `Tipo_Nomina`, `Fecha_Nomina`, `Salario_Base`, `Bono_Incentivo`, `Bono_Antiguedad`, `Bono_HorasExtras`, `ISR`, `IGSS`, `Total_Neto`) VALUES
+(22, 3, 'Mensual', '2025-05-19', 7200.00, 250.00, 0.00, 540.00, 360.00, 347.76, 7282.24),
+(24, 5, 'Mensual', '2025-05-19', 8000.00, 250.00, 900.00, 0.00, 400.00, 386.40, 8363.60),
+(25, 2, 'Semanal', '2025-05-19', 5800.00, 250.00, 0.00, 271.88, 0.00, 280.14, 6041.74),
+(27, 1, 'Mensual', '2025-05-21', 5750.00, 250.00, 0.00, 1078.20, 0.00, 277.73, 6800.47);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `periodosvacaciones`
+--
+
+CREATE TABLE `periodosvacaciones` (
+  `ID` int(11) NOT NULL,
+  `ID_Emp` int(11) NOT NULL,
+  `PeriodoInicial` date NOT NULL,
+  `PeriodoFinal` date NOT NULL,
+  `DiasLaborados` int(11) NOT NULL,
+  `CantDias` decimal(10,2) NOT NULL,
+  `DiasTomados` decimal(10,2) DEFAULT 0.00,
+  `DiasPendientes` decimal(10,2) GENERATED ALWAYS AS (`CantDias` - `DiasTomados`) VIRTUAL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `periodosvacaciones`
+--
+
+INSERT INTO `periodosvacaciones` (`ID`, `ID_Emp`, `PeriodoInicial`, `PeriodoFinal`, `DiasLaborados`, `CantDias`, `DiasTomados`) VALUES
+(11, 4, '2019-08-08', '2020-08-08', 366, 15.00, 0.00),
+(12, 4, '2020-08-08', '2021-08-08', 365, 15.00, 0.00),
+(13, 4, '2021-08-08', '2022-08-08', 365, 15.00, 0.00),
+(14, 4, '2022-08-08', '2023-08-08', 365, 15.00, 0.00),
+(15, 4, '2023-08-08', '2024-08-08', 366, 15.00, 0.00),
+(16, 4, '2024-08-08', '2025-05-11', 276, 11.34, 0.00),
+(19, 3, '2025-05-05', '2025-05-20', 15, 0.62, 0.00),
+(95, 1, '2024-12-01', '2025-05-20', 170, 6.99, 0.00),
+(106, 5, '2015-06-26', '2016-06-26', 366, 15.00, 5.00),
+(107, 5, '2016-06-26', '2017-06-26', 365, 15.00, 0.00),
+(108, 5, '2017-06-26', '2018-06-26', 365, 15.00, 0.00),
+(109, 5, '2018-06-26', '2019-06-26', 365, 15.00, 0.00),
+(110, 5, '2019-06-26', '2020-06-26', 366, 15.00, 0.00),
+(111, 5, '2020-06-26', '2021-06-26', 365, 15.00, 0.00),
+(112, 5, '2021-06-26', '2022-06-26', 365, 15.00, 0.00),
+(113, 5, '2022-06-26', '2023-06-26', 365, 15.00, 0.00),
+(114, 5, '2023-06-26', '2024-06-26', 366, 15.00, 0.00),
+(115, 5, '2024-06-26', '2025-05-20', 328, 13.48, 0.00),
+(128, 6, '2023-08-01', '2024-08-01', 366, 15.00, 15.00),
+(129, 6, '2024-08-01', '2025-05-20', 292, 12.00, 1.00);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `productividad`
+--
+
+CREATE TABLE `productividad` (
+  `ID_Prod` int(11) NOT NULL,
+  `ID_Emp` int(11) NOT NULL,
+  `Mes` int(11) NOT NULL,
+  `Anio` int(11) NOT NULL,
+  `HorasTrabajadas` decimal(5,2) NOT NULL,
+  `HorasExtras` decimal(5,2) DEFAULT 0.00,
+  `HorasDescanso` decimal(5,2) DEFAULT 0.00,
+  `TiempoProductivo` decimal(5,2) GENERATED ALWAYS AS (`HorasTrabajadas` - `HorasDescanso`) STORED,
+  `PorcentajeProductividad` decimal(5,2) GENERATED ALWAYS AS (round((`HorasTrabajadas` - `HorasDescanso`) / 140 * 100,2)) STORED
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `productividad`
+--
+
+INSERT INTO `productividad` (`ID_Prod`, `ID_Emp`, `Mes`, `Anio`, `HorasTrabajadas`, `HorasExtras`, `HorasDescanso`) VALUES
+(1, 1, 4, 2025, 150.00, 20.00, 10.00),
+(2, 2, 4, 2025, 145.00, 5.00, 15.00),
+(3, 3, 4, 2025, 155.00, 8.00, 18.00),
+(4, 5, 4, 2025, 140.00, 0.00, 10.00),
+(5, 2, 5, 2025, 80.00, 12.00, 10.00),
+(12, 1, 5, 2025, 150.00, 15.00, 20.00),
+(13, 3, 5, 2025, 150.00, 2.00, 20.00),
+(15, 1, 1, 2025, 100.00, 50.00, 20.00),
+(16, 1, 2, 2025, 150.00, 0.00, 0.00);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `puesto`
+--
+
+CREATE TABLE `puesto` (
+  `ID_Puesto` int(11) NOT NULL,
+  `Nombre_Puesto` varchar(100) NOT NULL,
+  `SalarioBase_Puesto` decimal(10,2) NOT NULL,
+  `ID_Dep` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `puesto`
+--
+
+INSERT INTO `puesto` (`ID_Puesto`, `Nombre_Puesto`, `SalarioBase_Puesto`, `ID_Dep`) VALUES
+(1, 'Analista de Datos', 5750.00, 1),
+(2, 'Soporte Técnico', 5000.00, 1),
+(3, 'Analista de Recursos Humanos', 6000.00, 2),
+(4, 'Reclutador', 5800.00, 2),
+(5, 'Contador General', 7000.00, 3),
+(6, 'Auxiliar Contable', 4500.00, 3),
+(7, 'Auditor Interno', 7200.00, 4),
+(8, 'Supervisor de Auditoría', 8000.00, 4);
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `departamento`
+--
+ALTER TABLE `departamento`
+  ADD PRIMARY KEY (`ID_Dep`);
+
+--
+-- Indices de la tabla `empleado`
+--
+ALTER TABLE `empleado`
+  ADD PRIMARY KEY (`ID_Emp`),
+  ADD UNIQUE KEY `DPI_Emp` (`DPI_Emp`);
+
+--
+-- Indices de la tabla `historialvacaciones`
+--
+ALTER TABLE `historialvacaciones`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indices de la tabla `nomina`
+--
+ALTER TABLE `nomina`
+  ADD PRIMARY KEY (`ID_Nomina`),
+  ADD KEY `ID_Emp` (`ID_Emp`);
+
+--
+-- Indices de la tabla `periodosvacaciones`
+--
+ALTER TABLE `periodosvacaciones`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `ID_Emp` (`ID_Emp`);
+
+--
+-- Indices de la tabla `productividad`
+--
+ALTER TABLE `productividad`
+  ADD PRIMARY KEY (`ID_Prod`),
+  ADD UNIQUE KEY `emp_mes_anio` (`ID_Emp`,`Mes`,`Anio`);
+
+--
+-- Indices de la tabla `puesto`
+--
+ALTER TABLE `puesto`
+  ADD PRIMARY KEY (`ID_Puesto`),
+  ADD KEY `fk_departamento` (`ID_Dep`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `departamento`
+--
+ALTER TABLE `departamento`
+  MODIFY `ID_Dep` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `empleado`
+--
+ALTER TABLE `empleado`
+  MODIFY `ID_Emp` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de la tabla `historialvacaciones`
+--
+ALTER TABLE `historialvacaciones`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de la tabla `nomina`
+--
+ALTER TABLE `nomina`
+  MODIFY `ID_Nomina` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
+-- AUTO_INCREMENT de la tabla `periodosvacaciones`
+--
+ALTER TABLE `periodosvacaciones`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=130;
+
+--
+-- AUTO_INCREMENT de la tabla `productividad`
+--
+ALTER TABLE `productividad`
+  MODIFY `ID_Prod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- AUTO_INCREMENT de la tabla `puesto`
+--
+ALTER TABLE `puesto`
+  MODIFY `ID_Puesto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `nomina`
+--
+ALTER TABLE `nomina`
+  ADD CONSTRAINT `nomina_ibfk_1` FOREIGN KEY (`ID_Emp`) REFERENCES `empleado` (`ID_Emp`);
+
+--
+-- Filtros para la tabla `periodosvacaciones`
+--
+ALTER TABLE `periodosvacaciones`
+  ADD CONSTRAINT `periodosvacaciones_ibfk_1` FOREIGN KEY (`ID_Emp`) REFERENCES `empleado` (`ID_Emp`);
+
+--
+-- Filtros para la tabla `productividad`
+--
+ALTER TABLE `productividad`
+  ADD CONSTRAINT `fk_productividad_empleado` FOREIGN KEY (`ID_Emp`) REFERENCES `empleado` (`ID_Emp`);
+
+--
+-- Filtros para la tabla `puesto`
+--
+ALTER TABLE `puesto`
+  ADD CONSTRAINT `fk_departamento` FOREIGN KEY (`ID_Dep`) REFERENCES `departamento` (`ID_Dep`);
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2025-05-21  1:49:03

@@ -5,7 +5,6 @@ class VacacionesController {
 
     private $vacaciones;
     
-    // Constructor para inicializar las dependencias
     public function __construct() {
         $db = db::conectar();
         $this->vacaciones = new Vacaciones($db);

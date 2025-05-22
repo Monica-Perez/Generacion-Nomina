@@ -17,10 +17,10 @@
         <ul class="sidebar-menu">
             <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
             <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
-            <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
+            <li><a href="index.php?controller=prestacion&action=ver" class="active"><i class="fas fa-coins"></i> Prestaciones</a></li>
             <li><a href="index.php?controller=indemnizacion&action=ver"><i class="fas fa-money-check"></i> Indemnización</a></li>
             <li><a href="index.php?controller=nomina&action=ver"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
-            <li><a href="index.php?controller=productividad&action=ver" class="active"><i class="fas fa-chart-line"></i> Productividad</a></li>
+            <li><a href="index.php?controller=productividad&action=ver"><i class="fas fa-chart-line"></i> Productividad</a></li>
         </ul>
     </div>
 
@@ -29,7 +29,7 @@
             <div class="header">
                 <div class="header-title">
                     <h1><i class="fas fa-coins text-primary"></i> Prestacion Laborales</h1>
-                    <p class="text-muted">Prestaciones de los empleados</p>
+                    <p class="text-muted">Prestaciones de los empleados activos</p>
                 </div>
             </div>
 
@@ -87,7 +87,7 @@
                                                 <?php if ($prestacion['Estado_Emp'] == 'Activo'): ?>
                                                     <span class="badge badge-success">Activo</span>
                                                 <?php else: ?>
-                                                    <span class="badge badge-danger">Inactivo</span>
+                                                    <span class="badge badge-danger">Baja</span>
                                                 <?php endif; ?>
                                             </td>
                                             <td><?php echo $prestacion['Nombre_Puesto']; ?></td>
