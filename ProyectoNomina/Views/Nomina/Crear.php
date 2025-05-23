@@ -14,12 +14,16 @@
             <h3>Sistema de Nómina</h3>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
-            <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
+            <li><a href="index.php"  class="active"><i class="fas fa-home"></i> Inicio</a></li>
+            <?php if ($_SESSION['Rol'] === 'admin'): ?>
+                <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
+                <li><a href="index.php?controller=usuario&action=ver"><i class="fas fa-user-shield"></i> Usuarios</a></li>
+            <?php endif; ?>
             <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
             <li><a href="index.php?controller=indemnizacion&action=ver"><i class="fas fa-money-check"></i> Indemnización</a></li>
-            <li><a href="index.php?controller=nomina&action=ver" class="active"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
-            <li><a href="index.php?controller=productividad&action=ver" class="active"><i class="fas fa-chart-line"></i> Productividad</a></li>
+            <li><a href="index.php?controller=nomina&action=ver"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
+        <li><a href="index.php?controller=productividad&action=ver"><i class="fas fa-chart-line"></i> Productividad</a></li>
+        <li><a href="index.php?controller=login&action=logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
         </ul>
     </div>
 
@@ -64,6 +68,26 @@
                                 </select>
                             </div>
 
+                            <div class="form-group">
+                                <label for="mes">Mes:</label>
+                                <select name="mes" id="mes" class="form-control" required>
+                                    <?php for ($m = 1; $m <= 12; $m++): ?>
+                                        <option value="<?= $m ?>"><?= date('F', mktime(0, 0, 0, $m, 10)) ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="anio">Año:</label>
+                                <select name="anio" id="anio" class="form-control" required>
+                                    <?php
+                                    $anioActual = date('Y');
+                                    for ($y = $anioActual; $y >= $anioActual - 25; $y--): ?>
+                                        <option value="<?= $y ?>"><?= $y ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                            </div>
+
                             <button type="submit" class="btn btn-success">
                                 <i class="fas fa-cogs"></i> Generar Nómina
                             </button>
@@ -76,7 +100,16 @@
                         <i class="fas fa-arrow-left"></i> Volver
                     </a>
                 </div>
+                
+                <div>              
+                    <?php if (isset($_GET['error']) && $_SERVER['REQUEST_METHOD'] !== 'POST'): ?>
+                        <div class="alert alert-danger">
+                            <?= htmlspecialchars(urldecode($_GET['error'])) ?>
+                        </div>
+                    <?php endif; ?>
 
+                </div>    
+ 
             </div>
         </div>
     </div>

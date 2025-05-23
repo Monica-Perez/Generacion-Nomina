@@ -1,13 +1,12 @@
 <?php
-require_once 'Config/db.php';
+require_once __DIR__ . '/../Models/VacacionesModelo.php';
 
 class VacacionesController {
 
     private $vacaciones;
     
     public function __construct() {
-        $db = db::conectar();
-        $this->vacaciones = new Vacaciones($db);
+        $this->vacaciones = new Vacaciones(db::conectar());
     }
 
     public function ver() {

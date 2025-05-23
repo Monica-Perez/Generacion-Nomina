@@ -14,12 +14,16 @@
             <h3>Sistema de Nómina</h3>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
-            <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
+            <li><a href="index.php"  class="active"><i class="fas fa-home"></i> Inicio</a></li>
+            <?php if ($_SESSION['Rol'] === 'admin'): ?>
+                <li><a href="index.php?controller=empleado&action=ver"><i class="fas fa-users"></i> Empleados</a></li>
+                <li><a href="index.php?controller=usuario&action=ver"><i class="fas fa-user-shield"></i> Usuarios</a></li>
+            <?php endif; ?>
             <li><a href="index.php?controller=prestacion&action=ver"><i class="fas fa-coins"></i> Prestaciones</a></li>
             <li><a href="index.php?controller=indemnizacion&action=ver"><i class="fas fa-money-check"></i> Indemnización</a></li>
-            <li><a href="index.php?controller=nomina&action=ver" class="active"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
-            <li><a href="index.php?controller=productividad&action=ver"><i class="fas fa-chart-line"></i> Productividad</a></li>
+            <li><a href="index.php?controller=nomina&action=ver"><i class="fas fa-file-invoice-dollar"></i> Nómina</a></li>
+        <li><a href="index.php?controller=productividad&action=ver"><i class="fas fa-chart-line"></i> Productividad</a></li>
+        <li><a href="index.php?controller=login&action=logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
         </ul>
     </div>
 
@@ -32,48 +36,43 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card mb-4">
                 <form id="formEliminarMultiples" method="POST" action="index.php?controller=nomina&action=eliminarMultiples" onsubmit="return confirm('¿Desea eliminar las nóminas seleccionadas?');">
-                    <div class="card-header bg-white">
-                        <div class="row align-items-center">
-                            <div class="col-md-6">
-                                <h5 class="mb-0"><i class="fas fa-table"></i> Detalles de Nómina</h5>
-                            </div>
-                            <div class="col-md-6 text-right">
-                                <div class="d-flex justify-content-end">
-                                    <button type="submit" class="btn btn-danger btn-sm mr-2">
-                                        <i class="fas fa-trash-alt"></i> Eliminar Seleccionadas
-                                    </button>
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-file-invoice-dollar text-primary"></i> Detalles de Nómina</h5>
+                        <div class="d-flex align-items-center">
+                            <button type="submit" class="btn btn-danger btn-sm mr-2" title="Eliminar Seleccionadas">
+                                <i class="fas fa-trash-alt"></i> Eliminar Seleccionadas
+                            </button>
 
-                                    <div class="search-box mr-3">
-                                        <div class="input-group">
-                                            <input type="text" id="searchInput" class="form-control" placeholder="Buscar empleado...">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                            </div>
-                                        </div>
+                            <div class="search-box mr-3">
+                                <div class="input-group">
+                                    <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Buscar empleado...">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-search"></i></span>
                                     </div>
-
-                                    <a href="core/exportar_nomina.php" class="btn btn-success btn-sm mr-2">
-                                        <i class="fas fa-file-excel"></i> Exportar
-                                    </a>
-                                    <a href="index.php?controller=nomina&action=crear" class="btn btn-primary btn-sm">
-                                        <i class="fas fa-plus-circle"></i> Generar Nómina
-                                    </a>
                                 </div>
+                            </div>
+                            
+                            <div>
+                                <a href="index.php?controller=nomina&action=crear" class="btn btn-primary btn-sm" title="Generar nueva nómina">
+                                    <i class="fas fa-plus-circle"></i> Generar Nómina
+                                </a>
+
+                                <a href="core/exportar_nomina.php" class="btn btn-success btn-sm mr-2" title="Exportar Nómina a Excel">
+                                    <i class="fas fa-file-excel"></i> Generar Excel
+                                </a>
                             </div>
                         </div>
                     </div>
 
                     <div class="card-body p-0">
                         <div class="table-container">
-                            <table class="table table-striped table-hover" id="nominaTable">
-                                <thead>
+                            <table class="table table-bordered table-hover" id="nominaTable">
+                                <thead class="thead-dark">
                                     <tr>
                                         <th>
-                                            <button type="button" class="btn btn-sm btn-outline-primary toggleSelectAll">
-                                            ✅
-                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-primary toggleSelectAll" title="Seleccionar todo">✔</button>
                                         </th>
                                         <th>Empleado</th>
                                         <th>Tipo</th>
@@ -97,7 +96,7 @@
                                             <td><?= htmlspecialchars($n['nombre_empleado'] ?? 'Empleado') ?></td>
 
                                             <td class="tipo-nomina-cell" data-id="<?= $n['ID_Nomina'] ?>">
-                                                <span class="tipo-nomina-text"><?= $n['Tipo_Nomina'] ?></span>
+                                                <span class="badge badge-primary tipo-nomina-text"><?= $n['Tipo_Nomina'] ?></span>
                                                 <select class="form-control form-control-sm tipo-nomina-select d-none" style="width: 120px;">
                                                     <option value="Mensual" <?= $n['Tipo_Nomina'] == 'Mensual' ? 'selected' : '' ?>>Mensual</option>
                                                     <option value="Quincenal" <?= $n['Tipo_Nomina'] == 'Quincenal' ? 'selected' : '' ?>>Quincenal</option>
@@ -107,26 +106,26 @@
 
                                             <td>Q<?= number_format($n['Salario_Base'], 2) ?></td>
 
-                                            <td class="text-success"><strong>Q<?= number_format($n['Bono_Incentivo'] + $n['Bono_Antiguedad'] + $n['Bono_HorasExtras'], 2) ?></strong></td>
+                                            <td class="text-success"> <strong>Q<?= number_format($n['Bono_Incentivo'] + $n['Bono_Antiguedad'] + $n['Bono_HorasExtras'], 2) ?></strong></td>
                                             <td class="text-success">Q<?= number_format($n['Bono_Incentivo'], 2) ?></td>
                                             <td class="text-success">Q<?= number_format($n['Bono_Antiguedad'], 2) ?></td>
                                             <td class="text-success">Q<?= number_format($n['Bono_HorasExtras'], 2) ?></td>
 
-                                            <td class="text-danger"><strong>Q<?= number_format($n['ISR'] + $n['IGSS'], 2) ?></strong></td>
+                                            <td class="text-danger"> <strong>Q<?= number_format($n['ISR'] + $n['IGSS'], 2) ?></strong></td>
                                             <td class="text-danger">Q<?= number_format($n['ISR'], 2) ?></td>
                                             <td class="text-danger">Q<?= number_format($n['IGSS'], 2) ?></td>
 
-                                            <td><strong>Q<?= number_format($n['Total_Neto'], 2) ?></strong></td>
+                                            <td> <strong>Q<?= number_format($n['Total_Neto'], 2) ?></strong></td>
                                             <td><?= date('d/m/Y', strtotime($n['Fecha_Nomina'])) ?></td>
 
                                             <td class="text-center">
-                                                <a href="index.php?controller=nomina&action=detalle&id=<?= $n['ID_Nomina'] ?>" class="btn btn-sm btn-info mb-1">
+                                                <a href="index.php?controller=nomina&action=detalle&id=<?= $n['ID_Nomina'] ?>" class="btn btn-sm btn-info mb-1" title="Ver Detalle">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="#" class="btn btn-sm btn-warning mb-1 editar-tipo-nomina" data-id="<?= $n['ID_Nomina'] ?>">
+                                                <a href="#" class="btn btn-sm btn-warning mb-1 editar-tipo-nomina" data-id="<?= $n['ID_Nomina'] ?>" title="Editar Tipo">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a href="index.php?controller=nomina&action=eliminar&id=<?= $n['ID_Nomina'] ?>" class="btn btn-sm btn-danger mb-1" onclick="return confirm('¿Está seguro que desea eliminar esta nómina?');">
+                                                <a href="index.php?controller=nomina&action=eliminar&id=<?= $n['ID_Nomina'] ?>" class="btn btn-sm btn-danger mb-1" title="Eliminar" onclick="return confirm('¿Está seguro que desea eliminar esta nómina?');">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </a>
                                             </td>
@@ -135,8 +134,10 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
                 </form>
             </div>
+
 
             <div class="card-footer text-right">
                 <button onclick="window.print()" class="btn btn-info btn-sm mr-2">

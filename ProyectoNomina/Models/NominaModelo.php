@@ -8,17 +8,38 @@ class NominaModelo {
         $this->conn = $db;
     }
 
-    public function calcularNomina() {
-        $stmt = $this->conn->prepare("CALL spCalcularNomina()");
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function obtenerNominas() {
+    public function ver() {
         $stmt = $this->conn->prepare("CALL spObtenerNominas()");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function crear() {
+        $stmt = $this->conn->prepare("CALL spObtenerEmpleadoActivo()");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function eliminar($idNomina) {
+        $stmt = $this->conn->prepare("CALL spEliminarNomina(:id)");
+        $stmt->bindParam(':id', $idNomina, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function actualizar($idNomina, $nuevoTipo) {
+        $stmt = $this->conn->prepare("CALL spActualizarTipoNominaYRecalcular(:idNomina, :tipo)");
+        $stmt->bindParam(':idNomina', $idNomina, PDO::PARAM_INT);
+        $stmt->bindParam(':tipo', $nuevoTipo);
+        $stmt->execute();
+    }
+
+    public function eliminarMultiples($ids) {
+        $lista = implode(',', array_map('intval', $ids));
+        $stmt = $this->conn->prepare("CALL spEliminarNominasMultiples(:ids)");
+        $stmt->bindParam(':ids', $lista, PDO::PARAM_STR);
+        $stmt->execute();
+    }
+
 
     public function obtenerEmpleadosSinNominaActual() {
         $stmt = $this->conn->prepare("CALL spEmpleadosSinNominaMesActual()");
@@ -26,12 +47,21 @@ class NominaModelo {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function generarNominaEmpleado($idEmp, $tipoNomina) {
-        $stmt = $this->conn->prepare("CALL spCalcularNomina(:idEmp, :tipoNomina)");
+    public function generarNominaEmpleado($idEmp, $tipo, $mes, $anio) {
+        $stmt = $this->conn->prepare("CALL spGenerarNominaIndividualPorMes(:idEmp, :tipo, :mes, :anio)");
         $stmt->bindParam(':idEmp', $idEmp, PDO::PARAM_INT);
-        $stmt->bindParam(':tipoNomina', $tipoNomina);
-        $stmt->execute();
+        $stmt->bindParam(':tipo', $tipo);
+        $stmt->bindParam(':mes', $mes, PDO::PARAM_INT);
+        $stmt->bindParam(':anio', $anio, PDO::PARAM_INT);
+
+        try {
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
     }
+
 
     public function obtenerNominaPorId($id) {
         $stmt = $this->conn->prepare("CALL spObtenerNominaPorId(:id)");
@@ -53,28 +83,4 @@ class NominaModelo {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
-    public function actualizarTipoNomina($idNomina, $nuevoTipo) {
-        $stmt = $this->conn->prepare("SELECT ID_Emp FROM nomina WHERE ID_Nomina = ?");
-        $stmt->execute([$idNomina]);
-        $emp = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($emp) {
-            $stmt2 = $this->conn->prepare("UPDATE nomina SET Tipo_Nomina = ? WHERE ID_Nomina = ?");
-            $stmt2->execute([$nuevoTipo, $idNomina]);
-
-            $stmt3 = $this->conn->prepare("CALL spCalcularNomina(:idEmp, :tipo)");
-            $stmt3->bindParam(':idEmp', $emp['ID_Emp'], PDO::PARAM_INT);
-            $stmt3->bindParam(':tipo', $nuevoTipo);
-            $stmt3->execute();
-        }
-    }
-
-    public function eliminarNominasMultiples($ids) {
-        $lista = implode(',', array_map('intval', $ids));
-        $stmt = $this->conn->prepare("CALL spEliminarNominasMultiples(:ids)");
-        $stmt->bindParam(':ids', $lista, PDO::PARAM_STR);
-        $stmt->execute();
-    }
-
 }

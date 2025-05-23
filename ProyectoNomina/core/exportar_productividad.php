@@ -1,5 +1,6 @@
 <?php
 require '../vendor/autoload.php';
+require_once '../Models/ProductividadModelo.php';
 require_once '../Config/db.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -8,21 +9,17 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
-$conn = db::conectar();
-$stmt = $conn->prepare("CALL spGetProduEmp()");
-$stmt->execute();
-$registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Conectarse al modelo
+$modelo = new ProductividadModelo(db::conectar());
+$registros = $modelo->ver();
 
-// Crear Excel
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 $sheet->setTitle('Productividad General');
 
-// Encabezados
 $headers = ['Empleado', 'Puesto', 'Mes', 'Año', 'Horas Trabajadas', 'Horas Extras', 'Horas Descanso', 'Tiempo Productivo', '% Productividad'];
 $sheet->fromArray($headers, null, 'A1');
 
-// Estilo encabezado
 $styleHeader = [
     'font' => ['bold' => true],
     'fill' => [
@@ -35,7 +32,6 @@ $styleHeader = [
     'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
 ];
 
-// Cuerpo
 $fila = 2;
 foreach ($registros as $row) {
     $sheet->setCellValue("A$fila", $row['nombre_empleado']);
@@ -50,7 +46,6 @@ foreach ($registros as $row) {
     $fila++;
 }
 
-// Aplicar estilo al encabezado y formato general
 $sheet->getStyle('A1:I1')->applyFromArray($styleHeader);
 $lastRow = $fila - 1;
 $sheet->getStyle("A1:I$lastRow")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
@@ -58,7 +53,6 @@ foreach (range('A', 'I') as $col) {
     $sheet->getColumnDimension($col)->setAutoSize(true);
 }
 
-// Descargar archivo
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 header('Content-Disposition: attachment;filename="ProductividadGeneral.xlsx"');
 header('Cache-Control: max-age=0');

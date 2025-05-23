@@ -1,13 +1,12 @@
 <?php
-require_once 'Config/db.php';
+require_once __DIR__ . '/../Models/PrestacionModelo.php';
 
 class PrestacionController {
 
     private $prestacion;
     
     public function __construct() {
-        $db = db::conectar();
-        $this->prestacion = new Prestacion($db);
+        $this->prestacion = new Prestacion(db::conectar());
     }
 
     public function ver() {

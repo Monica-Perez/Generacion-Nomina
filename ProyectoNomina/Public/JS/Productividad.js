@@ -1,8 +1,17 @@
+$(document).ready(function () {
+
+    $("#searchInput").on("keyup", function () {
+        const value = $(this).val().toLowerCase();
+        $("#productividadTable tbody tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        });
+    });
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     if (typeof graficaLabels !== 'undefined' && typeof graficaDatos !== 'undefined') {
         const colores = graficaLabels.map(() => `hsl(${Math.random() * 360}, 70%, 60%)`);
 
-        // Gráfico de Barras
         new Chart(document.getElementById('graficaBarras'), {
             type: 'bar',
             data: {
@@ -58,7 +67,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        // Gráfico de Pastel
         new Chart(document.getElementById('graficaPastel'), {
             type: 'pie',
             data: {
@@ -109,7 +117,7 @@ document.querySelector('form').addEventListener('submit', function(e) {
     const mes = parseInt(document.querySelector('[name="Mes"]').value);
     const anio = parseInt(document.querySelector('[name="Anio"]').value);
 
-    if (!fechaIngresoStr) return; // Si no hay fecha de ingreso, salta validación
+    if (!fechaIngresoStr) return;
 
     const fechaIngreso = new Date(fechaIngresoStr);
     const fechaProductividad = new Date(anio, mes - 1, 1);
@@ -134,10 +142,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const hiddenEmp = document.getElementById('ID_Emp_hidden');
 
     if (selectEmp && hiddenEmp) {
-        // Actualiza al cargar
         hiddenEmp.value = selectEmp.value;
 
-        // Escucha cambios si el select está habilitado
         if (!selectEmp.disabled) {
             selectEmp.addEventListener('change', function () {
                 hiddenEmp.value = this.value;
@@ -145,4 +151,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
+
+
 

@@ -1,5 +1,5 @@
 <?php
-require_once 'Config/db.php'; 
+require_once __DIR__ . '/../Config/db.php';
 class Prestacion {
     private $conn;
 
@@ -21,33 +21,4 @@ class Prestacion {
             return [];
         }
     }
-
-    // // Método para obtener las prestaciones por 1 empleado
-    // public function obtenerBonoyAguinaldo($id) {
-    //     try {
-    //         // Preparar la llamada al procedimiento almacenado
-    //         $query = "CALL spCalcularB14_Agui(?)";
-    //         $stmt = $this->conn->prepare($query);
-            
-    //         // Vincular el parámetro ID
-    //         $stmt->bindParam(1, $id, PDO::PARAM_INT);
-    //         $stmt->execute();
-            
-    //         // Obtener el resultado
-    //         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-    //         // Si no hay resultados, devolver false
-    //         if (!$resultado) {
-    //             return false;
-    //         }
-            
-    //         // Devolver los datos del empleado
-    //         return $resultado;
-    //     } catch (PDOException $e) {
-    //         // Registrar el error y devolver false
-    //         error_log("Error al obtener las prestaciones por Empleado: " . $e->getMessage());
-    //         return false;
-    //     }
-    // }
-    
 }

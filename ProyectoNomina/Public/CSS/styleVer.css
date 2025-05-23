@@ -1,16 +1,11 @@
  :root {
      --primary: #4361ee;
      --secondary: hsl(245, 17%, 29%);
-     /* activos */
      --success: #23a359;
-     /* inactivos */
      --danger: #e74c3c;
      --light: #f8f9fa;
-     /* texto */
      --dark: #343a40;
-     /* texto secundario */
      --gray: #6c757d;
-     /* Ancho del menú lateral */
      --sidebar-width: 13%;
  }
 
@@ -84,7 +79,6 @@
      overflow-y: auto;
  }
 
- /* Contenedor para centrar y limitar el ancho del contenido */
  .content-container {
      padding: 30px;
      max-width: 1800px;
@@ -115,7 +109,6 @@
      font-size: 0.9rem;
  }
 
- /* Contenedor de la tabla */
  .card {
      border: none;
      border-radius: 10px;
@@ -134,27 +127,20 @@
      color: var(--secondary);
  }
 
- /* Contenedor con desplazamiento para la tabla */
  .table-container {
      max-height: calc(100vh - 250px);
-     /* Altura máxima para la tabla */
      overflow-y: auto;
-     /* Scroll vertical solo para la tabla */
      overflow-x: auto;
-     /* Scroll horizontal si es necesario */
  }
 
- /* Estilos de la tabla */
  .table {
      margin-bottom: 0;
      width: 100%;
  }
 
- /* Encabezados de la tabla */
  .table thead th {
      position: sticky;
      top: 0;
-     /* Mantiene los encabezados visibles al desplazarse */
      background-color: #f8f9fa;
      z-index: 10;
      font-weight: 600;
@@ -162,7 +148,6 @@
      border-bottom: 2px solid #dee2e6;
      padding: 12px 15px;
      white-space: nowrap;
-     /* Evita que los encabezados se rompan en varias líneas */
  }
 
  .table td {
@@ -170,17 +155,14 @@
      vertical-align: middle;
  }
 
- /* colores en las filas */
  .table-striped tbody tr:nth-of-type(odd) {
      background-color: rgba(0, 0, 0, 0.02);
  }
 
- /* Efecto al pasar sobre las filas */
  .table-hover tbody tr:hover {
      background-color: rgba(0, 0, 0, 0.05);
  }
 
- /* Indicadores de estado */
  .badge {
      padding: 5px 10px;
      border-radius: 30px;
@@ -221,7 +203,6 @@
 
  @media (max-width: 991.98px) {
 
-     /* Reduce el tamaño del menú en tablets */
      .sidebar {
          width: 70px;
      }
@@ -241,7 +222,6 @@
 
  @media (max-width: 767.98px) {
 
-     /* Ajustes para móviles */
      .header {
          flex-direction: column;
          align-items: flex-start;
@@ -252,7 +232,6 @@
          align-self: flex-end;
      }
 
-     /* Ajuste del buscador en móviles */
      .card-header .row {
          flex-direction: column;
      }
@@ -265,16 +244,13 @@
          max-width: 100%;
      }
 
-     /* Altura más pequeña para la tabla en móviles */
      .table-container {
          max-height: calc(100vh - 300px);
      }
  }
 
- /* Estilos para impresión */
  @media print {
 
-     /* Oculta elementos no necesarios al imprimir */
      .sidebar,
      .header-actions,
      .card-header,
@@ -283,20 +259,17 @@
          display: none !important;
      }
 
-     /* Ajustes para la impresión */
      .main-content {
          margin-left: 0;
          overflow: visible;
          height: auto;
      }
 
-     /* Muestra toda la tabla sin scroll */
      .table-container {
          max-height: none;
          overflow: visible;
      }
 
-     /* Mejora la presentación de la tabla */
      .table th {
          background-color: #f8f9fa !important;
          color: #333 !important;
@@ -304,7 +277,6 @@
          print-color-adjust: exact;
      }
 
-     /* Asegura que todas las filas se impriman */
      .table tr {
          page-break-inside: avoid;
      }

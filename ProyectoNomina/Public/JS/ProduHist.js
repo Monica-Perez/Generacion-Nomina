@@ -53,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        // Gráfico de Pastel
         new Chart(document.getElementById('graficaPastel'), {
             type: 'pie',
             data: {
@@ -101,11 +100,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const id = this.getAttribute('data-id');
             const fila = document.querySelector(`#fila-${id}`);
             
-            // Mostrar input, ocultar span
             fila.querySelectorAll('input[type="number"]').forEach(input => input.classList.remove('d-none'));
             fila.querySelectorAll('.texto').forEach(span => span.classList.add('d-none'));
 
-            // Mostrar botón guardar, ocultar editar
             fila.querySelector(`#guardar-${id}`).classList.remove('d-none');
             this.classList.add('d-none');
         });
