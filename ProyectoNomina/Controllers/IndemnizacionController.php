@@ -1,5 +1,5 @@
 <?php
-require_once 'Config/db.php';
+require_once __DIR__ . '/../Models/IndemnizacionModelo.php';
 
 class IndemnizacionController {
 
@@ -7,7 +7,7 @@ class IndemnizacionController {
     
     public function __construct() {
         $db = db::conectar();
-        $this->indem = new Indemnizacion($db);
+        $this->indem = new Indemnizacion(db::conectar());
     }
 
     public function ver() {

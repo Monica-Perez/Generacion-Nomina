@@ -1,7 +1,6 @@
 $(document).ready(function () {
     console.log("🔧 Nomina.js cargado correctamente");
 
-    // Buscador
     $("#searchInput").on("keyup", function () {
         const value = $(this).val().toLowerCase();
         $("#nominaTable tbody tr").filter(function () {
@@ -9,7 +8,6 @@ $(document).ready(function () {
         });
     });
 
-    // Editar tipo de nómina
     $(".editar-tipo-nomina").on("click", function (e) {
         e.preventDefault();
         const id = $(this).data("id");
@@ -37,18 +35,15 @@ $(document).ready(function () {
         });
     });
 
-    // Toggle seleccionar todos
     let allSelected = false;
 
     $(".toggleSelectAll").on("click", function () {
-        console.log("✅ Botón de seleccionar todos presionado");
-
         allSelected = !allSelected;
 
         $('input[name="ids[]"]').prop("checked", allSelected);
 
         $(this).text(allSelected
-            ? "❌"
-            : "✅");
+            ? "✖"
+            : "✔");
     });
 });

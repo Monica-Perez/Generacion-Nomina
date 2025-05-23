@@ -1,5 +1,6 @@
 <?php
 require '../vendor/autoload.php';
+require_once '../Models/ProductividadModelo.php';
 require_once '../Config/db.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -13,30 +14,23 @@ if (!$idEmp) {
     die('Empleado no especificado.');
 }
 
-$conn = db::conectar();
-$stmt = $conn->prepare("CALL spHistProduEmp(:id)");
-$stmt->bindParam(':id', $idEmp, PDO::PARAM_INT);
-$stmt->execute();
-$registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$nombre = $registros[0]['nombre_empleado'] ?? 'Empleado';
-$nombreArchivo = preg_replace('/[^A-Za-z0-9]/', '_', $nombre); // sanitiza
-
+$modelo = new ProductividadModelo(db::conectar());
+$registros = $modelo->HistorialProductividadEmpleado($idEmp);
 
 if (empty($registros)) {
     die('No hay datos para exportar.');
 }
 
-// Crear Excel
+$nombre = $registros[0]['nombre_empleado'] ?? 'Empleado';
+$nombreArchivo = preg_replace('/[^A-Za-z0-9]/', '_', $nombre);
+
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 $sheet->setTitle('Historial Productividad');
 
-// Encabezados
 $headers = ['Mes', 'Año', 'Horas Trabajadas', 'Horas Extras', 'Horas Descanso', 'Tiempo Productivo', '% Productividad'];
 $sheet->fromArray($headers, null, 'A1');
 
-// Definir estilo
 $styleHeader = [
     'font' => ['bold' => true],
     'fill' => [
@@ -49,7 +43,6 @@ $styleHeader = [
     'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
 ];
 
-// Cuerpo
 $fila = 2;
 foreach ($registros as $row) {
     $sheet->setCellValue("A$fila", $row['Mes']);
@@ -62,7 +55,6 @@ foreach ($registros as $row) {
     $fila++;
 }
 
-// Ahora sí: aplicar estilos
 $sheet->getStyle('A1:G1')->applyFromArray($styleHeader);
 $lastRow = $fila - 1;
 $sheet->getStyle("A1:G$lastRow")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
@@ -70,7 +62,6 @@ foreach (range('A', 'G') as $col) {
     $sheet->getColumnDimension($col)->setAutoSize(true);
 }
 
-// Descargar archivo
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 header('Content-Disposition: attachment;filename="Historial_' . $nombreArchivo . '.xlsx"');
 header('Cache-Control: max-age=0');
