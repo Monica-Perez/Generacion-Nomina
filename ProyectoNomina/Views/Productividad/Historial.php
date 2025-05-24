@@ -63,7 +63,7 @@ ini_set('display_errors', 1);
                         </a>
 
                         <div class="table-responsive">
-                            <form method="POST" action="index.php?controller=productividad&action=modificar">
+                            <form method="POST" action="index.php?controller=productividad&action=actualizar">
                                 <input type="hidden" name="ID_Emp" value="<?= $_GET['id'] ?>">
                                 <table class="table table-bordered table-hover" id="tabla-productividad">
                                     <thead class="thead-dark">
@@ -81,7 +81,7 @@ ini_set('display_errors', 1);
                                     <tbody>
                                         <?php foreach ($historial as $row): ?>
                                             <tr id="fila-<?= $row['ID_Prod'] ?>">
-                                                <form method="POST" action="index.php?controller=productividad&action=modificar" class="form-inline">
+                                                <form method="POST" action="index.php?controller=productividad&action=actualizar" class="form-inline">
                                                     <input type="hidden" name="ID_Emp" value="<?= $_GET['id'] ?>">
                                                     <input type="hidden" name="ID_Prod" value="<?= $row['ID_Prod'] ?>">
 
