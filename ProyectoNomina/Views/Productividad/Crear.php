@@ -45,7 +45,7 @@
                         <form action="index.php?controller=productividad&action=registrar" method="POST">
                             <div class="form-group">
                                 <label for="ID_Emp">Empleado:</label>
-                                <input type="hidden" name="ID_Emp" id="ID_Emp_hidden" value="<?= $idSeleccionado ?? '' ?>">
+                                <input type="hidden" name="ID_Emp" id="ID_Emp_hidden" value="<?= $idSeleccionado ?? $empleados[0]['ID_Emp'] ?? '' ?>">
 
                                 <select id="ID_Emp_select" class="form-control" <?= isset($idSeleccionado) ? 'disabled' : '' ?> required>
                                     <option value="">Seleccione un empleado</option>
